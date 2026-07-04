@@ -1,23 +1,82 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import '../styles/global.css';
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+export interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: string;
+  ogUrl?: string;
+  canonicalUrl?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const {
+  title,
+  description = 'Muhammad Fadhil Al Amal — AI & Software Engineer | NLP Researcher',
+  ogImage = '/cropped_circle_image.png',
+  ogType = 'website',
+  ogUrl = 'https://mfa-labs.github.io',
+  canonicalUrl = ogUrl,
+  jsonLd = undefined,
+} = Astro.props;
+
+const siteTitle = title.includes('Muhammad Fadhil')
+  ? title
+  : `${title} — Muhammad Fadhil Al Amal`;
+---
+
+<!doctype html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{siteTitle}</title>
+  <meta name="description" content={description} />
+  <meta name="author" content="Muhammad Fadhil Al Amal" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href={canonicalUrl} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={siteTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content={ogType} />
+  <meta property="og:url" content={ogUrl} />
+  <meta property="og:image" content={`https://mfa-labs.github.io${ogImage}`} />
+  <meta property="og:site_name" content="Muhammad Fadhil Al Amal" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={siteTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={`https://mfa-labs.github.io${ogImage}`} />
+
+  <!-- JSON-LD Schema -->
+  {
+    jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )
+  }
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="Muhammad Fadhil Al Amal — Technical Blog" href="/rss.xml" />
+</head>
+<body>
+  <slot />
+  <script>
+    // Dark mode toggle logic
+    const stored = localStorage.getItem('theme');
+    if (stored === 'dark') {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</body>
+</html>

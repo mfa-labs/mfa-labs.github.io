@@ -1,0 +1,149 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.mdx?$/, '') },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: 'Muhammad Fadhil Al Amal',
+    url: 'https://mfa-labs.github.io',
+  },
+  url: `https://mfa-labs.github.io/blog/${post.id.replace(/\.mdx?$/, '')}`,
+};
+---
+
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  ogType="article"
+  ogUrl={`https://mfa-labs.github.io/blog/${post.id.replace(/\.mdx?$/, '')}`}
+  canonicalUrl={`https://mfa-labs.github.io/blog/${post.id.replace(/\.mdx?$/, '')}`}
+  jsonLd={jsonLd}
+>
+  <Nav />
+
+  <main class="flex-grow w-full py-section-gap">
+    <div class="max-w-3xl mx-auto px-margin-mobile md:px-margin-desktop">
+      <a href="/blog" class="link-arrow mb-12 inline-flex">
+        <span class="material-symbols-outlined mr-1">arrow_back</span>
+        Back to Blog
+      </a>
+
+      <article>
+        <header class="mb-12">
+          <time class="font-mono text-xs mb-4 block" style="color: var(--color-on-surface-variant);">
+            {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </time>
+          <h1 class="font-display text-4xl md:text-5xl leading-tight tracking-tight mb-4" style="color: var(--color-primary);">{post.data.title}</h1>
+          <p class="font-body text-lg leading-7" style="color: var(--color-on-surface-variant);">{post.data.description}</p>
+          {post.data.tags.length > 0 && (
+            <div class="flex flex-wrap gap-2 mt-6">
+              {post.data.tags.map((tag) => (
+                <span class="tag-research">{tag}</span>
+              ))}
+            </div>
+          )}
+        </header>
+
+        <div class="prose max-w-none" style="color: var(--color-on-surface);">
+          <Content />
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .prose h2 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-primary);
+  }
+  .prose h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-primary);
+  }
+  .prose p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+    color: var(--color-on-surface);
+  }
+  .prose ul, .prose ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-on-surface);
+  }
+  .prose li {
+    margin-bottom: 0.25rem;
+  }
+  .prose a {
+    color: var(--color-secondary);
+    text-decoration: underline;
+  }
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    padding: 0.15em 0.3em;
+    border-radius: 0.25rem;
+    background: var(--color-surface-container);
+  }
+  .prose pre {
+    background: var(--color-surface-container);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--color-outline-variant);
+  }
+  .prose pre code {
+    background: none;
+    padding: 0;
+  }
+  .prose blockquote {
+    border-left: 3px solid var(--color-secondary);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: var(--color-on-surface-variant);
+    font-style: italic;
+  }
+  .prose img {
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+  }
+  .prose hr {
+    border-color: var(--color-outline-variant);
+    margin: 2rem 0;
+  }
+</style>
