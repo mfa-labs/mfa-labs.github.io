@@ -1,0 +1,105 @@
+---
+title: Optimizing PostgreSQL for High-Volume Healthcare Data
+description: Technical deep dive into indexing strategies and query refactoring for SaaS clinic management systems handling millions of records.
+pubDate: 2024-05-14
+tags: ['PostgreSQL', 'Database Optimization', 'Healthcare', 'SaaS', 'Performance']
+---
+
+Healthcare SaaS platforms generate enormous quantities of transactional data. Appointment records, clinical notes, billing entries, and insurance claims accumulate rapidly — a single mid-size clinic network can generate millions of rows per month. Without deliberate database architecture, queries that once completed in milliseconds degrade to seconds, then minutes.
+
+This post covers indexing strategies and query refactoring techniques I applied to a production PostgreSQL database serving a clinic management platform handling over 10 million monthly transactions.
+
+## The Problem
+
+The platform's financial reporting module was the first to show strain. A monthly revenue summary query, which joined seven tables and aggregated across hundreds of thousands of invoice line items, took over 45 seconds to complete. Users reported timeouts.
+
+Initial investigation revealed:
+
+- No composite indexes on any join columns
+- Sequential scans on tables exceeding 2 million rows
+- A `GROUP BY` over unindexed timestamp columns
+- Subqueries in the `SELECT` clause that executed row-by-row
+
+## Indexing Strategy
+
+### Composite Indexes Over Single-Column Indexes
+
+The most impactful change was replacing several single-column indexes with targeted composite indexes matching the query patterns:
+
+```sql
+-- Before: two separate indexes
+CREATE INDEX idx_invoices_date ON invoices(created_at);
+CREATE INDEX idx_invoices_clinic ON invoices(clinic_id);
+
+-- After: one composite index matching the join+filter pattern
+CREATE INDEX idx_invoices_clinic_date ON invoices(clinic_id, created_at DESC);
+```
+
+This reduced the query plan from a bitmap-and scan to a single index-only scan, cutting the join step from 180ms to 4ms.
+
+### Partial Indexes for Active Data
+
+A significant portion of query time was spent scanning historical data that was rarely accessed. Partial indexes filtered to recent periods kept the index size manageable:
+
+```sql
+CREATE INDEX idx_claims_active ON claims(status, submitted_at DESC)
+WHERE status IN ('pending', 'processing', 'verified');
+```
+
+This index covers only ~15% of the claims table but serves 80% of the queries. Index size dropped from 1.2GB to 180MB.
+
+## Query Refactoring
+
+### Replacing Correlated Subqueries
+
+A correlated subquery in the billing summary was executing once per row:
+
+```sql
+-- Problematic pattern (13s execution)
+SELECT i.*,
+  (SELECT SUM(amount) FROM adjustments a WHERE a.invoice_id = i.id) AS adjustment_total
+FROM invoices i;
+
+-- Refactored (0.8s execution)
+SELECT i.*, a.adjustment_total
+FROM invoices i
+LEFT JOIN LATERAL (
+  SELECT SUM(amount) AS adjustment_total
+  FROM adjustments
+  WHERE invoice_id = i.id
+) a ON true;
+```
+
+While this still uses `LATERAL`, moving to an indexed join and wrapping it in a materialized CTE for the reporting context reduced execution to 800ms.
+
+### Pagination Without `OFFSET`
+
+Cursor-based pagination eliminated the performance cliff that `OFFSET` creates on large datasets:
+
+```sql
+-- Before (gets slower as page number increases)
+SELECT * FROM encounters ORDER BY created_at DESC LIMIT 50 OFFSET 500000;
+
+-- After (stable performance regardless of position)
+SELECT * FROM encounters
+WHERE created_at < $last_seen_timestamp
+ORDER BY created_at DESC LIMIT 50;
+```
+
+## Results
+
+After applying these changes to the production database:
+
+| Metric | Before | After |
+|---|---|---|
+| Monthly revenue summary | 47s | 1.2s |
+| Claims list with filters | 8.3s | 0.4s |
+| Active patient count | 5.1s | 0.09s |
+| Average query time | 3.2s | 0.15s |
+
+## Key Takeaways
+
+1. **Profile before indexing.** Running `EXPLAIN (ANALYZE, BUFFERS)` on the slowest queries revealed patterns that no indexing guide could predict.
+2. **Composite indexes must match query filter order.** An index on `(clinic_id, created_at)` helps `WHERE clinic_id = X ORDER BY created_at` — the reverse order does not.
+3. **Partial indexes are undervalued.** Most queries touch recent data. Excluding archival records from indexes keeps them fast and small.
+4. **Monitor index usage.** PostgreSQL's `pg_stat_user_indexes` showed several indexes with zero scans — dead weight on write operations.

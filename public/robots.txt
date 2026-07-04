@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://mfa-labs.github.io/sitemap-index.xml

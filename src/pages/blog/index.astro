@@ -1,0 +1,70 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Muhammad Fadhil Al Amal — Technical Blog',
+  description: 'Reflections on software engineering, AI architecture, and regional language processing.',
+  url: 'https://mfa-labs.github.io/blog',
+};
+---
+
+<Layout title="Blog" description="Reflections on software engineering, AI architecture, and regional language processing." jsonLd={jsonLd}>
+  <Nav />
+
+  <main class="flex-grow w-full py-section-gap">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="mb-16">
+        <h1 class="section-title">Technical Blog</h1>
+        <p class="section-desc">Reflections on software engineering, AI architecture, and regional language processing.</p>
+      </div>
+
+      {
+        posts.length === 0 ? (
+          <div class="text-center py-20" style="color: var(--color-on-surface-variant);">
+            <span class="material-symbols-outlined text-5xl mb-4 block">article</span>
+            <p class="font-body text-lg">No articles published yet. Coming soon.</p>
+          </div>
+        ) : (
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {posts.map((post) => {
+              const slug = post.id.replace(/\.mdx?$/, '');
+              return (
+              <article class="border rounded-xl p-8 hover:shadow-ambient transition-all duration-300" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+                <time class="font-mono text-xs mb-4 block" style="color: var(--color-on-surface-variant);">
+                  {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase()}
+                </time>
+                <h2 class="font-display text-xl mb-3" style="color: var(--color-primary);">
+                  <a href={`/blog/${slug}`} class="hover:underline">{post.data.title}</a>
+                </h2>
+                <p class="mb-6 line-clamp-3" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">{post.data.description}</p>
+                {post.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-2 mb-6">
+                    {post.data.tags.map((tag) => (
+                      <span class="tag-research">{tag}</span>
+                    ))}
+                  </div>
+                )}
+                <a href={`/blog/${slug}`} class="link-arrow">
+                  Read Article
+                  <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+                </a>
+              </article>
+              );
+            })}
+          </div>
+        )
+      }
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
