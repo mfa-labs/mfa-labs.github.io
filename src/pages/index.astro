@@ -1,11 +1,235 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Muhammad Fadhil Al Amal',
+  alternateName: 'Fadhil Al Amal',
+  jobTitle: 'AI & Software Engineer',
+  description: 'AI & Software Engineer | NLP Researcher | Health Information Systems Developer. Experiencing in secure healthcare ecosystems, database performance optimization, and regional language processing models.',
+  url: 'https://mfa-labs.github.io',
+  image: 'https://mfa-labs.github.io/cropped_circle_image.png',
+  sameAs: [
+    'https://www.linkedin.com/in/muhammad-fadhil-al-amal/',
+    'https://scholar.google.com/citations?user=1pAz6xgAAAAJ&hl=id',
+    'http://github.com/mfa-labs',
+  ],
+  knowsAbout: ['Software Engineering', 'Natural Language Processing', 'Healthcare IT', 'Machine Learning', 'SaaS'],
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'University of Syiah Kuala' },
+};
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Muhammad Fadhil Al Amal" description="AI & Software Engineer | NLP Researcher | Health Information Systems Developer" jsonLd={jsonLd}>
+  <Nav />
+
+  <main class="flex-grow w-full">
+
+    <!-- Hero -->
+    <section id="about" class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden">
+      <div class="absolute top-0 right-0 -z-10 w-full h-full pointer-events-none opacity-20" style="background: radial-gradient(ellipse at top right, var(--color-secondary-container), transparent 70%);"></div>
+      <div class="flex-1 flex flex-col items-start text-left z-10 max-w-3xl">
+        <div class="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-full" style="background: var(--color-surface-container); border: 1px solid var(--color-outline-variant);">
+          <span class="w-2 h-2 rounded-full bg-secondary"></span>
+          <span class="font-mono text-xs" style="color: var(--color-on-surface-variant);">Available for Research Collaborations</span>
+        </div>
+        <h1 class="font-display text-[48px] leading-[1.1] tracking-tight font-semibold md:text-[64px] md:leading-[1.05] mb-6" style="color: var(--color-primary);">
+          Engineering Scalable SaaS.<br />
+          <span style="color: var(--color-on-surface-variant);">Researching Advanced NLP.</span>
+        </h1>
+        <p class="font-body text-lg leading-7 mb-10 max-w-2xl" style="color: var(--color-on-surface-variant);">
+          AI &amp; Software Engineer | NLP Researcher | Health Information Systems Developer. Experiencing in secure healthcare ecosystems, database performance optimization, and regional language processing models.
+        </p>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
+          <a href="#engineering" class="w-full sm:w-auto btn-primary px-8 py-4">View Industry Case Studies</a>
+          <a href="#publications" class="w-full sm:w-auto btn-secondary px-8 py-4 group">
+            Read Scientific Publications
+            <span class="material-symbols-outlined ml-2 text-lg group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">arrow_outward</span>
+          </a>
+        </div>
+        <div class="mt-12 pt-8 border-t w-full flex flex-wrap gap-3" style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);">
+          <span class="tag-green">Python</span>
+          <span class="tag-green">PyTorch</span>
+          <span class="tag-green">Database</span>
+          <span class="tag-green">PHP</span>
+          <span class="tag-green">HL7 FHIR</span>
+        </div>
+      </div>
+      <div class="flex-1 w-full relative min-h-[400px] hidden lg:block">
+        <img src="/cropped_circle_image.png" alt="Muhammad Fadhil Al Amal" class="w-full h-full object-cover rounded-xl shadow-ambient grayscale hover:grayscale-0 transition-all duration-700" />
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section style="background: var(--color-surface-container-low);" class="py-section-gap">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="mb-12">
+          <h2 class="section-title">Core Skills Matrix</h2>
+          <p class="section-desc">Specialized technical expertise across the full software development lifecycle.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { icon: 'dns', title: 'Backend & Infra', items: ['PHP (CodeIgniter)', 'Python', 'REST API & JSON Integration', 'Linux Server & VPS Management', 'Git & System Migration'] },
+            { icon: 'psychology', title: 'AI & Machine Learning', items: ['Natural Language Processing', 'Sentiment Analysis', 'LLM (Ollama, Hugging Face, Qwen)', 'Scikit-learn', 'TensorFlow'] },
+            { icon: 'medical_services', title: 'Healthcare Tech', items: ['SATUSEHAT Integration', 'Clinical Information Systems', 'Financial Reporting Systems', 'Healthcare SaaS Platforms'] },
+          ].map((skill) => (
+            <div class="p-6 border rounded-xl shadow-sm" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="material-symbols-outlined" style="color: var(--color-secondary);">{skill.icon}</span>
+                <h3 class="font-display text-xl" style="color: var(--color-primary);">{skill.title}</h3>
+              </div>
+              <ul class="space-y-2" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">
+                {skill.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Engineering -->
+    <section id="engineering" class="bg-background py-section-gap" style="background: var(--color-surface);">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="mb-12">
+          <h2 class="section-title">Enterprise Software Engineering</h2>
+          <span class="tag-green-pill inline-flex items-center gap-2 px-3 py-1">
+            <span class="font-display text-xs font-medium">Software Engineer at Kelola.net (SaaS Platform for Clinic Management Operations)</span>
+          </span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            { tag: 'Performance Engineering / Database Optimization', title: 'Financial Reporting Optimization', desc: 'Optimized financial and operational report modules handling large transaction volumes.', items: ['Database query optimization', 'Implemented indexing on critical tables', 'Refactored report calculation logic', 'Improved report generation performance'], tags: ['PHP', 'CodeIgniter', 'MySQL'] },
+            { tag: 'System Administration / Infrastructure', title: 'Infrastructure Migration', desc: 'Migrated the SaaS platform from shared hosting to a managed VPS environment.', items: ['Server migration planning & execution', 'Post-migration system validation', 'Live production deployment monitoring'], tags: ['Linux', 'VPS', 'MySQL'] },
+            { tag: 'Legacy Modernization', title: 'PHP 7 to PHP 8 Modernization', desc: 'Modernized legacy SaaS codebase by upgrading from PHP 7 to PHP 8.', items: ['Identified compatibility issues', 'Refactored legacy code', 'Fixed deprecated functions', 'Performed system regression testing'], tags: ['PHP', 'CodeIgniter'] },
+            { tag: 'Healthcare Interoperability / API Integration', title: 'SATUSEHAT Integration', desc: "Developed the integration module with the Indonesian Ministry of Health's platform.", items: ['Integrated SATUSEHAT REST API', 'Mapped healthcare data structures', 'Implemented error handling & sync', 'Validated data pre-submission'], tags: ['REST API', 'OAuth2', 'JSON'] },
+            { tag: 'Automation System', title: 'WhatsApp Reminder Automation', desc: 'Automated WhatsApp notification and patient reminder system for clinics.', items: ['WhatsApp API integration', 'Automated scheduling reminders', 'Event-driven notifications', 'Connection monitoring'], tags: ['PHP', 'JavaScript', 'WhatsApp API'] },
+          ].map((proj) => (
+            <div class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-ambient" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+              <div class="p-6 flex-grow">
+                <span class="tag-project mb-4">{proj.tag}</span>
+                <h3 class="font-display text-xl mb-3" style="color: var(--color-primary);">{proj.title}</h3>
+                <p class="mb-4" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">{proj.desc}</p>
+                <ul class="space-y-1 text-sm list-disc pl-4" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">
+                  {proj.items.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+              <div class="px-6 py-4 border-t flex flex-wrap gap-2" style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);">
+                {proj.tags.map((t) => <span class="tag-eng">{t}</span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Research -->
+    <section id="research" class="py-section-gap border-t" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="mb-12">
+          <h2 class="section-title">AI &amp; Natural Language Processing Research</h2>
+          <p class="section-desc">Advancing regional language processing and agentic intelligence through rigorous academic inquiry.</p>
+        </div>
+        <div class="mb-16">
+          <h3 class="font-display text-xl mb-6" style="color: var(--color-primary);">Research Projects</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { title: 'Sentiment Analysis Bahasa Aceh', desc: 'NLP research for sentiment classification on Acehnese regional language texts.', tags: ['Python', 'Scikit-learn', 'BERT', 'IndoBERT', 'Qwen'] },
+              { title: 'Hybrid Model for Regional Language Classification', desc: 'Machine Learning Research developing hybrid architectures for regional languages. Published in an international proceeding.', tags: ['ML Research', 'Deep Learning'] },
+              { title: 'Agentic AI Research', desc: 'Research on Generative AI and LLMs using multi-step reasoning workflows and self-refinement pipelines.', tags: ['Qwen', 'Ollama', 'Agentic AI'] },
+            ].map((r) => (
+              <div class="border rounded-xl p-6 flex flex-col" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
+                <h4 class="font-display text-xl mb-2" style="color: var(--color-primary);">{r.title}</h4>
+                <p class="text-sm mb-6 flex-grow" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">{r.desc}</p>
+                <div class="flex flex-wrap gap-2">
+                  {r.tags.map((t) => <span class="tag-research">{t}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Publications -->
+        <div id="publications">
+          <h3 class="font-display text-xl mb-6" style="color: var(--color-primary);">Scientific Publications</h3>
+          <div class="border rounded-xl overflow-hidden" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
+            <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b last:border-b-0" style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);">
+              <div class="flex items-start gap-4">
+                <span class="material-symbols-outlined mt-1" style="color: var(--color-on-surface-variant);">description</span>
+                <div>
+                  <h4 class="font-body text-lg font-medium" style="color: var(--color-primary);">Hybrid Transformer-RNN Model for Classification of Indonesian Regional Language</h4>
+                  <p class="text-sm" style="color: var(--color-on-surface-variant);">Published in 2025 International Conference on ICT for Smart Society • 2025</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="badge-doi">DOI: 10.1109/ICISS66954.2025.11389462</span>
+                <a href="https://ieeexplore.ieee.org/document/11389462/" class="link-arrow text-sm">
+                  Read Paper
+                  <span class="material-symbols-outlined text-lg ml-1">arrow_outward</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog Preview -->
+    <section id="blog" class="py-20 border-t" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="mb-12">
+          <h2 class="section-title">Insights &amp; Technical Writing</h2>
+          <p class="section-desc">Reflections on software engineering, AI architecture, and regional language processing.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <article class="border rounded-xl p-8 hover:shadow-ambient transition-all duration-300" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+            <time class="font-mono text-xs mb-4 block" style="color: var(--color-on-surface-variant);">MAY 14, 2024</time>
+            <h3 class="font-display text-xl mb-3" style="color: var(--color-primary);">Optimizing PostgreSQL for High-Volume Healthcare Data</h3>
+            <p class="mb-6 line-clamp-2" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">Technical deep dive into indexing strategies and query refactoring for SaaS clinic management systems handling millions of records.</p>
+            <a href="/blog/optimizing-postgresql-healthcare-data" class="link-arrow">
+              Read Article
+              <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+            </a>
+          </article>
+          <article class="border rounded-xl p-8 hover:shadow-ambient transition-all duration-300" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+            <time class="font-mono text-xs mb-4 block" style="color: var(--color-on-surface-variant);">APRIL 02, 2024</time>
+            <h3 class="font-display text-xl mb-3" style="color: var(--color-primary);">The Challenges of Tokenization in Regional Dialects</h3>
+            <p class="mb-6 line-clamp-2" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">Exploring the linguistic nuances of Bahasa Aceh and how modern LLMs struggle with low-resource language morphological structures.</p>
+            <a href="/blog/tokenization-regional-dialects" class="link-arrow">
+              Read Article
+              <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+            </a>
+          </article>
+        </div>
+        <div class="mt-12 text-center">
+          <a href="/blog" class="btn-secondary px-8 py-3.5">View All Articles</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="py-20" style="background: var(--color-surface);">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="border rounded-2xl p-8 md:p-16 text-center max-w-4xl mx-auto shadow-ambient" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+          <h2 class="font-display text-3xl md:text-[40px] leading-tight mb-8" style="color: var(--color-primary);">Let's Connect for Industry Projects or Research Collaborations.</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+            <div class="p-6 flex flex-col items-center gap-4">
+              <h3 class="font-display text-xl" style="color: var(--color-primary);">Industry Collaboration</h3>
+              <p class="mb-6" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">Expertise in SaaS development, healthcare interoperability, and performance engineering.</p>
+              <a href="https://wa.me/6282165687924" class="w-full btn-primary px-6 py-3">Hire Me</a>
+            </div>
+            <div class="p-6 flex flex-col items-center gap-4 border-t md:border-t-0 md:border-l" style="border-color: var(--color-outline-variant);">
+              <h3 class="font-display text-xl" style="color: var(--color-primary);">Academic Research</h3>
+              <p class="mb-6" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">Open to joint publications in NLP, Regional Languages, and Agentic Intelligence.</p>
+              <a href="https://wa.me/6282165687924" class="w-full btn-primary px-6 py-3" style="background: var(--color-secondary); color: var(--color-on-secondary);">Collaborate</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
 </Layout>

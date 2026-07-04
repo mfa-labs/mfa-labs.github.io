@@ -1,0 +1,57 @@
+---
+const links = [
+  { href: '/#about', label: 'About' },
+  { href: '/#engineering', label: 'Engineering' },
+  { href: '/#research', label: 'AI Research' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/#publications', label: 'Publications' },
+];
+---
+
+<header class="sticky top-0 w-full z-50 border-b border-outline-variant" style="background: color-mix(in srgb, var(--color-surface) 80%, transparent); backdrop-filter: blur(12px);">
+  <div class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+    <a href="/" class="font-display text-2xl font-bold tracking-tight" style="color: var(--color-primary);">
+      Muhammad Fadhil Al Amal
+    </a>
+    <nav aria-label="Main Navigation" class="hidden md:flex items-center gap-8">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class="font-display text-sm uppercase tracking-wider transition-colors duration-200"
+          style="color: var(--color-on-surface-variant);"
+          set:style={Astro.url.pathname === link.href ? 'color: var(--color-primary); border-bottom: 2px solid var(--color-primary); padding-bottom: 0.25rem;' : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+    <div class="hidden md:flex items-center gap-4">
+      <button id="theme-toggle" class="p-2 rounded transition-colors" style="color: var(--color-on-surface-variant);" aria-label="Toggle dark mode">
+        <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
+      </button>
+      <a href="/#contact" class="btn-primary px-6 py-2.5">Contact</a>
+    </div>
+    <button aria-label="Toggle Menu" class="md:hidden p-2" style="color: var(--color-primary);">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('theme-toggle');
+  const icon = document.getElementById('theme-icon');
+  const html = document.documentElement;
+
+  if (toggle && icon) {
+    const updateIcon = () => {
+      icon.textContent = html.classList.contains('dark') ? 'light_mode' : 'dark_mode';
+    };
+    updateIcon();
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      html.classList.toggle('light');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+      updateIcon();
+    });
+  }
+</script>
