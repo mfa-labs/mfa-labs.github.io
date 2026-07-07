@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesi 2 — AI untuk Membuat Tools</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f172a;
+    --slide-bg: #1e293b;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --text: #f1f5f9;
+    --text-dim: #94a3b8;
+    --border: #334155;
+    --green: #4ade80;
+    --red: #fb7185;
+    --yellow: #fbbf24;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .slides-container {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 6rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* Scrollbar */
+  .slide::-webkit-scrollbar { width: 6px; }
+  .slide::-webkit-scrollbar-track { background: transparent; }
+  .slide::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .slide-number {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 2rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    z-index: 100;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-arrows {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.75rem;
+    z-index: 100;
+  }
+
+  .nav-arrows button {
+    background: var(--border);
+    border: none;
+    color: var(--text);
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+
+  .nav-arrows button:hover { background: var(--accent); color: #0f172a; }
+  .nav-arrows button:disabled { opacity: 0.3; cursor: default; }
+  .nav-arrows button:disabled:hover { background: var(--border); color: var(--text); }
+
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    z-index: 100;
+    transition: width 0.3s ease;
+  }
+
+  /* ===== Slide Typography ===== */
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--accent);
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.75rem;
+    color: var(--accent2);
+  }
+
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 1.2rem 0 0.5rem;
+    color: var(--yellow);
+  }
+
+  p, li { font-size: 1.1rem; line-height: 1.7; color: var(--text-dim); }
+  p { margin-bottom: 0.75rem; }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    font-weight: 400;
+    margin-top: 0.25rem;
+  }
+
+  .quote {
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+    padding-left: 1.25rem;
+    margin: 1.5rem 0;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1.25rem;
+    margin: 1.5rem 0;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  strong { color: var(--text); font-weight: 600; }
+
+  /* ===== Tables ===== */
+
+  .table-wrap {
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  thead {
+    background: #1a2a4a;
+  }
+
+  th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  /* ===== Code / Pre ===== */
+
+  pre {
+    background: #0f1929;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin: 1rem 0;
+    color: var(--text-dim);
+  }
+
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.85em;
+    background: #0f1929;
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  pre code { background: none; border: none; padding: 0; border-radius: 0; }
+
+  /* ===== Lists ===== */
+
+  ul, ol {
+    margin: 0.5rem 0 0.75rem 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.35rem;
+  }
+
+  /* ===== HR ===== */
+
+  hr {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+  }
+
+  /* ===== Layout Helpers ===== */
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 1rem 0;
+  }
+
+  .two-col h3 { margin-top: 0; }
+  .two-col ul { margin-top: 0.5rem; }
+
+  .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #0f172a;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-green { background: var(--green); }
+  .badge-red { background: var(--red); }
+
+  /* ===== Responsive ===== */
+
+  @media (max-width: 768px) {
+    .slide { padding: 2rem 1.5rem; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.5rem; }
+    p, li { font-size: 1rem; }
+    .two-col { grid-template-columns: 1fr; gap: 1rem; }
+    pre { font-size: 0.8rem; padding: 0.75rem; }
+    .nav-arrows { left: 1rem; }
+    .slide-number { right: 1rem; }
+  }
+
+  /* ===== Title Slide ===== */
+
+  .title-slide {
+    text-align: center;
+    align-items: center;
+  }
+
+  .title-slide h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .title-slide .subtitle {
+    font-size: 1.4rem;
+    color: var(--text-dim);
+    max-width: 600px;
+  }
+
+  .title-slide .meta {
+    margin-top: 2rem;
+    font-size: 0.95rem;
+    color: var(--text-dim);
+  }
+
+  /* ===== Summary Slide ===== */
+
+  .summary-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .summary-list li {
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.5rem;
+    background: #0f1929;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    font-size: 1.05rem;
+    color: var(--text-dim);
+  }
+
+  .summary-list li strong { color: var(--text); }
+
+  /* ===== Next Slide ===== */
+
+  .next-slide {
+    text-align: center;
+    padding: 2rem;
+    background: #0f1929;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-top: 1rem;
+  }
+
+  .next-slide h3 { color: var(--accent); margin: 0 0 0.5rem; }
+  .next-slide p { margin: 0; font-size: 1.1rem; }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .slide.active > * {
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  .slide.active > *:nth-child(2) { animation-delay: 0.05s; }
+  .slide.active > *:nth-child(3) { animation-delay: 0.1s; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slides-container" id="slidesContainer">
+
+  <!-- Slide 1: Judul -->
+  <div class="slide title-slide active">
+    <h1>AI Bukan Sekadar ChatGPT</h1>
+    <p class="subtitle">Mengenal Claude, Gemini Canvas, dan Budaya Membuat Tools</p>
+    <p class="quote" style="margin-top:1.5rem;">"Dari ngobrol dengan AI, sampai bikin tools sendiri"</p>
+    <p class="meta">Workshop Pemanfaatan AI untuk Tenaga Kependidikan<br>Sesi 2</p>
+  </div>
+
+  <!-- Slide 2: Kenapa Claude Lebih Baik -->
+  <div class="slide">
+    <h2>Kenapa Claude Lebih Baik dari ChatGPT?</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Aspek</th><th>ChatGPT</th><th>Claude</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Konteks</strong></td><td>32K–128K token</td><td><strong>200K token</strong> — bisa upload novel 1 buku penuh</td></tr>
+          <tr><td><strong>Dokumen besar</strong></td><td>Sering lupa konteks tengah</td><td>Konsisten sampai akhir</td></tr>
+          <tr><td><strong>Bahasa Indonesia</strong></td><td>Baik</td><td><strong>Lebih alami &amp; kontekstual</strong></td></tr>
+          <tr><td><strong>Analisis &amp; logika</strong></td><td>Cenderung generik</td><td><strong>Lebih dalam &amp; terstruktur</strong></td></tr>
+          <tr><td><strong>Sistem berpikir</strong></td><td>Langsung generate jawaban</td><td><strong>"Thinking mode" — mikir dulu, baru jawab</strong></td></tr>
+          <tr><td><strong>Coding / tools</strong></td><td>GPT-4 bagus</td><td><strong>Unggul di coding &amp; pembuatan tools</strong></td></tr>
+          <tr><td><strong>Keamanan</strong></td><td>Data dipakai training</td><td><strong>Data tidak dipakai training</strong></td></tr>
+          <tr><td><strong>Files upload</strong></td><td>Bisa</td><td>Bisa + <strong>lebih akurat</strong> baca PDF panjang</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Slide 3: Sistem Berpikir Claude -->
+  <div class="slide">
+    <h2>Sistem Berpikir Claude</h2>
+    <div class="two-col">
+      <div>
+        <h3>ChatGPT (Fluency)</h3>
+        <pre style="margin-top:0.5rem;">Input → langsung generate
+jawaban → output</pre>
+        <p style="margin-top:0.75rem;">Dilatih untuk <strong>kefasihan bahasa</strong> — jawaban langsung cair.</p>
+      </div>
+      <div>
+        <h3>Claude (Reasoning)</h3>
+        <pre style="margin-top:0.5rem;">Input → [berpikir/menyusun
+strategi] → baru jawab</pre>
+        <p style="margin-top:0.75rem;">Dilatih untuk <strong>reasoning eksplisit</strong> — mikir dulu: struktur, format, konteks.</p>
+      </div>
+    </div>
+    <div class="quote">
+      <strong>Contoh:</strong> "Buat surat undangan rapat evaluasi"<br>
+      <strong>ChatGPT:</strong> langsung mulai menulis surat<br>
+      <strong>Claude:</strong> [mikir] — formal/semi-formal? perlu kop surat? siapa pengirimnya? → baru nulis dengan struktur tepat
+    </div>
+  </div>
+
+  <!-- Slide 4: Dampak untuk Tendik -->
+  <div class="slide">
+    <h2>Dampak Sistem Berpikir Claude untuk Tendik</h2>
+    <p>Claude lebih cocok untuk tugas yang butuh <strong>presisi dan struktur</strong>:</p>
+    <div class="table-wrap" style="margin-top:1.5rem;">
+      <table>
+        <thead>
+          <tr><th>Tugas</th><th>Kenapa Claude Lebih Cocok</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Surat resmi</strong></td><td>Mikir format dulu, bukan asal nulis</td></tr>
+          <tr><td><strong>SOP</strong></td><td>Mikir alur logis sebelum nyusun langkah</td></tr>
+          <tr><td><strong>Laporan</strong></td><td>Mikir organisasi konten, bukan sekedar nempel data</td></tr>
+          <tr><td><strong>Notulensi</strong></td><td>Mikir mana keputusan, mana tindak lanjut</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 style="margin-top:2rem;">Tapi... kenapa ChatGPT lebih populer?</h3>
+    <ul>
+      <li><strong>Pertama masuk pasar</strong> — brand awareness lebih besar</li>
+      <li><strong>Gratisan cukup baik</strong> — GPT-3.5 gratis tanpa batas berarti</li>
+      <li><strong>Multimodal lebih awal</strong> — image generation (DALL-E) built-in</li>
+      <li><strong>Integrasi luas</strong> — Microsoft, plugin, API ecosystem</li>
+    </ul>
+    <blockquote>Claude = unggul secara teknis &amp; reasoning, ChatGPT = unggul secara distribusi &amp; ekosistem</blockquote>
+  </div>
+
+  <!-- Slide 5: Kenapa Claude Lebih Mahal -->
+  <div class="slide">
+    <h2>Kenapa Claude Lebih Mahal?</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Model</th><th>Input (per 1M token)</th><th>Output (per 1M token)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>GPT-4o</td><td>$2.50</td><td>$10.00</td></tr>
+          <tr><td><strong>Claude 3.5 Sonnet</strong></td><td><strong>$3.00</strong></td><td><strong>$15.00</strong></td></tr>
+          <tr><td><strong>Gemini 2.5 Flash</strong></td><td><strong style="color:var(--green);">Gratis</strong></td><td><strong style="color:var(--green);">Gratis</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Kenapa lebih mahal?</h3>
+    <ol>
+      <li><strong>200K context window</strong> — biaya komputasi lebih besar</li>
+      <li><strong>Safety training lebih ketat</strong> — biaya develop lebih tinggi</li>
+      <li><strong>Kualitas output lebih baik</strong> — butuh model lebih besar</li>
+      <li><strong>Target enterprise</strong> — Anthropic fokus ke pelanggan bisnis</li>
+    </ol>
+    <div class="table-wrap" style="margin-top:1rem;">
+      <table>
+        <thead>
+          <tr><th>Untuk</th><th>Rekomendasi</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Browsing santai, chat biasa</td><td>ChatGPT gratis</td></tr>
+          <tr><td>Dokumen panjang, analisis mendalam, coding</td><td><strong>Claude</strong></td></tr>
+          <tr><td><strong>Membuat tools, belajar AI</strong></td><td><strong style="color:var(--green);">Gemini (gratis)</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Slide 6: Bagaimana Menghemat -->
+  <div class="slide">
+    <h2>Bagaimana Menghemat?</h2>
+    <h3>Manfaatkan yang Gratis Dulu</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Tools Gratis</th><th>Kegunaan</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Gemini 2.5 Flash</strong></td><td>Chat umum, analisis, brainstorming — gratis selamanya</td></tr>
+          <tr><td><strong>Gemini Canvas</strong></td><td>Bikin tools tanpa coding — gratis</td></tr>
+          <tr><td><strong>Claude</strong></td><td>Dokumen penting, analisis panjang (kuota terbatas gratis)</td></tr>
+          <tr><td><strong>ChatGPT</strong></td><td>Alternatif gratis dengan kemampuan cukup</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Gunakan AI Sesuai Kebutuhannya</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Tugas</th><th>AI Terbaik</th><th>Biaya</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Chat ringan, tanya jawab</td><td>Gemini / ChatGPT</td><td>Gratis</td></tr>
+          <tr><td>Analisis dokumen panjang</td><td>Claude / Gemini</td><td>Gratis–murah</td></tr>
+          <tr><td><strong>Bikin tools administrasi</strong></td><td><strong>Gemini Canvas</strong></td><td><strong style="color:var(--green);">Gratis</strong></td></tr>
+          <tr><td>Data sensitif (NIK, gaji, dll)</td><td><strong style="color:var(--red);">Jangan masukkan ke AI publik</strong></td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="quote">
+      <p style="margin:0;"><strong>"AI yang paling mahal adalah AI yang tidak dipakai."</strong><br>Tapi juga: <strong>"AI yang paling mahal adalah AI yang dipakai untuk tugas yang salah."</strong></p>
+    </div>
+  </div>
+
+  <!-- Slide 7: Budaya Membuat Alat/Tools -->
+  <div class="slide">
+    <h2>Budaya Membuat Alat / Tools</h2>
+    <h3>"Kita Bukan Pemakai, tapi Pembuat"</h3>
+    <p>Selama ini sebagai tendik kita <strong>memakai</strong> alat yang sudah jadi — Microsoft Word, Google Docs, aplikasi surat dari pusat. <strong>Sekarang kita bisa membuat alat sendiri.</strong></p>
+    <div class="two-col">
+      <div>
+        <h4 style="color:var(--red);">Old Mindset</h4>
+        <ul>
+          <li>"Tunggu IT bikin aplikasi"</li>
+          <li>"Nggak bisa coding"</li>
+          <li>"Kerja manual berulang-ulang"</li>
+          <li>"Prosedurnya ribet"</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:var(--green);">New Mindset</h4>
+        <ul>
+          <li><strong style="color:var(--text);">"Saya bikin tools sendiri"</strong></li>
+          <li><strong style="color:var(--text);">"Cuma perlu ngomong, AI yang bikin"</strong></li>
+          <li><strong style="color:var(--text);">"Bikin tools, pakai berkali-kali"</strong></li>
+          <li><strong style="color:var(--text);">"Tools yang menyederhanakan"</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Dulu</th><th>Sekarang</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Buka Word → ketik notulensi manual → format sendiri</td><td>Buka Canvas → isi catatan → <strong>tools otomatis merapikan</strong></td></tr>
+          <tr><td>Cari template surat → copy paste → edit manual</td><td>Isi form Canvas → <strong>surat langsung jadi</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Slide 8: AI adalah Tool Maker -->
+  <div class="slide">
+    <h2>AI adalah Alat yang Dapat Membuat Tools</h2>
+    <div style="text-align:center;font-size:1.1rem;color:var(--text-dim);margin-bottom:1.5rem;padding:1rem;background:#0f1929;border-radius:8px;font-family:monospace;">
+      Kapak batu → Mesin uap → Komputer → <strong style="color:var(--accent);">AI</strong><br>
+      <span style="font-size:0.85rem;">(tenaga) &nbsp;&nbsp;&nbsp; (produksi) &nbsp;&nbsp;&nbsp; (informasi) &nbsp;&nbsp;&nbsp; (intelegensi)</span>
+    </div>
+    <p style="text-align:center;font-size:1.15rem;">Setiap era punya alat yang <strong>memperluas kemampuan manusia</strong>.</p>
+    <h3 style="text-align:center;">AI Adalah <em>"Tool Maker"</em></h3>
+    <p style="text-align:center;">AI bukan cuma alat yang menjawab pertanyaan. <strong>AI adalah alat untuk membuat alat.</strong></p>
+    <div class="two-col" style="margin-top:1rem;">
+      <div>
+        <h4 style="color:var(--red);">Sebelum</h4>
+        <ul>
+          <li>Mau bikin tools? → Belajar coding 2 tahun</li>
+          <li>Mau bikin aplikasi? → Bayar programmer</li>
+          <li>Tools butuh waktu berbulan-bulan</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:var(--green);">Sekarang</h4>
+        <ul>
+          <li>Mau bikin tools? → <strong>Jelaskan ke AI dalam Bahasa Indonesia</strong></li>
+          <li>Mau bikin tools? → <strong>Gratis, tanpa coding</strong></li>
+          <li>Tools jadi <strong>dalam hitungan detik</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 9: Apa Itu Gemini Canvas -->
+  <div class="slide">
+    <h2>Apa Itu Gemini Canvas?</h2>
+    <p><strong>Gemini Canvas</strong> adalah fitur di Gemini yang bisa membuat <strong>aplikasi web interaktif</strong> langsung dari perintah bahasa alami. <strong>Tidak perlu coding.</strong></p>
+    <pre style="font-size:0.95rem;">
+Anda: "Buatkan tools notulensi rapat..."
+    ↓
+Canvas: [Membuat kode di belakang layar]
+    ↓
+Anda: [Langsung bisa pakai tools-nya!]
+    ↓
+Anda: "Tambah kolom tindak lanjut..."
+    ↓
+Canvas: [Langsung diperbarui]</pre>
+  </div>
+
+  <!-- Slide 10: Yang Bisa Dibuat & Kenapa Cocok -->
+  <div class="slide">
+    <h2>Yang Bisa Dibuat dengan Canvas</h2>
+    <div class="two-col">
+      <div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tools</th><th>Fungsi</th></tr></thead>
+            <tbody>
+              <tr><td>✅ Surat Resmi</td><td>Form isian → surat jadi</td></tr>
+              <tr><td>✅ SOP</td><td>Input prosedur → SOP rapi</td></tr>
+              <tr><td>✅ Laporan</td><td>Data mentah → laporan utuh</td></tr>
+              <tr><td>✅ Notulensi</td><td>Catatan kasar → notulensi profesional</td></tr>
+              <tr><td>✅ Kalkulator</td><td>Hitung honor, anggaran, dll</td></tr>
+              <tr><td>✅ Form &amp; Tracker</td><td>Inventaris, surat masuk/keluar</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <h3>Kenapa Cocok untuk Tendik?</h3>
+        <ul>
+          <li><strong>Tidak perlu coding</strong> — cukup Bahasa Indonesia</li>
+          <li><strong>Gratis</strong> — tidak perlu langganan</li>
+          <li><strong>Cepat</strong> — tools jadi dalam hitungan detik</li>
+          <li><strong>Bisa direvisi</strong> — tinggal minta, langsung diubah</li>
+          <li><strong>Bisa di-export</strong> — simpan sebagai file HTML, offline</li>
+          <li><strong>Bisa dipakai ulang</strong> — tools yang sama untuk tugas berulang</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 11: Workshop -->
+  <div class="slide">
+    <h2>Workshop Gemini Canvas</h2>
+    <p>Kita akan membuat <strong>4 tools administrasi</strong> yang langsung bisa dipakai:</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Sesi</th><th>Tools</th><th>Kegunaan</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Sesi 3</td><td><strong>Tools Surat Resmi</strong></td><td>Generate surat undangan, tugas, keterangan</td></tr>
+          <tr><td>Sesi 4</td><td><strong>Tools SOP</strong></td><td>Menyusun prosedur operasional standar</td></tr>
+          <tr><td>Sesi 5</td><td><strong>Tools Laporan</strong></td><td>Merapikan data jadi laporan formal</td></tr>
+          <tr><td>Sesi 6</td><td><strong>Tools Notulensi</strong></td><td>Mencatat dan merapikan notulensi rapat</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Alur Workshop</h3>
+    <ol>
+      <li><strong>Instruktur demo</strong> — bikin tools di depan, peserta lihat</li>
+      <li><strong>Peserta praktik</strong> — buka Canvas, ketik prompt yang sama</li>
+      <li><strong>Revisi bersama</strong> — minta Canvas menambahkan fitur</li>
+      <li><strong>Latihan mandiri</strong> — setiap peserta menyempurnakan tools-nya</li>
+      <li><strong>Hasil</strong> — setiap peserta pulang dengan 4 tools siap pakai</li>
+    </ol>
+    <div style="margin-top:1rem;padding:1rem;background:#0f1929;border-radius:8px;border:1px solid var(--border);">
+      <p style="margin:0;"><strong>Yang perlu disiapkan:</strong> Browser (Chrome/Edge/Firefox), Akun Google, Koneksi internet stabil.</p>
+    </div>
+  </div>
+
+  <!-- Slide 12: Ringkasan -->
+  <div class="slide">
+    <h2>Ringkasan Sesi 2</h2>
+    <ul class="summary-list">
+      <li><strong>Claude lebih unggul</strong> untuk dokumen panjang dan analisis — sistem berpikirnya mikir dulu baru jawab, cocok untuk tugas terstruktur</li>
+      <li><strong>Claude lebih mahal</strong> karena konteks besar dan safety, <strong>tapi ada alternatif gratis</strong></li>
+      <li><strong>Strategi hemat:</strong> pakai Gemini untuk tugas sehari-hari, Claude untuk tugas berat, jangan masukkan data sensitif</li>
+      <li><strong>Budaya membuat tools:</strong> dari pemakai jadi pembuat — tanpa coding</li>
+      <li><strong>AI adalah meta-tool:</strong> alat untuk membuat alat</li>
+      <li><strong>Gemini Canvas:</strong> tools untuk membuat tools — gratis, tanpa coding, Bahasa Indonesia</li>
+      <li><strong>Workshop dimulai:</strong> kita akan buat 4 tools administrasi!</li>
+    </ul>
+  </div>
+
+  <!-- Slide 13: Selanjutnya -->
+  <div class="slide" style="align-items:center;text-align:center;">
+    <h2 style="font-size:2.5rem;">Selanjutnya</h2>
+    <div style="margin:2rem 0;">
+      <div style="font-size:3rem;margin-bottom:1rem;">🛠️</div>
+      <h3 style="font-size:2rem;color:var(--accent);margin:0;">Sesi 3 — Tools Surat Resmi</h3>
+    </div>
+    <p style="font-size:1.3rem;color:var(--text-dim);">Buka <strong style="color:var(--accent);">gemini.google.com</strong>, klik Canvas, dan kita mulai!</p>
+  </div>
+
+</div>
+
+<div class="nav-arrows">
+  <button id="prevBtn" disabled>←</button>
+  <button id="nextBtn">→</button>
+</div>
+
+<div class="slide-number" id="slideNumber">1 / 13</div>
+
+<script>
+  (function() {
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideNum = document.getElementById('slideNumber');
+    const progressBar = document.getElementById('progressBar');
+    let current = 0;
+    const total = slides.length;
+
+    function goTo(index) {
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      updateUI();
+    }
+
+    function updateUI() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      slideNum.textContent = (current + 1) + ' / ' + total;
+      progressBar.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() {
+      if (current < total - 1) goTo(current + 1);
+    }
+
+    function prev() {
+      if (current > 0) goTo(current - 1);
+    }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        prev();
+      }
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    document.addEventListener('touchstart', function(e) {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    document.addEventListener('touchend', function(e) {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) next();
+        else prev();
+      }
+    });
+
+    updateUI();
+  })();
+</script>
+
+</body>
+</html>
