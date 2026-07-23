@@ -104,8 +104,8 @@ Rekam medis elektronik untuk dokter gigi dan umum.
 - **Odontogram** — dental chart digital untuk charting kondisi gigi
 - **ICD-10 & ICD-9** — multi-diagnosis support; ICD-9 mapping ke tindakan; checkout dokter dengan kode ICD-9
 - **Checkout 5-status** — progression tracking kunjungan pasien dari awal sampai selesai
-- **Booking & appointment** — manual book untuk semua role (admin, klinik, pribadi, umum); FullCalendar integration
-- **Combined RM** — rekam medis gabungan untuk klinik bersama (Ranu, Vialyne, Jasmine, DiamondDC)
+- **Booking & appointment** — manual book untuk semua role (admin, klinik, pribadi, umum);
+- **Combined RM** — rekam medis gabungan untuk klinik bersama 
 - **Pemeriksaan dokter umum & gigi** — biaya di RM pemeriksaan, periksakan langsung dari RM
 - **Fixing RM data gigi kosong** — bug pada RM akun dokter ketika tidak ada data gigi
 - **Sharing RM** — sharing rekam medis antar klinik dalam satu group
@@ -177,7 +177,7 @@ Manajemen server, deployment, dan containerization.
 - **Hosting migration** — migrasi dari shared hosting ke VPS (managed); post-migration validation, live monitoring
 - **HTACCESS** — rewrite rules, PHP settings, security headers; update untuk PHP 8.1
 - **Configuration management** — database credentials, Redis config, SATUSEHAT environment per tenant
-- **Session & cache** — Redis configuration (unix socket), session encryption (`KelolaPedia@2024` key)
+- **Session & cache** — Redis configuration (unix socket), session encryption
 - **Error logging** — PHP error log management, log rotation
 
 ---
@@ -197,20 +197,6 @@ Optimasi query dan indexing untuk database dengan jutaan transaksi.
 
 ---
 
-## 10. Inventory Management (BHP)
-
-**File terkait**: Bhp.php controller | **Periode**: 2021–2026
-
-Manajemen stok bahan habis pakai (BHP) untuk klinik.
-
-**Detail pekerjaan**:
-- Kategori dan unit BHP
-- Stok masuk dan stok keluar
-- Stock opname (stocktaking) — custom akses stok opname (Jan 2026)
-- Buffer/low stock alerts
-- Template tindakan terkait BHP — auto-decrement stok saat tindakan digunakan
-
----
 
 ## Ringkasan Per Tahun
 
@@ -221,7 +207,7 @@ Manajemen stok bahan habis pakai (BHP) untuk klinik.
 | **2023** | 84 | SATUSEHAT integration (IHS, encounter, SDMK), server-side DataTable, pembayaran, klinik bersama |
 | **2024** | 104 | PHP 8.1 migrasi, Dompdf upgrade, ICD-9 mapping, SATUSEHAT hardening, klinik bersama |
 | **2025** | 61 | DiamondDC klinik bersama, laporan dinkes, ICD-9 checkout, bug fixing, dokumentasi |
-| **2026** | 30 | CRM module + model, Docker setup, WA template engine, gaji pokok, dokumentasi v2 |
+| **2026** | 30 | CRM module + model, Docker setup, WA template engine, fitur gaji pokok, dokumentasi v2 |
 
 ---
 
