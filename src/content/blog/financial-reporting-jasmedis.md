@@ -1,12 +1,14 @@
 ---
 title: Sistem Laporan Keuangan & Jasa Medis
 description: Multi-role financial system dengan server-side processing untuk ratusan klinik
+pubDate: 2025-03-01
+tags: ['PHP', 'CodeIgniter', 'MySQL', 'Financial', 'Reporting']
 ---
 
-# Sistem Laporan Keuangan & Jasa Medis: Mengelola Keuangan Ratusan Klinik
-
 **Proyek**: Sistem laporan multi-role dengan server-side processing, export Excel/PDF, dan perhitungan jasa medis
+
 **Peran**: Software Engineer — perancang dan pengembang utama
+
 **Periode**: Juni 2021 — Maret 2025
 
 ---

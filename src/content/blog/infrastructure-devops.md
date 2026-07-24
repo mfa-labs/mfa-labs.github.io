@@ -1,12 +1,14 @@
 ---
 title: Infrastruktur & DevOps
 description: Manajemen server, hosting migration, dan Docker containerization untuk SaaS healthcare
+pubDate: 2026-01-01
+tags: ['Docker', 'Linux', 'DevOps', 'Redis', 'MySQL', 'VPS']
 ---
 
-# Infrastruktur & DevOps: Mengelola Server Produksi untuk Ratusan Klinik
-
 **Proyek**: Manajemen server, hosting migration, Docker containerization, dan konfigurasi infrastruktur
+
 **Peran**: Software Engineer — perancang infrastruktur dan operator
+
 **Periode**: 2021 — 2026
 
 ---

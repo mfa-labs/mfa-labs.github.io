@@ -8,6 +8,12 @@ const posts = (await getCollection('blog'))
   .filter((p) => !p.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
+function readingTime(body: string): string {
+  const words = body.trim().split(/\s+/).length;
+  const minutes = Math.max(1, Math.round(words / 200));
+  return `${minutes} min read`;
+}
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Blog',
@@ -22,9 +28,10 @@ const jsonLd = {
 
   <main class="flex-grow w-full py-section-gap">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-      <div class="mb-16">
-        <h1 class="section-title">Technical Blog</h1>
-        <p class="section-desc">Reflections on software engineering, AI architecture, and regional language processing.</p>
+      <div class="mb-16 max-w-3xl">
+        <p class="font-mono text-xs uppercase tracking-widest mb-4" style="color: var(--color-secondary);">Writing</p>
+        <h1 class="font-display text-4xl md:text-5xl font-semibold tracking-tight mb-4" style="color: var(--color-primary);">Technical Blog</h1>
+        <p class="font-body text-lg leading-relaxed" style="color: var(--color-on-surface-variant);">Reflections on software engineering, AI architecture, and regional language processing.</p>
       </div>
 
       {
@@ -37,26 +44,35 @@ const jsonLd = {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             {posts.map((post) => {
               const slug = post.id.replace(/\.mdx?$/, '');
+              const body = post.body ?? '';
               return (
-              <article class="border rounded-xl p-8 hover:shadow-ambient transition-all duration-300" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
-                <time class="font-mono text-xs mb-4 block" style="color: var(--color-on-surface-variant);">
-                  {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase()}
-                </time>
-                <h2 class="font-display text-xl mb-3" style="color: var(--color-primary);">
-                  <a href={`/blog/${slug}`} class="hover:underline">{post.data.title}</a>
-                </h2>
-                <p class="mb-6 line-clamp-3" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">{post.data.description}</p>
-                {post.data.tags.length > 0 && (
-                  <div class="flex flex-wrap gap-2 mb-6">
-                    {post.data.tags.map((tag) => (
-                      <span class="tag-research">{tag}</span>
-                    ))}
+              <article class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-ambient" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+                <div class="p-8 flex-grow flex flex-col">
+                  <div class="flex items-center gap-3 mb-4">
+                    <time class="font-mono text-xs" style="color: var(--color-on-surface-variant);">
+                      {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).toUpperCase()}
+                    </time>
+                    <span class="w-1 h-1 rounded-full" style="background: var(--color-outline-variant);"></span>
+                    <span class="font-mono text-xs" style="color: var(--color-on-surface-variant);">{readingTime(body)}</span>
                   </div>
-                )}
-                <a href={`/blog/${slug}`} class="link-arrow">
-                  Read Article
-                  <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">arrow_outward</span>
-                </a>
+                  <h2 class="font-display text-xl font-semibold mb-3 leading-snug" style="color: var(--color-primary);">
+                    <a href={`/blog/${slug}`} class="hover:underline decoration-2 underline-offset-2 decoration-secondary">{post.data.title}</a>
+                  </h2>
+                  <p class="mb-6 line-clamp-3 text-base leading-relaxed flex-grow" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">{post.data.description}</p>
+                  {post.data.tags.length > 0 && (
+                    <div class="flex flex-wrap gap-2 mb-0">
+                      {post.data.tags.map((tag) => (
+                        <span class="tag-research">{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div class="px-8 py-4 border-t flex items-center justify-between" style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);">
+                  <a href={`/blog/${slug}`} class="link-arrow text-sm group">
+                    Read Article
+                    <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+                  </a>
+                </div>
               </article>
               );
             })}

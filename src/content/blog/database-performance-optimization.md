@@ -1,12 +1,14 @@
 ---
 title: Optimasi Database & Performa
 description: Indexing, query optimization, dan memory leak fix untuk jutaan transaksi
+pubDate: 2026-01-01
+tags: ['MySQL', 'Query Optimization', 'Database', 'Performance', 'Indexing']
 ---
 
-# Optimasi Database & Performa: Membuat Database Healthcare Tetap Cepat dengan Jutaan Transaksi
-
 **Proyek**: Optimasi query, indexing, dan performance tuning untuk database multi-tenant dengan jutaan transaksi
+
 **Peran**: Software Engineer — perancang optimasi
+
 **Periode**: 2021 — 2026
 
 ---

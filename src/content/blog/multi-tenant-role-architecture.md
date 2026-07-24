@@ -1,12 +1,14 @@
 ---
 title: Arsitektur Multi-Tenant & 12 Role
 description: Mengelola ratusan klinik dalam satu platform dengan isolasi data dan role-based routing
+pubDate: 2026-01-01
+tags: ['PHP', 'CodeIgniter', 'MySQL', 'Architecture', 'RBAC']
 ---
 
-# Arsitektur Multi-Tenant & 12 Role: Mengelola Ratusan Klinik dalam Satu Platform
-
 **Proyek**: Arsitektur multi-tenant dengan 12 user role, isolasi data, dan grup klinik berbagi
+
 **Peran**: Software Engineer — perancang dan pengembang arsitektur
+
 **Periode**: 2021 — 2026
 
 ---
