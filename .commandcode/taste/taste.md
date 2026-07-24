@@ -25,3 +25,6 @@
 - Prefers metadata blocks (Proyek/Peran/Periode) separated by blank lines in Markdown source so they render as three distinct paragraphs rather than one merged paragraph. Confidence: 0.85
 - Prefers section headings (h2) in long-form articles to be fully bold (font-weight 700) with a bottom border as a visual separator between sections, and adequate top spacing — no zero-margin on the first heading so it doesn't stick to the preceding horizontal rule. Confidence: 0.8
 
+# workflow
+- Prefers ensuring `.nojekyll` is present in the build output directory when deploying static sites (Astro, etc.) to GitHub Pages, to prevent GitHub from running Jekyll on the static files. Confidence: 0.8
+
