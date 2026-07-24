@@ -1,12 +1,14 @@
 ---
 title: Menghubungkan Klinik ke SATUSEHAT
 description: Integrasi platform manajemen klinik dengan sistem SATUSEHAT Kementerian Kesehatan RI
+pubDate: 2025-05-01
+tags: ['REST API', 'OAuth2', 'JSON', 'ICD-10', 'ICD-9', 'FHIR', 'Healthcare']
 ---
 
-# Menghubungkan Klinik ke SATUSEHAT: Integrasi Data Kesehatan Nasional
-
 **Proyek**: Integrasi platform manajemen klinik dengan sistem SATUSEHAT Kementerian Kesehatan RI
+
 **Peran**: Software Engineer — perancang dan pengembang utama modul integrasi
+
 **Periode**: Agustus 2023 — Mei 2025
 
 ---

@@ -1,12 +1,14 @@
 ---
 title: Sistem Pembayaran & Kasir
 description: Multi-metode pembayaran dengan invoice, hutang/piutang, dan server-side DataTable
+pubDate: 2025-03-01
+tags: ['PHP', 'CodeIgniter', 'MySQL', 'Billing', 'Dompdf']
 ---
 
-# Sistem Pembayaran & Kasir: Multi-Metode dengan Server-Side Processing
-
 **Proyek**: Sistem pembayaran multi-metode dengan invoice, hutang/piutang, diskon bertingkat, dan server-side DataTable
+
 **Peran**: Software Engineer — perancang dan pengembang utama
+
 **Periode**: Agustus 2021 — Maret 2025
 
 ---

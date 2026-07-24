@@ -20,6 +20,14 @@ interface Props {
 const { post } = Astro.props;
 const { Content } = await post.render();
 
+function readingTime(body: string): string {
+  const words = body.trim().split(/\s+/).length;
+  const minutes = Math.max(1, Math.round(words / 200));
+  return `${minutes} min read`;
+}
+
+const bodyText = post.body ?? '';
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -46,21 +54,21 @@ const jsonLd = {
   <Nav />
 
   <main class="flex-grow w-full py-section-gap">
-    <div class="max-w-3xl mx-auto px-margin-mobile md:px-margin-desktop">
+    <div class="max-w-[720px] mx-auto px-margin-mobile md:px-margin-desktop">
       <a href="/blog" class="link-arrow mb-12 inline-flex">
         <span class="material-symbols-outlined mr-1">arrow_back</span>
         Back to Blog
       </a>
 
       <article>
-        <header class="mb-12">
-          <time class="font-mono text-xs mb-4 block" style="color: var(--color-on-surface-variant);">
-            {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        <header class="mb-14">
+          <time class="font-mono text-sm mb-6 block" style="color: var(--color-on-surface-variant);">
+            {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} · {readingTime(bodyText)}
           </time>
-          <h1 class="font-display text-4xl md:text-5xl leading-tight tracking-tight mb-4" style="color: var(--color-primary);">{post.data.title}</h1>
-          <p class="font-body text-lg leading-7" style="color: var(--color-on-surface-variant);">{post.data.description}</p>
+          <h1 class="font-display text-[40px] md:text-[52px] leading-[1.08] tracking-tight font-semibold mb-5" style="color: var(--color-primary);">{post.data.title}</h1>
+          <p class="font-body text-lg leading-relaxed" style="color: var(--color-on-surface-variant);">{post.data.description}</p>
           {post.data.tags.length > 0 && (
-            <div class="flex flex-wrap gap-2 mt-6">
+            <div class="flex flex-wrap gap-2 mt-8">
               {post.data.tags.map((tag) => (
                 <span class="tag-research">{tag}</span>
               ))}
@@ -68,82 +76,267 @@ const jsonLd = {
           )}
         </header>
 
-        <div class="prose max-w-none" style="color: var(--color-on-surface);">
+        <div class="prose-article">
           <Content />
         </div>
       </article>
+
+      <nav class="mt-20 pt-10 border-t" style="border-color: var(--color-outline-variant);">
+        <a href="/blog" class="link-arrow">
+          <span class="material-symbols-outlined mr-1">arrow_back</span>
+          Back to all articles
+        </a>
+      </nav>
     </div>
   </main>
 
   <Footer />
 </Layout>
 
-<style>
-  .prose h2 {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-    color: var(--color-primary);
+<style is:global>
+  .prose-article {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    line-height: 1.8;
+    max-width: 70ch;
+    color: var(--color-on-surface);
   }
-  .prose h3 {
+
+  /* ===== Headings ===== */
+  .prose-article :where(h2) {
     font-family: var(--font-display);
-    font-size: 1.25rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-top: 3.5rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+    color: var(--color-primary);
+    padding-bottom: 0.65rem;
+    border-bottom: 2px solid var(--color-outline);
+  }
+
+  .prose-article :where(h3) {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
     font-weight: 600;
-    margin-top: 1.5rem;
+    line-height: 1.35;
+    margin-top: 2.5rem;
     margin-bottom: 0.5rem;
     color: var(--color-primary);
   }
-  .prose p {
-    margin-bottom: 1rem;
-    line-height: 1.7;
-    color: var(--color-on-surface);
+
+  /* ===== Paragraphs ===== */
+  .prose-article :where(p) {
+    margin-bottom: 1.25rem;
+    line-height: 1.8;
   }
-  .prose ul, .prose ol {
+
+  /* ===== Metadata (Proyek/Peran/Periode) ===== */
+  .prose-article :where(hr + p, hr + p + p, hr + p + p + p) {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-on-surface-variant);
+  }
+  .prose-article :where(hr + p) strong,
+  .prose-article :where(hr + p + p) strong,
+  .prose-article :where(hr + p + p + p) strong {
+    display: inline-block;
+    min-width: 5.5rem;
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  .prose-article :where(hr + p + p + p) {
+    margin-bottom: 1.5rem;
+  }
+  .prose-article :where(hr + p + p + p + hr) {
+    margin-top: 0;
+  }
+
+  /* ===== Spacing between adjacent elements ===== */
+  .prose-article :where(h3) + :where(p, ul, ol, pre, table),
+  .prose-article :where(h2) + :where(p, ul, ol, pre, table) {
+    margin-top: 0;
+  }
+  .prose-article :where(p) + :where(pre, table),
+  .prose-article :where(ul, ol) + :where(pre, table) {
+    margin-top: 0;
+  }
+  .prose-article :where(pre) + :where(p, h3),
+  .prose-article :where(table) + :where(p, h3) {
+    margin-top: 0;
+  }
+  .prose-article :where(li) > :where(pre, table) {
+    margin: 0.625rem 0;
+  }
+
+  /* ===== Horizontal Rule ===== */
+  .prose-article :where(hr) {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-outline-variant), transparent);
+    margin: 2.75rem 0;
+  }
+
+  /* ===== Lists ===== */
+  .prose-article :where(ul, ol) {
     padding-left: 1.5rem;
-    margin-bottom: 1rem;
-    color: var(--color-on-surface);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
   }
-  .prose li {
+
+  .prose-article :where(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .prose-article :where(li > ul, li > ol) {
+    margin-top: 0.375rem;
+    margin-bottom: 0.375rem;
+  }
+
+  /* ===== Lessons Learned Block ===== */
+  .prose-article > :is(h2):last-of-type + ol {
+    counter-reset: lesson;
+    list-style: none;
+    padding-left: 0;
+  }
+  .prose-article > :is(h2):last-of-type + ol > li {
+    counter-increment: lesson;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+    background: var(--color-surface-container);
+    border-left: 3px solid var(--color-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .prose-article > :is(h2):last-of-type + ol > li::before {
+    content: counter(lesson);
+    font-family: var(--font-display);
+    font-weight: 650;
+    font-size: 0.75rem;
+    display: block;
     margin-bottom: 0.25rem;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
-  .prose a {
+
+  /* ===== Links ===== */
+  .prose-article :where(a) {
     color: var(--color-secondary);
     text-decoration: underline;
+    text-underline-offset: 0.15em;
+    text-decoration-thickness: 0.06em;
+    transition: opacity 0.2s;
   }
-  .prose code {
+
+  .prose-article :where(a:hover) {
+    opacity: 0.7;
+  }
+
+  /* ===== Inline Code ===== */
+  .prose-article :where(code) {
     font-family: var(--font-mono);
-    font-size: 0.875em;
-    padding: 0.15em 0.3em;
+    font-size: 0.85em;
+    padding: 0.2em 0.4em;
     border-radius: 0.25rem;
     background: var(--color-surface-container);
+    color: var(--color-primary);
   }
-  .prose pre {
-    background: var(--color-surface-container);
+
+  /* ===== Real Code Blocks (with language tag like ```php, ```sql) ===== */
+  .prose-article :where(pre[data-language]:not([data-language="plaintext"])) {
+    background: var(--color-surface-container) !important;
     border-radius: 0.5rem;
-    padding: 1rem;
+    padding: 1.25rem;
     overflow-x: auto;
     margin-bottom: 1.5rem;
     border: 1px solid var(--color-outline-variant);
+    border-left: 3px solid var(--color-secondary);
+    line-height: 1.55;
+    font-size: 0.875rem;
   }
-  .prose pre code {
+
+  .prose-article :where(pre[data-language]:not([data-language="plaintext"]) code) {
     background: none;
     padding: 0;
+    font-size: 0.8125rem;
   }
-  .prose blockquote {
+
+  /* ===== Commit Blocks / Plain Code Fences (no language tag → plaintext) ===== */
+  .prose-article :where(pre[data-language="plaintext"]) {
+    background-color: var(--color-surface-container-low) !important;
+    border-radius: 0.375rem;
+    padding: 0.875rem 1rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--color-outline-variant);
+    line-height: 1.7;
+    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+    color: var(--color-on-surface-variant) !important;
+  }
+
+  .prose-article :where(pre[data-language="plaintext"]) code {
+    background: none !important;
+    padding: 0;
+    font-size: 0.8125rem;
+    color: var(--color-on-surface-variant) !important;
+  }
+
+  /* ===== Blockquotes ===== */
+  .prose-article :where(blockquote) {
     border-left: 3px solid var(--color-secondary);
-    padding-left: 1rem;
-    margin: 1.5rem 0;
+    padding-left: 1.25rem;
+    margin: 2rem 0;
     color: var(--color-on-surface-variant);
     font-style: italic;
+    line-height: 1.7;
+    font-size: 1rem;
   }
-  .prose img {
+
+  /* ===== Images ===== */
+  .prose-article :where(img) {
     border-radius: 0.5rem;
-    margin: 1.5rem 0;
-  }
-  .prose hr {
-    border-color: var(--color-outline-variant);
     margin: 2rem 0;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* ===== Bold ===== */
+  .prose-article :where(strong) {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  /* ===== Tables ===== */
+  .prose-article :where(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.75rem 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .prose-article :where(th, td) {
+    padding: 0.75rem 0.875rem;
+    border: 1px solid var(--color-outline-variant);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .prose-article :where(th) {
+    background: var(--color-surface-container);
+    font-family: var(--font-display);
+    font-weight: 550;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .prose-article :where(tbody tr:nth-child(even)) {
+    background: var(--color-surface-container-low);
   }
 </style>

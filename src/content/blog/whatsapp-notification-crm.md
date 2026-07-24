@@ -1,12 +1,14 @@
 ---
 title: Sistem Notifikasi WhatsApp & CRM
 description: Dari cron sederhana ke modul CRM modern untuk notifikasi klinik
+pubDate: 2026-07-01
+tags: ['PHP', 'WhatsApp API', 'CRM', 'AJAX', 'Automation']
 ---
 
-# Sistem Notifikasi WhatsApp & CRM: Dari Cron Sederhana ke Modul Modern
-
 **Proyek**: Sistem notifikasi WhatsApp end-to-end untuk pengingat janji temu, OTP login, dan pengiriman invoice
+
 **Peran**: Software Engineer — perancang dan pengembang utama
+
 **Periode**: Mei 2021 — Juli 2026
 
 ---

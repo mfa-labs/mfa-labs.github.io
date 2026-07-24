@@ -1,12 +1,14 @@
 ---
 title: Rekam Medis Elektronik & Alur Kerja Klinik
 description: Odontogram digital, ICD coding, appointment booking, dan berbagi data antar klinik
+pubDate: 2026-06-01
+tags: ['PHP', 'CodeIgniter', 'EMR', 'ICD-10', 'ICD-9', 'Healthcare']
 ---
 
-# Rekam Medis Elektronik & Alur Kerja Klinik: Dari Odontogram ke Berbagi Data
-
 **Proyek**: Sistem rekam medis elektronik untuk klinik gigi dan umum — odontogram digital, ICD coding, appointment booking
+
 **Peran**: Software Engineer — perancang dan pengembang utama
+
 **Periode**: Juli 2021 — Juni 2026
 
 ---

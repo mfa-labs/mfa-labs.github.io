@@ -1,12 +1,14 @@
 ---
 title: Migrasi PHP 7 ke PHP 8
 description: Upgrade platform SaaS tanpa downtime untuk ratusan klinik
+pubDate: 2024-12-01
+tags: ['PHP', 'Migration', 'CodeIgniter', 'DevOps']
 ---
 
-# Migrasi PHP 7 ke PHP 8: Upgrade Platform Tanpa Downtime
-
 **Proyek**: Migrasi platform SaaS dari PHP 7 ke PHP 8.1 tanpa menghentikan operasional klinik
+
 **Peran**: Software Engineer — perencana dan pelaksana migrasi
+
 **Periode**: November — Desember 2024
 
 ---
