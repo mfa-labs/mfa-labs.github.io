@@ -251,6 +251,55 @@ const jsonLd = {
       </div>
     </section>
 
+    <!-- Speaking / Pemateri -->
+    <section id="speaking" class="py-section-gap border-t" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="mb-12">
+          <h2 class="section-title">Pemateri / Pembicara</h2>
+          <p class="font-body text-sm leading-relaxed" style="color: var(--color-on-surface-variant); opacity: 0.6;">Workshop &amp; pelatihan — berbagi praktik pemanfaatan AI untuk administrasi perkantoran.</p>
+        </div>
+        <div class="flex flex-col gap-8">
+          {[
+            {
+              tag: 'Pemateri Workshop · Juli 2025',
+              title: 'Workshop Pemanfaatan AI untuk Tenaga Kependidikan',
+              role: 'Membuat Tools Administrasi dengan Gemini Canvas',
+              desc: 'Pemateri workshop bagi tenaga kependidikan (tendik) fakultas untuk membangun tools administrasi perkantoran — surat resmi, SOP, laporan, dan notulensi — langsung dari bahasa alami via Gemini Canvas, tanpa coding.',
+              highlights: ['Pemateri Sesi 2 — "AI untuk Membuat Tools": Claude vs ChatGPT, strategi hemat, dan budaya membuat tools', 'Modul 6 sesi: pengenalan Canvas, praktik 4 tools administrasi, sesi bebas bikin tools sendiri', 'Peserta praktik langsung membuat tools dan membawa pulang 4 tools siap pakai untuk pekerjaan sehari-hari'],
+              links: [
+                { label: 'Materi Modul Workshop', href: '/materi/workshop-ai-tendik.md' },
+                { label: 'Slide Sesi 2', href: '/materi/workshop-ai-tendik-sesi2.html' },
+              ],
+              tags: ['Gemini Canvas', 'AI untuk Administrasi', 'No-Code Tools'],
+            },
+          ].map((talk) => (
+            <div class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-ambient" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+              <div class="p-6 md:p-8 flex-grow">
+                <span class="tag-project mb-4">{talk.tag}</span>
+                <h3 class="font-display text-xl mb-1 mt-3" style="color: var(--color-primary);">{talk.title}</h3>
+                <p class="font-mono text-sm mb-4" style="color: var(--color-secondary);">{talk.role}</p>
+                <p class="mb-4" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">{talk.desc}</p>
+                <ul class="space-y-1 text-sm list-disc pl-4 mb-6" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">
+                  {talk.highlights.map((item) => <li>{item}</li>)}
+                </ul>
+                <div class="flex flex-wrap items-center gap-6">
+                  {talk.links.map((l) => (
+                    <a href={l.href} class="link-arrow text-sm group">
+                      {l.label}
+                      <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+              <div class="px-6 md:px-8 py-4 border-t flex flex-wrap gap-2" style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);">
+                {talk.tags.map((t) => <span class="tag-eng">{t}</span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
     <!-- Blog Preview -->
     <section id="blog" class="py-20 border-t" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
       <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
