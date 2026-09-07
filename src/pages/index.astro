@@ -300,6 +300,54 @@ const jsonLd = {
       </div>
     </section>
 
+    <!-- Mobile Health App / SIBUNDA -->
+    <section id="sibunda" class="py-section-gap border-t" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="mb-12">
+          <h2 class="section-title">Mobile Health Application</h2>
+          <p class="font-body text-sm leading-relaxed" style="color: var(--color-on-surface-variant); opacity: 0.6;">Aplikasi mobile &amp; kesehatan masyarakat — kolaborasi dengan Fakultas Keperawatan Universitas Syiah Kuala (USK).</p>
+        </div>
+        <div class="flex flex-col gap-8">
+          {[
+            {
+              tag: 'Proyek Institusi · Flutter + REST API',
+              title: 'SIBUNDA — Sistem Informasi Bunda',
+              role: 'Fullstack Developer · Aplikasi Mobile Android + Backend Node.js',
+              desc: 'Aplikasi monitoring gizi dan pencegahan stunting untuk anak batita/balita — membantu kader kesehatan dan ibu balita memantau pertumbuhan anak secara mandiri berbasis standar WHO, lengkap dengan edukasi gizi, resep sehat, forum komunitas, dan pengingat jadwal makan.',
+              highlights: ['Grafik pertumbuhan WHO 0–5 tahun (BB/U, TB/U, BB/TB) dengan penentuan status gizi dari dataset CSV', 'Pencatatan asupan harian "Isi Piringku" — 11 komponen makanan, foto piring, ringkasan keterpenuhan 6 kategori gizi', '30 layar Flutter dengan state management setState, terintegrasi REST API Node.js di Vercel', 'Aplikasi produksi v1.1.1 yang digunakan kader & ibu balita binaan Fakultas Keperawatan USK'],
+              links: [
+                { label: 'Baca artikel teknis', href: '/blog/sibunda' },
+              ],
+              tags: ['Flutter', 'Dart', 'Node.js', 'REST API', 'Stunting', 'WHO Growth Chart'],
+            },
+          ].map((proj) => (
+            <div class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-ambient" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+              <div class="p-6 md:p-8 flex-grow">
+                <span class="tag-project mb-4">{proj.tag}</span>
+                <h3 class="font-display text-xl mb-1 mt-3" style="color: var(--color-primary);">{proj.title}</h3>
+                <p class="font-mono text-sm mb-4" style="color: var(--color-secondary);">{proj.role}</p>
+                <p class="mb-4" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">{proj.desc}</p>
+                <ul class="space-y-1 text-sm list-disc pl-4 mb-6" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">
+                  {proj.highlights.map((item) => <li>{item}</li>)}
+                </ul>
+                <div class="flex flex-wrap items-center gap-6">
+                  {proj.links.map((l) => (
+                    <a href={l.href} class="link-arrow text-sm group">
+                      {l.label}
+                      <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+              <div class="px-6 md:px-8 py-4 border-t flex flex-wrap gap-2" style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);">
+                {proj.tags.map((t) => <span class="tag-eng">{t}</span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
     <!-- Blog Preview -->
     <section id="blog" class="py-20 border-t" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
       <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
