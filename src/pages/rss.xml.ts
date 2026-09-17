@@ -6,6 +6,8 @@ export async function GET() {
     .filter((p) => !p.data.draft)
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
+  const latest = posts[0]?.data.pubDate;
+
   return rss({
     title: 'Muhammad Fadhil Al Amal — Technical Blog',
     description: 'Reflections on software engineering, AI architecture, and regional language processing.',
@@ -16,6 +18,6 @@ export async function GET() {
       description: post.data.description,
       link: `/blog/${post.id.replace(/\.mdx?$/, '')}/`,
     })),
-    customData: '<language>en-us</language>',
+    customData: `<language>id-id</language>${latest ? `<lastBuildDate>${latest.toUTCString()}</lastBuildDate>` : ''}`,
   });
 }

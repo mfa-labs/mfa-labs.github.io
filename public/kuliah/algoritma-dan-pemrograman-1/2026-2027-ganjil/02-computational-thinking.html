@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computational Thinking — Algoritma dan Pemrograman I</title>
+<meta name="description" content="Slide kuliah pekan 2 Algoritma dan Pemrograman I: empat pilar computational thinking — dekomposisi, pengenalan pola, abstraksi, dan perancangan algoritma.">
+<link rel="canonical" href="https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/02-computational-thinking.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #14181b;
+    --ink-soft: #3f4549;
+    --ink-faint: #6b7277;
+    --accent: #006c4a;
+    --accent-soft: #e8f4ef;
+    --line: #d3d7db;
+  }
+
+  /* Ukuran akar mengikuti resolusi proyektor: proporsional terhadap
+     sisi yang lebih kecil antara lebar layar dan tinggi 16:9. */
+  html {
+    font-size: clamp(16px, min(1.4vw, 2.49vh), 30px);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4.5rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ===== Tipografi ===== */
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .statement {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .sub {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .note {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  strong { font-weight: 700; color: var(--ink); }
+  .accent { color: var(--accent); }
+
+  /* ===== Daftar ===== */
+
+  ul, ol { list-style: none; }
+
+  .list li {
+    font-size: 1.35rem;
+    line-height: 1.55;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .list li:last-child { border-bottom: none; }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 1.35rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .list.numbered { counter-reset: item; }
+
+  .list.numbered li { padding-left: 3rem; }
+
+  .list.numbered li::before {
+    counter-increment: item;
+    content: counter(item);
+    top: 0.75rem;
+    left: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .list li strong { color: var(--ink); }
+
+  /* ===== Kartu & dua kolom ===== */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .cols.tight { gap: 1.5rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .card.bad { border-color: #e6c2c2; background: #fdf4f4; }
+
+  .card.good { border-color: #b9dccd; background: var(--accent-soft); }
+
+  .card .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .card blockquote {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card ul li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Tabel ===== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  tbody tr:last-child td {
+    font-weight: 700;
+    color: var(--ink);
+    border-bottom: none;
+  }
+
+  td.num { text-align: right; }
+
+  /* ===== Alur ===== */
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  .flow .node {
+    border: 1px solid var(--line);
+    border-radius: 0.6rem;
+    padding: 0.8rem 1.2rem;
+    background: #fafbfc;
+  }
+
+  .flow .node.hi { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+
+  .flow .arrow { color: var(--ink-faint); font-size: 1.3rem; }
+
+  /* ===== Slide judul & pembatas ===== */
+
+  .title-slide { justify-content: center; }
+
+  .title-slide h1 { font-size: 3.6rem; max-width: 22ch; }
+
+  .title-slide .meta {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .divider { justify-content: center; }
+
+  .divider .num {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .divider h1 { font-size: 3.4rem; margin-bottom: 1.4rem; }
+
+  /* ===== Kelompok bernomor ===== */
+
+  .blocks { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .block {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .block .idx {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 2rem;
+  }
+
+  .block .body { font-size: 1.2rem; line-height: 1.5; color: var(--ink-soft); }
+  .block .body strong { display: block; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.15rem; }
+
+  /* ===== Kendali ===== */
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0.22rem;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.25s ease;
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 1.6rem;
+    right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+
+  .hint {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2.5rem 2rem; }
+    .cols { grid-template-columns: 1fr; gap: 1.2rem; }
+    .hint { display: none; }
+  }
+
+  /* ===== Cetak / ekspor PDF ===== */
+
+  @media print {
+    html { font-size: 13pt; }
+    body { height: auto; overflow: visible; }
+    .slide {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      page-break-after: always;
+      height: 100vh;
+      padding: 2.5rem 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .progress, .counter, .nav, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progressBar"></div>
+
+<!-- 1. Judul -->
+<div class="slide title-slide active">
+  <p class="kicker">Universitas Ahmad Dahlan Aceh · Fakultas Sains dan Teknologi</p>
+  <h1>Computational Thinking</h1>
+  <p class="sub">Algoritma dan Pemrograman I · INFUAD-003 · 2 SKS · Program Studi Informatika (S1)</p>
+  <div class="meta">
+    Pekan 2 · 21 September 2026<br>
+    Muhammad Fadhil Al Amal, S.Kom., M.Kom
+  </div>
+</div>
+
+<!-- 2. Agenda -->
+<div class="slide">
+  <p class="kicker">Pekan 2</p>
+  <h2>Yang akan kita bahas</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Apa itu computational thinking</strong>Dan kenapa bukan berarti &ldquo;berpikir seperti komputer&rdquo;</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Empat pilarnya</strong>Dekomposisi, pengenalan pola, abstraksi, perancangan algoritma</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Satu masalah, empat pilar</strong>Kita jalankan pada kasus menghitung nilai akhir</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Tanpa komputer</strong>Karena cara berpikir ini berguna jauh di luar ruang komputer</span></div>
+  </div>
+</div>
+
+<!-- 3. Pembatas 01 -->
+<div class="slide divider">
+  <p class="num">Bagian 01</p>
+  <h1>Apa itu computational thinking</h1>
+  <p class="lead">Algoritma adalah hasilnya. Ini proses untuk sampai ke sana.</p>
+</div>
+
+<!-- 4. Definisi -->
+<div class="slide">
+  <p class="kicker">Definisi</p>
+  <p class="statement">Proses berpikir untuk <span class="accent">merumuskan masalah dan solusinya</span>, sehingga solusi itu dapat dijalankan secara efektif oleh pengolah informasi.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:52ch;">Istilah ini dipopulerkan Jeannette Wing lewat artikelnya di Communications of the ACM, 2006.</p>
+</div>
+
+<!-- 5. Bukan berpikir seperti komputer -->
+<div class="slide">
+  <p class="kicker">Perlu diluruskan</p>
+  <h2>Bukan &ldquo;berpikir seperti komputer&rdquo;</h2>
+  <div class="cols">
+    <div class="card bad">
+      <p class="label">Yang sering disangka</p>
+      <blockquote>Berpikir kaku, mekanis, dan meniadakan kreativitas.</blockquote>
+    </div>
+    <div class="card good">
+      <p class="label">Kenyataannya</p>
+      <blockquote>Komputer hanya bisa membandingkan, menambah, mengulang, dan memilih. Kreativitas manusialah yang menerjemahkan masalah nyata menjadi langkah sederhana.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 6. Hubungan dengan algoritma -->
+<div class="slide">
+  <p class="kicker">Hubungannya</p>
+  <h2>Satu proses, satu hasil</h2>
+  <div class="flow" style="margin:1rem 0 2.2rem;">
+    <span class="node hi">Computational thinking</span>
+    <span class="arrow">&rarr;</span>
+    <span class="node">Algoritma</span>
+    <span class="arrow">&rarr;</span>
+    <span class="node">Program</span>
+  </div>
+  <p class="lead">Pekan lalu kita membahas bentuk algoritma yang baik. Pekan ini kita membahas cara berpikir yang melahirkannya.</p>
+</div>
+
+<!-- 7. Pembatas 02 -->
+<div class="slide divider">
+  <p class="num">Bagian 02</p>
+  <h1>Empat pilar</h1>
+  <p class="lead">Saling berkaitan, dan urutannya jarang berjalan lurus.</p>
+</div>
+
+<!-- 8. Pilar 1 -->
+<div class="slide">
+  <p class="kicker">Pilar 01</p>
+  <h2>Dekomposisi</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Memecah masalah besar menjadi bagian-bagian kecil yang lebih mudah diselesaikan.</p>
+  <div class="card good">
+    <blockquote>Memecah terlalu kasar membuat bagiannya tetap sulit. Terlalu halus membuat kita tenggelam dalam detail. Keputusannya ada di menentukan batas pemecahan.</blockquote>
+  </div>
+</div>
+
+<!-- 9. Contoh dekomposisi -->
+<div class="slide">
+  <p class="kicker">Contoh dekomposisi</p>
+  <h2>&ldquo;Membuat aplikasi absensi&rdquo;</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Bagaimana kehadiran dicatat?</li>
+      <li>Bagaimana datanya disimpan?</li>
+      <li>Bagaimana rekap per pertemuan ditampilkan?</li>
+      <li>Bagaimana mencegah satu mahasiswa tercatat dua kali?</li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.5rem;">Setiap pertanyaan jauh lebih mudah dijawab daripada pertanyaan aslinya.</p>
+</div>
+
+<!-- 10. Pilar 2 -->
+<div class="slide">
+  <p class="kicker">Pilar 02</p>
+  <h2>Pengenalan pola</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Mencari kesamaan atau keteraturan yang berulang.</p>
+  <div class="card good">
+    <blockquote>Kalau polanya terlihat, satu solusi bisa dipakai berulang kali. Kalau terlewat, kita menulis ulang solusi yang sama untuk kasus yang sebenarnya identik.</blockquote>
+  </div>
+</div>
+
+<!-- 11. Contoh pola -->
+<div class="slide">
+  <p class="kicker">Contoh pola</p>
+  <h2>Bentuk yang berulang</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Banyak pekerjaan administrasi berbentuk sama: <strong>cari, saring, urutkan, tampilkan</strong></li>
+      <li>Menghitung nilai tiap komponen penilaian selalu <strong>nilai &times; bobot</strong></li>
+      <li>Pendaftaran akun di aplikasi apa pun: <strong>isi data, verifikasi, simpan, konfirmasi</strong></li>
+      <li>Laporan bulanan dan tahunan biasanya hanya berbeda <strong>rentang waktunya</strong></li>
+    </ul>
+  </div>
+</div>
+
+<!-- 12. Pilar 3 -->
+<div class="slide">
+  <p class="kicker">Pilar 03</p>
+  <h2>Abstraksi</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Membuang detail yang tidak relevan dan menyisakan yang benar-benar penting.</p>
+  <div class="card good">
+    <blockquote>Tanpa abstraksi, setiap masalah terasa unik dan tidak ada solusi yang bisa dipakai ulang.</blockquote>
+  </div>
+</div>
+
+<!-- 13. Contoh abstraksi -->
+<div class="slide">
+  <p class="kicker">Contoh abstraksi</p>
+  <h2>Apa yang sengaja dibuang</h2>
+  <div class="list">
+    <ul class="list">
+      <li><strong>Peta</strong> membuang tekstur aspal, warna rumah, dan jenis pohon</li>
+      <li><strong>Jadwal kuliah</strong> tidak mencantumkan dosen tiap pertemuan</li>
+      <li><strong>Resep</strong> tidak menyebut bahan wajan atau warna kompor</li>
+      <li><strong>Menghitung nilai akhir</strong> tidak peduli nama mahasiswa dan tanggal pengumpulan</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 14. Representasi -->
+<div class="slide">
+  <p class="kicker">Konsekuensi abstraksi</p>
+  <h2>Abstraksi menentukan representasi</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Bagaimana sesuatu kita wakili sering lebih menentukan daripada kelihaian menulis kode.</p>
+  <div class="cols tight">
+    <div class="card bad">
+      <p class="label">Representasi buruk</p>
+      <blockquote>Daftar nilai difoto dari papan tulis.</blockquote>
+    </div>
+    <div class="card good">
+      <p class="label">Representasi baik</p>
+      <blockquote>Daftar nilai tersimpan sebagai tabel yang bisa diolah.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 15. Pilar 4 -->
+<div class="slide">
+  <p class="kicker">Pilar 04</p>
+  <h2>Perancangan algoritma</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Menyusun langkah penyelesaian berdasarkan hasil tiga kegiatan sebelumnya.</p>
+  <p class="lead">Inilah tahap yang benar-benar menghasilkan algoritma &mdash; objek yang kita bahas pekan lalu.</p>
+</div>
+
+<!-- 16. Pembatas 03 -->
+<div class="slide divider">
+  <p class="num">Bagian 03</p>
+  <h1>Satu masalah, empat pilar</h1>
+  <p class="lead">Menghitung nilai akhir sebuah mata kuliah.</p>
+</div>
+
+<!-- 17. Dekomposisi + pola -->
+<div class="slide">
+  <p class="kicker">Langkah 1 &amp; 2</p>
+  <h2>Dekomposisi, lalu cari polanya</h2>
+  <div class="cols">
+    <div class="card">
+      <p class="label">Dekomposisi</p>
+      <ul>
+        <li>Tentukan komponen penilaian</li>
+        <li>Hitung kontribusi tiap komponen</li>
+        <li>Gabungkan seluruh kontribusi</li>
+        <li>Tentukan huruf mutu</li>
+      </ul>
+    </div>
+    <div class="card good">
+      <p class="label">Pola</p>
+      <blockquote>Setiap komponen dihitung dengan aturan yang sama: <strong>nilai &times; bobot</strong>. Tidak perlu aturan berbeda per komponen.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 18. Abstraksi -->
+<div class="slide">
+  <p class="kicker">Langkah 3</p>
+  <h2>Abstraksi: apa yang benar-benar relevan</h2>
+  <div class="cols tight">
+    <div class="card bad">
+      <p class="label">Tidak relevan</p>
+      <ul>
+        <li>Nama mahasiswa</li>
+        <li>Tanggal pengumpulan</li>
+        <li>Jenis tugasnya</li>
+      </ul>
+    </div>
+    <div class="card good">
+      <p class="label">Relevan</p>
+      <ul>
+        <li>Nilai</li>
+        <li>Bobot</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note" style="margin-top:1.6rem;">Representasi yang cukup: daftar pasangan nilai dan bobot.</p>
+</div>
+
+<!-- 19. Algoritma -->
+<div class="slide">
+  <p class="kicker">Langkah 4</p>
+  <h2>Algoritmanya</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Kumpulkan nilai dan bobot setiap komponen</li>
+      <li>Untuk setiap komponen, kalikan nilai dengan bobotnya</li>
+      <li>Jumlahkan seluruh hasil perkalian</li>
+      <li>Bagi hasil penjumlahan dengan total bobot</li>
+      <li>Bulatkan ke dua angka di belakang koma</li>
+      <li>Bandingkan dengan ambang batas huruf mutu</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 20. Uji dengan angka -->
+<div class="slide">
+  <p class="kicker">Uji dengan angka</p>
+  <h2>Algoritma yang sama, daftar yang berbeda</h2>
+  <table>
+    <thead>
+      <tr><th>Komponen</th><th>Nilai</th><th>Bobot</th><th>Kontribusi</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Tugas</td><td class="num">80</td><td class="num">20%</td><td class="num">16,00</td></tr>
+      <tr><td>Kuis</td><td class="num">75</td><td class="num">20%</td><td class="num">15,00</td></tr>
+      <tr><td>UTS</td><td class="num">70</td><td class="num">25%</td><td class="num">17,50</td></tr>
+      <tr><td>UAS</td><td class="num">85</td><td class="num">35%</td><td class="num">29,75</td></tr>
+      <tr><td>Total</td><td class="num">&mdash;</td><td class="num">100%</td><td class="num">78,25</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:1.2rem;">Kalau jumlah komponennya berubah, algoritmanya tidak perlu diubah &mdash; hanya daftarnya.</p>
+</div>
+
+<!-- 21. Pembatas 04 -->
+<div class="slide divider">
+  <p class="num">Bagian 04</p>
+  <h1>Tanpa komputer</h1>
+  <p class="lead">Cara berpikir ini berguna jauh di luar ruang komputer.</p>
+</div>
+
+<!-- 22. Contoh di luar komputer -->
+<div class="slide">
+  <p class="kicker">Contoh</p>
+  <h2>Empat kegiatan yang tidak menyentuh komputer</h2>
+  <div class="list">
+    <ul class="list">
+      <li><strong>Merencanakan acara</strong> &mdash; konsumsi, undangan, susunan acara, dokumentasi</li>
+      <li><strong>Merapikan arsip</strong> &mdash; mengenali pola penamaan berkas, lalu membuat satu aturan</li>
+      <li><strong>Menelusuri kesalahan kerja</strong> &mdash; pecah alurnya, periksa tiap tahap</li>
+      <li><strong>Menyusun rencana belajar</strong> &mdash; urutkan tugas berdasarkan tenggat dan bobot</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 23. Kesalahpahaman -->
+<div class="slide">
+  <p class="kicker">Perlu diluruskan</p>
+  <h2>Tiga kesalahpahaman umum</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Sama dengan pemrograman</strong>Bukan. Pemrograman hanya salah satu cara mewujudkan hasilnya.</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Hanya untuk anak informatika</strong>Kerangka berpikirnya dipakai di banyak bidang yang jauh dari komputer.</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Harus bisa coding dulu</strong>Justru sebaliknya: menyusun langkah lebih mendasar daripada menulis sintaks.</span></div>
+  </div>
+</div>
+
+<!-- 24. Selanjutnya -->
+<div class="slide">
+  <p class="kicker">Selanjutnya</p>
+  <h2>Kita mulai memakai hasilnya</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">P3</span><span class="body"><strong>Pseudocode</strong>Menuliskan algoritma dengan bahasa yang mirip bahasa manusia, tetapi lebih presisi</span></div>
+    <div class="block"><span class="idx">P4</span><span class="body"><strong>Flowchart</strong>Menuangkan alur yang sama ke dalam bentuk gambar</span></div>
+  </div>
+</div>
+
+<!-- 25. Soal refleksi -->
+<div class="slide">
+  <p class="kicker">Tanpa jawaban benar atau salah</p>
+  <h2>Soal refleksi</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Ambil satu kegiatan kompleks yang pernah kamu ikuti, lalu uraikan menjadi bagian kecil</li>
+      <li>Sebutkan dua kegiatan berbeda yang sebenarnya punya pola pengerjaan sama</li>
+      <li>Sebutkan detail apa yang sengaja dibuang dari peta, formulir, atau kartu yang biasa kamu pakai</li>
+      <li>Dari empat pilar, mana yang paling jarang kamu lakukan selama ini?</li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Dua soal lagi tersedia di catatan kuliah.</p>
+</div>
+
+<!-- 26. Penutup -->
+<div class="slide title-slide">
+  <p class="kicker">Terima kasih</p>
+  <h1>Rumuskan masalahnya dulu</h1>
+  <p class="sub">Sebagian besar kesulitan bukan karena solusinya belum ada, melainkan karena masalahnya belum dirumuskan dengan jelas.</p>
+  <div class="meta">
+    Catatan lengkap pekan ini: <strong>mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/</strong>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<div class="counter" id="slideNumber">1 / 26</div>
+<div class="hint">&larr; &rarr; navigasi &nbsp;·&nbsp; <kbd>F</kbd> layar penuh</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var current = 0;
+
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var counter = document.getElementById('slideNumber');
+    var progress = document.getElementById('progressBar');
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      update();
+    }
+
+    function update() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) { if (diff > 0) next(); else prev(); }
+    });
+
+    update();
+  })();
+</script>
+
+</body>
+</html>

@@ -9,6 +9,10 @@ const blogPosts = (await getCollection('blog'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 2);
 
+const courses = (await getCollection('kuliah'))
+  .filter((c) => !c.data.draft)
+  .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+
 function readingTime(body: string): string {
   const words = body.trim().split(/\s+/).length;
   const minutes = Math.max(1, Math.round(words / 200));
@@ -20,7 +24,7 @@ const jsonLd = {
   '@type': 'Person',
   name: 'Muhammad Fadhil Al Amal',
   alternateName: 'Fadhil Al Amal',
-  jobTitle: 'AI & Software Engineer',
+  jobTitle: 'AI & Software Engineer · Informatics Lecturer',
   description: 'AI & Software Engineer | NLP Researcher | Health Information Systems Developer. Experiencing in secure healthcare ecosystems, database performance optimization, and regional language processing models.',
   url: 'https://mfa-labs.github.io/en',
   image: 'https://mfa-labs.github.io/cropped_circle_image.png',
@@ -30,11 +34,83 @@ const jsonLd = {
     'http://github.com/mfa-labs',
   ],
   knowsAbout: ['Software Engineering', 'Natural Language Processing', 'Healthcare IT', 'Machine Learning', 'SaaS'],
-  alumniOf: { '@type': 'CollegeOrUniversity', name: 'University of Syiah Kuala' },
+  alumniOf: [
+    { '@type': 'CollegeOrUniversity', name: 'University of Syiah Kuala' },
+    { '@type': 'CollegeOrUniversity', name: 'UIN Maulana Malik Ibrahim Malang' },
+  ],
+  worksFor: [
+    { '@type': 'Organization', name: 'PT Alfath Teknologi Kreatif' },
+    { '@type': 'Organization', name: 'Universitas Ahmad Dahlan Aceh' },
+  ],
 };
+
+const workshopEvents = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: 'Workshop on Digital Administration Management for Secretaries Using AI and Big Data Methods',
+    description:
+      'Workshop for students of the D3 Secretarial Study Programme, FEB USK: building an AI-powered digital archive prototype.',
+    startDate: '2026-09-16',
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location: {
+      '@type': 'Place',
+      name: 'D3 Secretarial Study Programme Hall, Faculty of Economics and Business, Syiah Kuala University',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Banda Aceh',
+        addressRegion: 'Aceh',
+        addressCountry: 'ID',
+      },
+    },
+    organizer: {
+      '@type': 'Organization',
+      name: 'D3 Secretarial Study Programme, Faculty of Economics and Business, Syiah Kuala University',
+    },
+    performer: {
+      '@type': 'Person',
+      name: 'Muhammad Fadhil Al Amal',
+      url: 'https://mfa-labs.github.io/en/',
+    },
+    image: 'https://mfa-labs.github.io/cropped_circle_image.png',
+    inLanguage: 'en',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: 'Archive Innovation and AI Adoption for Study Programme Staff — Even Semester, Academic Year 2025/2026',
+    description:
+      'Workshop for education staff of the Doctoral Programme in Accounting, FEB USK: building administration tools with Gemini Canvas, no coding required.',
+    startDate: '2026-07-07',
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location: {
+      '@type': 'Place',
+      name: 'FEB USK Laboratory Room, Faculty of Economics and Business, Syiah Kuala University',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Banda Aceh',
+        addressRegion: 'Aceh',
+        addressCountry: 'ID',
+      },
+    },
+    organizer: {
+      '@type': 'Organization',
+      name: 'Doctoral Programme in Accounting, Faculty of Economics and Business, Syiah Kuala University',
+    },
+    performer: {
+      '@type': 'Person',
+      name: 'Muhammad Fadhil Al Amal',
+      url: 'https://mfa-labs.github.io/en/',
+    },
+    image: 'https://mfa-labs.github.io/cropped_circle_image.png',
+    inLanguage: 'en',
+  },
+];
 ---
 
-<Layout title="Muhammad Fadhil Al Amal" description="AI & Software Engineer | NLP Researcher | Health Information Systems Developer" jsonLd={jsonLd}>
+<Layout title="Muhammad Fadhil Al Amal — AI Engineer & NLP Researcher" description="AI & Software Engineer in Banda Aceh, Indonesia. 5+ years building healthcare SaaS (CodeIgniter, MySQL, Docker) and researching regional-language NLP." lang="en" alternateUrl="/" jsonLd={[jsonLd, ...workshopEvents]}>
   <Nav />
 
   <main class="flex-grow w-full">
@@ -71,7 +147,7 @@ const jsonLd = {
         </div>
       </div>
       <div class="flex-1 w-full relative min-h-[400px] hidden lg:block">
-        <img src="/cropped_circle_image.png" alt="Muhammad Fadhil Al Amal" class="w-full h-full object-cover rounded-xl shadow-ambient grayscale hover:grayscale-0 transition-all duration-700" />
+        <img src="/cropped_circle_image.webp" alt="Muhammad Fadhil Al Amal" width="1000" height="1000" class="w-full h-full object-cover rounded-xl shadow-ambient grayscale hover:grayscale-0 transition-all duration-700" />
       </div>
     </section>
 
@@ -102,13 +178,143 @@ const jsonLd = {
       </div>
     </section>
 
+    <!-- Experience & Education -->
+    <section id="experience" class="py-section-gap border-t" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="mb-12">
+          <h2 class="section-title">Experience &amp; Education</h2>
+          <p class="section-desc">A career spanning software engineering and teaching, alongside formal education.</p>
+        </div>
+
+        <div class="flex flex-col gap-6 mb-16">
+          {[
+            {
+              role: 'Lecturer — Informatics Study Programme (S1)',
+              org: 'Universitas Ahmad Dahlan Aceh',
+              period: '2026 – Present',
+              type: 'Concurrent with engineering role',
+              items: ['Teaching and supervising undergraduate Informatics students'],
+            },
+            {
+              role: 'Software Engineer',
+              org: 'PT Alfath Teknologi Kreatif — Kelola.net platform',
+              period: 'Apr 2021 – Present',
+              type: 'Full-time',
+              items: [
+                'Designed and built a multi-tenant clinic management SaaS — application architecture, database design, backend, and deployment (PHP, MySQL, PostgreSQL, Docker, REST API)',
+                'Reduced critical page load time from 75 seconds to about 5 seconds (93% improvement) through application and database optimization',
+                'Led technical implementation and coordinated development tasks across the engineering team, including code review and technical decision-making',
+                'Integrated the platform with SATUSEHAT (OAuth2, FHIR, ICD-10/ICD-9) to submit electronic medical records to the Indonesian Ministry of Health',
+              ],
+            },
+            {
+              role: 'NLP Engineer',
+              org: 'PT Bahasa Kinerja Utama',
+              period: 'Jan 2023 – Dec 2023',
+              type: 'Contract',
+              items: [
+                'Built and experimented with deep learning models (Python, PyTorch) for Indonesian conversational text',
+                'Developed NLP solutions for automated information extraction from unstructured phone-call transcriptions',
+                'Performed preprocessing, cleaning, and transformation of noisy transcription data',
+                'Integrated NLP processing into application workflows to turn unstructured text into structured information',
+              ],
+            },
+            {
+              role: 'Back End Developer',
+              org: 'PT Ina Gata Persada',
+              period: 'Feb 2020 – Mar 2021',
+              type: 'Full-time',
+              items: [
+                'Developed backend systems for 4 web applications and 1 mobile application',
+                'Designed and implemented backend features, REST APIs, database operations, and business logic',
+                'Learned Flutter and shipped a mobile application in under three months',
+              ],
+            },
+            {
+              role: 'Web Developer',
+              org: 'UIN Maulana Malik Ibrahim Malang',
+              period: 'Jan 2019 – Dec 2019',
+              type: 'Part-time',
+              items: [
+                'Built a Single Tuition Fee (UKT) determination information system',
+                'Cut data calculation time from 10 minutes to under 2 minutes through query optimization and database normalization',
+              ],
+            },
+          ].map((job) => (
+            <div class="border rounded-xl p-6 md:p-8" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
+              <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
+                <div>
+                  <h3 class="font-display text-xl" style="color: var(--color-primary);">{job.role}</h3>
+                  <p class="font-mono text-sm" style="color: var(--color-secondary);">{job.org}</p>
+                </div>
+                <div class="md:text-right shrink-0">
+                  <p class="font-mono text-xs" style="color: var(--color-on-surface-variant);">{job.period}</p>
+                  <p class="font-mono text-xs" style="color: var(--color-on-surface-variant); opacity: 0.6;">{job.type}</p>
+                </div>
+              </div>
+              <ul class="space-y-1 text-sm list-disc pl-4" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">
+                {job.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <h3 class="font-display text-xl mb-6" style="color: var(--color-primary);">Education</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[
+            { degree: 'Master of Artificial Intelligence', school: 'Syiah Kuala University', period: '2021 – 2023' },
+            { degree: 'Bachelor of Informatics', school: 'UIN Maulana Malik Ibrahim Malang', period: '2015 – 2020' },
+          ].map((edu) => (
+            <div class="border rounded-xl p-6" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
+              <h4 class="font-display text-lg mb-1" style="color: var(--color-primary);">{edu.degree}</h4>
+              <p class="font-mono text-sm mb-1" style="color: var(--color-secondary);">{edu.school}</p>
+              <p class="font-mono text-xs" style="color: var(--color-on-surface-variant);">{edu.period}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {courses.length > 0 && (
+      <section id="teaching" class="py-section-gap border-t" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
+        <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+          <div class="mb-12">
+            <h2 class="section-title">Teaching</h2>
+            <p class="section-desc">Courses I teach in the Informatics Study Programme (S1), Universitas Ahmad Dahlan Aceh — with topics and materials for each session. Course pages are written in Indonesian.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {courses.map((course) => (
+              <article class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-ambient" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+                <div class="p-8 flex-grow flex flex-col">
+                  <p class="font-mono text-xs mb-4" style="color: var(--color-secondary);">{course.data.code} · {course.data.credits} SKS{course.data.terms[0] && <> · {course.data.terms[0].label}</>}</p>
+                  <h3 class="font-display text-xl font-semibold mb-3 leading-snug" style="color: var(--color-primary);">
+                    <a href={`/kuliah/${course.id.replace(/\.mdx?$/, '')}/`} class="hover:underline decoration-2 underline-offset-2 decoration-secondary">{course.data.title}</a>
+                  </h3>
+                  <p class="mb-6 text-base leading-relaxed flex-grow" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">{course.data.description}</p>
+                </div>
+                <div class="px-8 py-4 border-t flex items-center justify-between" style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);">
+                  <a href={`/kuliah/${course.id.replace(/\.mdx?$/, '')}/`} class="link-arrow text-sm group">
+                    {(course.data.terms[0]?.meetings.length ?? 0)} sessions
+                    <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div class="mt-12">
+            <a href="/kuliah/" class="btn-secondary px-8 py-3.5">All course materials →</a>
+          </div>
+        </div>
+      </section>
+    )}
+
     <!-- Engineering -->
     <section id="engineering" class="bg-background py-section-gap" style="background: var(--color-surface);">
       <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="mb-12">
           <h2 class="section-title">Enterprise Software Engineering</h2>
           <span class="tag-green-pill inline-flex items-center gap-2 px-3 py-1">
-            <span class="font-display text-xs font-medium">5+ Years Software Engineer at Kelola.net — Clinic Management SaaS (2021–2026)</span>
+            <span class="font-display text-xs font-medium">5+ Years Software Engineer at PT Alfath Teknologi Kreatif (Kelola.net) — Clinic Management SaaS (2021–Present)</span>
           </span>
           <p class="section-desc mt-4">Full-stack contributions across <strong>9 major workstreams</strong> — <strong>646 commits</strong>, 10.252 files touched, 204 controller files, 36 models, 646 views, serving hundreds of clinics across Indonesia.</p>
         </div>
@@ -182,7 +388,7 @@ const jsonLd = {
                 <ul class="space-y-1 text-sm list-disc pl-4 mb-4" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">
                   {proj.items.map((item) => <li>{item}</li>)}
                 </ul>
-                {proj.link && <a href={proj.link} class="link-arrow text-sm mt-2">Read technical article →</a>}
+                {proj.link && <a href={proj.link} class="link-arrow text-sm mt-2">Read case study: {proj.title} →</a>}
               </div>
               <div class="px-6 py-4 border-t flex flex-wrap gap-2" style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);">
                 {proj.tags.map((t) => <span class="tag-eng">{t}</span>)}
@@ -254,16 +460,29 @@ const jsonLd = {
         <div class="flex flex-col gap-8">
           {[
             {
-              tag: 'Workshop Speaker · Jul 2025',
-              title: 'AI Workshop for Education Staff (Tenaga Kependidikan)',
-              role: 'Building Admin Tools with Gemini Canvas',
-              desc: 'Led a workshop for faculty education staff (tendik) on building office administration tools — official letters, SOPs, reports, and meeting minutes — straight from natural language via Gemini Canvas, no coding required.',
-              highlights: ['Led Session 2 — "AI for Building Tools": Claude vs ChatGPT, cost-saving strategies, and a tool-building culture', '6-session module: Canvas introduction, hands-on practice with 4 admin tools, plus a free session to build your own tools', 'Participants built tools live and left with 4 ready-to-use tools for daily administrative work'],
+              tag: 'Workshop Speaker · Wed, 16 September 2026',
+              title: 'Workshop on Digital Administration Management for Secretaries Using AI and Big Data Methods',
+              role: 'AI-Powered Digital Archive System — Staying a Relevant Secretary in the AI Era',
+              desc: 'Led a workshop for students of the D3 Secretarial Study Programme, Faculty of Economics and Business, Syiah Kuala University, held at the D3 Secretarial Study Programme Hall, FEB USK. Covered building an AI-powered digital archive prototype — moving from archives that merely store files towards a source of organisational knowledge.',
+              highlights: ['The "Humans & AI" framing: AI is the 21st-century printing press, shifting human value from remembering towards analysis, evaluation, and creativity', 'Bloom Taxonomy: AI is strongest at Remember–Understand–Apply, so secretaries must grow stronger at Analyze–Evaluate–Create', 'AI on the secretary desk: CV screening, draft email replies, daily news summaries, meeting minutes, daily agenda and priorities, and fast research for meetings', 'Built an AI-Powered Digital Archive prototype: Google Form → Google Drive → Apps Script → OpenRouter → automatic metadata stored in Google Sheets', 'Technical walkthrough: onFormSubmit trigger, PDF-to-Base64 conversion, OpenRouter API calls, and prompt engineering that returns JSON metadata (type, number, date, sender, subject, summary, keywords)', 'Ethics & Human in the Loop: AI can hallucinate and must be verified, sensitive documents need protection, and final decisions stay with humans'],
               links: [
-                { label: 'Workshop Module', href: '/materi/workshop-ai-tendik.md' },
-                { label: 'Session 2 Slides', href: '/materi/workshop-ai-tendik-sesi2.html' },
+                { label: 'Invitation', href: 'https://drive.google.com/file/d/1lkJdYrXGXqnGiThrJo0v_3BMZN167DDL/view?usp=sharing' },
+                { label: 'Slide Materials', href: '/materi/workshop-ai-sekre.html' },
+                { label: 'Apps Script Code', href: '/materi/smart-archive/' },
               ],
-              tags: ['Gemini Canvas', 'AI for Administration', 'No-Code Tools'],
+              tags: ['Digital Archiving', 'Apps Script', 'OpenRouter', 'Prompt Engineering', 'Human in the Loop'],
+            },
+            {
+              tag: 'Workshop Speaker · Tue, 7 July 2026',
+              title: 'Archive Innovation and AI Adoption for Study Programme Staff — Even Semester, Academic Year 2025/2026',
+              role: 'Session 2 — AI Beyond ChatGPT: Claude, Gemini Canvas, and a Tool-Building Culture',
+              desc: 'Led a workshop for education staff (tendik) of the Doctoral Programme in Accounting, Faculty of Economics and Business, Syiah Kuala University, held at the FEB USK Laboratory Room. Covered building office administration tools — official letters, SOPs, reports, and meeting minutes — straight from natural language via Gemini Canvas, no coding required.',
+              highlights: ['Session 2 "AI for Building Tools": a Claude vs ChatGPT comparison — 200K token context, thinking mode (reason first, then answer), and data not used for training', 'Cost analysis: Claude 3.5 Sonnet at $3/$15 per 1M tokens vs free Gemini 2.5 Flash — the saving strategy is Gemini for daily work, Claude only for long documents', 'Never paste sensitive data (national ID numbers, salaries) into public AI, plus why ChatGPT stays more popular even though Claude is technically stronger', 'Tool-building culture — "we are not just users, we are makers": AI as a tool maker, with Gemini Canvas for building tools without coding', 'Gemini Canvas workshop: 4 administrative tools (official letters, SOPs, reports, meeting minutes) across Sessions 3–6 — participants leave with 4 ready-to-use tools'],
+              links: [
+                { label: 'Invitation', href: 'https://drive.google.com/file/d/1HniMlZeaUVmIv4g_D19orzwuJavaWDMA/view?usp=sharing' },
+                { label: 'Slide Materials', href: '/materi/workshop-ai-tendik-sesi2.html' },
+              ],
+              tags: ['Claude vs ChatGPT', 'Gemini Canvas', 'AI Cost Strategy', 'Tool-Building Culture'],
             },
           ].map((talk) => (
             <div class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-ambient" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
@@ -293,17 +512,17 @@ const jsonLd = {
       </div>
     </section>
 
-    <!-- Mobile Health App / SIBUNDA -->
-    <section id="sibunda" class="py-section-gap border-t" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+    <!-- Projects / Products -->
+    <section id="projek" class="py-section-gap border-t" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
       <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="mb-12">
-          <h2 class="section-title">Mobile Health Application</h2>
-          <p class="section-desc">Mobile &amp; community health — collaboration with the Faculty of Nursing, Syiah Kuala University (USK).</p>
+          <h2 class="section-title">Projects / Products</h2>
+          <p class="section-desc">A collection of projects &amp; products I've built — from mobile apps to AI research.</p>
         </div>
         <div class="flex flex-col gap-8">
           {[
             {
-              tag: 'Institutional Project · Flutter + REST API',
+              tag: 'Community Service Project · 2025–2026 · Flutter + REST API',
               title: 'SIBUNDA — Sistem Informasi Bunda',
               role: 'Fullstack Developer · Android Mobile App + Node.js Backend',
               desc: 'A nutrition monitoring and stunting prevention app for infants and toddlers (batita/balita) — helping community health cadres and mothers track child growth independently against WHO standards, complete with nutrition education, healthy recipes, a community forum, and meal reminders.',

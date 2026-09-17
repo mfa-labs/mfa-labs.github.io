@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pseudocode — Algoritma dan Pemrograman I</title>
+<meta name="description" content="Slide kuliah pekan 3 Algoritma dan Pemrograman I: menuliskan algoritma dengan pseudocode bergaya BEGIN … END, notasi dasar, urutan instruksi, dan penelusuran.">
+<link rel="canonical" href="https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/03-pseudocode.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #14181b;
+    --ink-soft: #3f4549;
+    --ink-faint: #6b7277;
+    --accent: #006c4a;
+    --accent-soft: #e8f4ef;
+    --line: #d3d7db;
+    --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* Ukuran akar mengikuti resolusi proyektor: proporsional terhadap
+     sisi yang lebih kecil antara lebar layar dan tinggi 16:9. */
+  html {
+    font-size: clamp(16px, min(1.4vw, 2.49vh), 30px);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4.5rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ===== Tipografi ===== */
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .statement {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .sub {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .note {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  strong { font-weight: 700; color: var(--ink); }
+  .accent { color: var(--accent); }
+
+  /* ===== Daftar ===== */
+
+  ul, ol { list-style: none; }
+
+  .list li {
+    font-size: 1.35rem;
+    line-height: 1.55;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .list li:last-child { border-bottom: none; }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 1.35rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .list.numbered { counter-reset: item; }
+
+  .list.numbered li { padding-left: 3rem; }
+
+  .list.numbered li::before {
+    counter-increment: item;
+    content: counter(item);
+    top: 0.75rem;
+    left: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .list li strong { color: var(--ink); }
+
+  /* ===== Kartu & dua kolom ===== */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .cols.tight { gap: 1.5rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .card.bad { border-color: #e6c2c2; background: #fdf4f4; }
+
+  .card.good { border-color: #b9dccd; background: var(--accent-soft); }
+
+  .card .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .card blockquote {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card ul li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Blok pseudocode ===== */
+
+  .code {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+    padding: 1.3rem 1.6rem;
+    font-family: var(--mono);
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+  }
+
+  .code.sm { font-size: 1.05rem; line-height: 1.75; }
+
+  .code .kw { color: var(--accent); font-weight: 700; }
+  .code .cm { color: var(--ink-faint); font-style: italic; }
+
+  .code-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.6rem;
+  }
+
+  /* ===== Tabel ===== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.code-cell {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ===== Slide judul & pembatas ===== */
+
+  .title-slide { justify-content: center; }
+
+  .title-slide h1 { font-size: 3.6rem; max-width: 22ch; }
+
+  .title-slide .meta {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .divider { justify-content: center; }
+
+  .divider .num {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .divider h1 { font-size: 3.4rem; margin-bottom: 1.4rem; }
+
+  /* ===== Kelompok bernomor ===== */
+
+  .blocks { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .block {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .block .idx {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 2rem;
+  }
+
+  .block .body { font-size: 1.2rem; line-height: 1.5; color: var(--ink-soft); }
+  .block .body strong { display: block; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.15rem; }
+
+  /* ===== Kendali ===== */
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0.22rem;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.25s ease;
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 1.6rem;
+    right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+
+  .hint {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2.5rem 2rem; }
+    .cols { grid-template-columns: 1fr; gap: 1.2rem; }
+    .hint { display: none; }
+  }
+
+  /* ===== Cetak / ekspor PDF ===== */
+
+  @media print {
+    html { font-size: 13pt; }
+    body { height: auto; overflow: visible; }
+    .slide {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      page-break-after: always;
+      height: 100vh;
+      padding: 2.5rem 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .progress, .counter, .nav, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progressBar"></div>
+
+<!-- 1. Judul -->
+<div class="slide title-slide active">
+  <p class="kicker">Universitas Ahmad Dahlan Aceh · Fakultas Sains dan Teknologi</p>
+  <h1>Pseudocode</h1>
+  <p class="sub">Algoritma dan Pemrograman I · INFUAD-003 · 2 SKS · Program Studi Informatika (S1)</p>
+  <div class="meta">
+    Pekan 3 · 28 September 2026<br>
+    Muhammad Fadhil Al Amal, S.Kom., M.Kom
+  </div>
+</div>
+
+<!-- 2. Agenda -->
+<div class="slide">
+  <p class="kicker">Pekan 3</p>
+  <h2>Yang akan kita bahas</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Apa itu pseudocode</strong>Dan kenapa kita tidak langsung menulis kode saja</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Kerangka BEGIN &hellip; END</strong>Struktur dan aturan penulisan yang kita sepakati</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Notasi dasar</strong>Penugasan, masukan, keluaran, dan ekspresi</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Contoh runtunan dan penelusuran</strong>Menulis, lalu memeriksa kebenarannya</span></div>
+  </div>
+</div>
+
+<!-- 3. Pembatas 01 -->
+<div class="slide divider">
+  <p class="num">Bagian 01</p>
+  <h1>Apa itu pseudocode</h1>
+  <p class="lead">Di antara bahasa manusia yang kabur dan bahasa pemrograman yang kaku.</p>
+</div>
+
+<!-- 4. Definisi -->
+<div class="slide">
+  <p class="kicker">Definisi</p>
+  <p class="statement">Cara menuliskan algoritma memakai <span class="accent">struktur yang menyerupai bahasa pemrograman</span>, tetapi dengan kata-kata yang bisa dibaca manusia.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:52ch;"><em>Pseudo</em> berarti semu. Pseudocode tidak bisa dijalankan komputer &mdash; ia sketsa, bukan hasil akhir.</p>
+</div>
+
+<!-- 5. Kenapa tidak langsung kode -->
+<div class="slide">
+  <p class="kicker">Alasannya</p>
+  <h2>Kenapa tidak langsung menulis kode?</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Fokusnya tetap pada logika</strong>Titik koma, kurung, dan aturan penulisan nama tidak ada hubungannya dengan penyelesaian masalah.</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Bebas bahasa</strong>Satu pseudocode bisa diterjemahkan ke bahasa apa pun. Cara berpikir ini berlaku lebih lama daripada bahasa yang sedang populer.</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Mudah diperiksa orang lain</strong>Bisa dibaca tanpa menguasai bahasa pemrograman tertentu, sehingga diskusi jauh lebih cepat.</span></div>
+  </div>
+</div>
+
+<!-- 6. Tidak ada aturan baku -->
+<div class="slide">
+  <p class="kicker">Yang perlu disepakati</p>
+  <h2>Pseudocode tidak punya aturan baku</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Setiap buku ajar memakai gayanya sendiri. Karena itu kita menyepakati <strong>satu gaya</strong> dan memakainya secara konsisten &mdash; supaya kamu dan saya membaca hal yang sama.</p>
+  <div class="card good">
+    <blockquote>Gaya yang kita pakai sepanjang semester ditentukan di pertemuan ini.</blockquote>
+  </div>
+</div>
+
+<!-- 7. Pembatas 02 -->
+<div class="slide divider">
+  <p class="num">Bagian 02</p>
+  <h1>Kerangka BEGIN &hellip; END</h1>
+  <p class="lead">Semua pseudocode dalam mata kuliah ini ditulis di dalamnya.</p>
+</div>
+
+<!-- 8. Kerangka dasar -->
+<div class="slide">
+  <p class="kicker">Struktur dasar</p>
+  <h2>Kerangkanya</h2>
+  <p class="code"><span class="kw">BEGIN</span>
+  instruksi pertama
+  instruksi kedua
+  instruksi ketiga
+<span class="kw">END</span></p>
+  <p class="note"><span class="kw accent">BEGIN</span> menandai awal kumpulan instruksi, <span class="kw accent">END</span> menandai akhirnya.</p>
+</div>
+
+<!-- 9. Tiga aturan -->
+<div class="slide">
+  <p class="kicker">Aturan penulisan</p>
+  <h2>Tiga hal yang kita pegang</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Satu instruksi per baris</strong>Jangan menggabungkan beberapa pekerjaan dalam satu baris.</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Menjorok ke dalam</strong>Indentasi bukan hiasan. Ia menandai bagian mana yang termasuk di dalam program.</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Kata kunci kapital, variabel huruf kecil</strong><span class="code-cell" style="font-family:var(--mono)">BEGIN</span>, <span style="font-family:var(--mono)">END</span>, <span style="font-family:var(--mono)">READ</span>, <span style="font-family:var(--mono)">WRITE</span> selalu kapital.</span></div>
+  </div>
+</div>
+
+<!-- 10. Pembatas 03 -->
+<div class="slide divider">
+  <p class="num">Bagian 03</p>
+  <h1>Notasi dasar</h1>
+  <p class="lead">Cukup sedikit, dan itu sengaja.</p>
+</div>
+
+<!-- 11. Tabel notasi -->
+<div class="slide">
+  <p class="kicker">Ringkasan notasi</p>
+  <h2>Yang kita pakai</h2>
+  <table>
+    <thead>
+      <tr><th>Notasi</th><th>Arti</th><th>Contoh</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">&larr;</td><td>Penugasan</td><td class="code-cell">luas &larr; panjang &times; lebar</td></tr>
+      <tr><td class="code-cell">READ</td><td>Membaca masukan</td><td class="code-cell">READ panjang, lebar</td></tr>
+      <tr><td class="code-cell">WRITE</td><td>Menampilkan keluaran</td><td class="code-cell">WRITE luas</td></tr>
+      <tr><td class="code-cell">#</td><td>Komentar</td><td class="code-cell"># menghitung luas</td></tr>
+      <tr><td class="code-cell">+ &minus; &times; &divide;</td><td>Operasi aritmetika</td><td class="code-cell">total &larr; harga &times; jumlah</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 12. Panah vs sama dengan -->
+<div class="slide">
+  <p class="kicker">Sering tertukar</p>
+  <h2>Panah &larr; bukan sama dengan =</h2>
+  <div class="cols">
+    <div class="card bad">
+      <p class="label">Kalau dianggap &ldquo;sama dengan&rdquo;</p>
+      <blockquote><span style="font-family:var(--mono)">luas &larr; luas + 1</span> terasa mustahil: masa luas sama dengan luas ditambah satu?</blockquote>
+    </div>
+    <div class="card good">
+      <p class="label">Artinya sebenarnya</p>
+      <blockquote>Ambil nilai <span style="font-family:var(--mono)">luas</span> yang sekarang, tambah satu, lalu <strong>simpan kembali</strong> ke <span style="font-family:var(--mono)">luas</span>.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 13. READ WRITE nama variabel -->
+<div class="slide">
+  <p class="kicker">Detail kecil yang penting</p>
+  <h2>Masukan, keluaran, dan nama</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Satu <strong>READ</strong> bisa mengambil beberapa nilai sekaligus: <span style="font-family:var(--mono)">READ panjang, lebar</span></li>
+      <li>Urutan <strong>READ</strong> mengikuti urutan masukan, jadi posisinya menentukan nilai mana masuk ke variabel mana</li>
+      <li>Nama variabel sebaiknya menjelaskan isinya: <span style="font-family:var(--mono)">luas</span> lebih baik daripada <span style="font-family:var(--mono)">l</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- 14. Pembatas 04 -->
+<div class="slide divider">
+  <p class="num">Bagian 04</p>
+  <h1>Urutan instruksi</h1>
+  <p class="lead">Instruksi dikerjakan berurutan dari atas ke bawah. Urutannya menentukan hasil.</p>
+</div>
+
+<!-- 15. Dua versi -->
+<div class="slide">
+  <p class="kicker">Bandingkan</p>
+  <h2>Hampir sama, tetapi hanya satu yang benar</h2>
+  <div class="cols tight">
+    <div>
+      <p class="code-label">Salah</p>
+      <p class="code sm"><span class="kw">BEGIN</span>
+  luas &larr; panjang &times; lebar
+  <span class="kw">READ</span> panjang, lebar
+  <span class="kw">WRITE</span> luas
+<span class="kw">END</span></p>
+    </div>
+    <div>
+      <p class="code-label">Benar</p>
+      <p class="code sm"><span class="kw">BEGIN</span>
+  <span class="kw">READ</span> panjang, lebar
+  luas &larr; panjang &times; lebar
+  <span class="kw">WRITE</span> luas
+<span class="kw">END</span></p>
+    </div>
+  </div>
+  <p class="note">Pada versi pertama, <span style="font-family:var(--mono)">panjang</span> dan <span style="font-family:var(--mono)">lebar</span> belum berisi apa-apa saat dihitung.</p>
+</div>
+
+<!-- 16. Aturan -->
+<div class="slide">
+  <p class="kicker">Aturan sederhananya</p>
+  <p class="statement">Sebuah nilai harus <span class="accent">sudah terisi</span> sebelum dipakai.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:52ch;">Berlaku bukan hanya pada READ, tetapi juga pada hasil hitungan yang dipakai di baris berikutnya.</p>
+</div>
+
+<!-- 17. Pembatas 05 -->
+<div class="slide divider">
+  <p class="num">Bagian 05</p>
+  <h1>Contoh runtunan</h1>
+  <p class="lead">Lurus dari atas ke bawah &mdash; tanpa percabangan, tanpa pengulangan.</p>
+</div>
+
+<!-- 18. Luas persegi panjang -->
+<div class="slide">
+  <p class="kicker">Contoh 1</p>
+  <h2>Luas persegi panjang</h2>
+  <p class="code"><span class="kw">BEGIN</span>
+  <span class="kw">READ</span> panjang, lebar
+  luas &larr; panjang &times; lebar
+  <span class="kw">WRITE</span> luas
+<span class="kw">END</span></p>
+  <p class="note">Tiga baris: ambil masukan, hitung, tampilkan.</p>
+</div>
+
+<!-- 19. Konversi suhu -->
+<div class="slide">
+  <p class="kicker">Contoh 2</p>
+  <h2>Konversi Celsius ke Fahrenheit</h2>
+  <p class="code"><span class="kw">BEGIN</span>
+  <span class="kw">READ</span> celsius
+  fahrenheit &larr; (celsius &times; 9 &divide; 5) + 32
+  <span class="kw">WRITE</span> fahrenheit
+<span class="kw">END</span></p>
+  <p class="note">Tanda kurung menentukan urutan perhitungan &mdash; sama seperti di matematika.</p>
+</div>
+
+<!-- 20. Rata-rata -->
+<div class="slide">
+  <p class="kicker">Contoh 3</p>
+  <h2>Rata-rata tiga nilai</h2>
+  <p class="code"><span class="kw">BEGIN</span>
+  <span class="kw">READ</span> nilai1, nilai2, nilai3
+  total &larr; nilai1 + nilai2 + nilai3
+  rata_rata &larr; total &divide; 3
+  <span class="kw">WRITE</span> rata_rata
+<span class="kw">END</span></p>
+  <p class="note">Baris kedua memakai variabel antara supaya baris berikutnya lebih pendek dan lebih mudah diperiksa.</p>
+</div>
+
+<!-- 21. Tukar dua variabel -->
+<div class="slide">
+  <p class="kicker">Contoh 4</p>
+  <h2>Menukar isi dua variabel</h2>
+  <p class="code"><span class="kw">BEGIN</span>
+  <span class="kw">READ</span> a, b
+  sementara &larr; a
+  a &larr; b
+  b &larr; sementara
+  <span class="kw">WRITE</span> a, b
+<span class="kw">END</span></p>
+  <p class="note">Kelihatan sepele, tetapi contoh ini paling melatih kepekaan terhadap urutan.</p>
+</div>
+
+<!-- 22. Kenapa perlu variabel bantu -->
+<div class="slide">
+  <p class="kicker">Kalau variabel bantunya dihilangkan</p>
+  <h2>Apa yang hilang</h2>
+  <p class="code"><span class="kw">BEGIN</span>
+  <span class="kw">READ</span> a, b
+  a &larr; b        <span class="cm"># nilai asli a tertimpa di sini</span>
+  b &larr; a        <span class="cm"># menyalin nilai yang sama</span>
+  <span class="kw">WRITE</span> a, b
+<span class="kw">END</span></p>
+  <p class="lead">Setelah baris kedua, nilai asli <span style="font-family:var(--mono)">a</span> sudah tidak ada. Kedua variabel berakhir berisi nilai yang sama &mdash; data aslinya lenyap tanpa jejak.</p>
+</div>
+
+<!-- 23. Pembatas 06 -->
+<div class="slide divider">
+  <p class="num">Bagian 06</p>
+  <h1>Menelusuri</h1>
+  <p class="lead">Cara paling andal memeriksa pseudocode: jalankan sendiri dengan kertas.</p>
+</div>
+
+<!-- 24. Cara menelusuri -->
+<div class="slide">
+  <p class="kicker">Tabel penelusuran</p>
+  <h2>Cara melakukannya</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Tulis satu baris untuk setiap instruksi</li>
+      <li>Sediakan satu kolom untuk setiap variabel</li>
+      <li>Jalankan instruksinya satu per satu, dari atas ke bawah</li>
+      <li>Catat isi variabel setiap kali nilainya berubah</li>
+      <li>Periksa apakah hasil akhirnya sesuai harapan</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 25. Contoh tabel -->
+<div class="slide">
+  <p class="kicker">Contoh penelusuran</p>
+  <h2>Luas persegi panjang, masukan 8 dan 5</h2>
+  <table>
+    <thead>
+      <tr><th>Baris</th><th>Instruksi</th><th>panjang</th><th>lebar</th><th>luas</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td class="code-cell">READ panjang, lebar</td><td class="code-cell">8</td><td class="code-cell">5</td><td class="code-cell">&mdash;</td></tr>
+      <tr><td>2</td><td class="code-cell">luas &larr; panjang &times; lebar</td><td class="code-cell">8</td><td class="code-cell">5</td><td class="code-cell">40</td></tr>
+      <tr><td>3</td><td class="code-cell">WRITE luas</td><td class="code-cell">8</td><td class="code-cell">5</td><td class="code-cell">40</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:1.2rem;">Kebiasaan ini akan jauh lebih menolong ketika algoritmanya mulai bercabang dan berulang.</p>
+</div>
+
+<!-- 26. Kesalahan umum -->
+<div class="slide">
+  <p class="kicker">Hindari</p>
+  <h2>Kesalahan yang sering muncul</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Memakai nilai sebelum diisi &mdash; biasanya lupa menulis <span style="font-family:var(--mono)">READ</span></li>
+      <li>Menuliskan proses berpikir, bukan instruksi: &ldquo;siapkan data yang dibutuhkan&rdquo;</li>
+      <li>Nama variabel yang tidak menjelaskan apa pun: <span style="font-family:var(--mono)">a</span>, <span style="font-family:var(--mono)">b</span>, <span style="font-family:var(--mono)">c</span></li>
+      <li>Mencampur pseudocode dengan sintaks bahasa: muncul kurung kurawal atau titik koma</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 27. Selanjutnya -->
+<div class="slide">
+  <p class="kicker">Selanjutnya</p>
+  <h2>Alur yang sama, bentuk yang berbeda</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">P4</span><span class="body"><strong>Flowchart</strong>Menggambarkan alur yang sama ke dalam bentuk gambar</span></div>
+    <div class="block"><span class="idx">P9</span><span class="body"><strong>Seleksi dan pengulangan</strong>Baru muncul di pertengahan semester &mdash; untuk sekarang semuanya masih runtunan lurus</span></div>
+  </div>
+  <p class="note" style="margin-top:1.6rem;">Kemampuan menelusuri yang dilatih pekan ini tetap terpakai di flowchart nanti.</p>
+</div>
+
+<!-- 28. Soal refleksi -->
+<div class="slide">
+  <p class="kicker">Tanpa jawaban benar atau salah</p>
+  <h2>Soal refleksi</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Tulis pseudocode menghitung keliling dan luas lingkaran dari jari-jari</li>
+      <li>Tulis pseudocode yang membaca tiga nilai lalu menampilkan selisih terbesar dan terkecil</li>
+      <li>Buat tabel penelusuran untuk salah satu contoh di atas dengan angka pilihanmu</li>
+      <li>Menurutmu, kenapa pseudocode sengaja tidak dibuat bisa dijalankan komputer?</li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Dua soal lagi tersedia di catatan kuliah.</p>
+</div>
+
+<!-- 29. Penutup -->
+<div class="slide title-slide">
+  <p class="kicker">Terima kasih</p>
+  <h1>Tulis dulu, jalankan kemudian</h1>
+  <p class="sub">Pseudocode membantu kita melihat masalah sebelum masalahnya muncul di program yang sungguhan.</p>
+  <div class="meta">
+    Catatan lengkap pekan ini: <strong>mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/</strong>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<div class="counter" id="slideNumber">1 / 29</div>
+<div class="hint">&larr; &rarr; navigasi &nbsp;·&nbsp; <kbd>F</kbd> layar penuh</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var current = 0;
+
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var counter = document.getElementById('slideNumber');
+    var progress = document.getElementById('progressBar');
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      update();
+    }
+
+    function update() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) { if (diff > 0) next(); else prev(); }
+    });
+
+    update();
+  })();
+</script>
+
+</body>
+</html>

@@ -1,32 +1,8 @@
----
-const links = [
-  { href: '/#about', label: 'About' },
-  { href: '/#engineering', label: 'Engineering' },
-  { href: '/#sibunda', label: 'SIBUNDA' },
-  { href: '/#speaking', label: 'Speaking' },
-  { href: '/#research', label: 'AI Research' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/#publications', label: 'Publications' },
-];
----
-
 <header class="sticky top-0 w-full z-50 border-b border-outline-variant" style="background: color-mix(in srgb, var(--color-surface) 80%, transparent); backdrop-filter: blur(12px);">
   <div class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
     <a href="/" class="font-display text-2xl font-bold tracking-tight" style="color: var(--color-primary);">
       Muhammad Fadhil Al Amal
     </a>
-    <nav aria-label="Main Navigation" class="hidden md:flex items-center gap-8">
-      {links.map((link) => (
-        <a
-          href={link.href}
-          class="font-display text-sm uppercase tracking-wider transition-colors duration-200"
-          style="color: var(--color-on-surface-variant);"
-          set:style={Astro.url.pathname === link.href ? 'color: var(--color-primary); border-bottom: 2px solid var(--color-primary); padding-bottom: 0.25rem;' : undefined}
-        >
-          {link.label}
-        </a>
-      ))}
-    </nav>
     <div class="hidden md:flex items-center gap-4">
       <a href={Astro.url.pathname.startsWith('/en') ? '/' : '/en'} class="font-mono text-xs px-3 py-1.5 rounded transition-colors" style="color: var(--color-on-surface-variant); border: 1px solid var(--color-outline-variant);" aria-label="Toggle language">
         {Astro.url.pathname.startsWith('/en') ? 'ID' : 'EN'}
@@ -36,9 +12,6 @@ const links = [
       </button>
       <a href="/#contact" class="btn-primary px-6 py-2.5">Contact</a>
     </div>
-    <button aria-label="Toggle Menu" class="md:hidden p-2" style="color: var(--color-primary);">
-      <span class="material-symbols-outlined">menu</span>
-    </button>
   </div>
 </header>
 

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flowchart — Algoritma dan Pemrograman I</title>
+<meta name="description" content="Slide kuliah pekan 4 Algoritma dan Pemrograman I: simbol standar flowchart, aturan menggambar, penerjemahan dari pseudocode, dan tiga contoh runtunan.">
+<link rel="canonical" href="https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/04-flowchart.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #14181b;
+    --ink-soft: #3f4549;
+    --ink-faint: #6b7277;
+    --accent: #006c4a;
+    --accent-soft: #e8f4ef;
+    --line: #d3d7db;
+    --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* Ukuran akar mengikuti resolusi proyektor: proporsional terhadap
+     sisi yang lebih kecil antara lebar layar dan tinggi 16:9. */
+  html {
+    font-size: clamp(16px, min(1.4vw, 2.49vh), 30px);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4.5rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ===== Tipografi ===== */
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .statement {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .sub {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .note {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  strong { font-weight: 700; color: var(--ink); }
+  .accent { color: var(--accent); }
+
+  /* ===== Daftar ===== */
+
+  ul, ol { list-style: none; }
+
+  .list li {
+    font-size: 1.35rem;
+    line-height: 1.55;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .list li:last-child { border-bottom: none; }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 1.35rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .list.numbered { counter-reset: item; }
+
+  .list.numbered li { padding-left: 3rem; }
+
+  .list.numbered li::before {
+    counter-increment: item;
+    content: counter(item);
+    top: 0.75rem;
+    left: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .list li strong { color: var(--ink); }
+
+  /* ===== Kartu & dua kolom ===== */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .cols.tight { gap: 1.5rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .card.bad { border-color: #e6c2c2; background: #fdf4f4; }
+
+  .card.good { border-color: #b9dccd; background: var(--accent-soft); }
+
+  .card .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .card blockquote {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card ul li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Gambar ===== */
+
+  .figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    min-height: 0;
+  }
+
+  .figure img {
+    max-height: 58vh;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .figure.high img { max-height: 68vh; }
+
+  .figure figcaption {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  /* ===== Blok pseudocode ===== */
+
+  .code {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+    padding: 1.3rem 1.6rem;
+    font-family: var(--mono);
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+  }
+
+  .code.sm { font-size: 1.05rem; line-height: 1.75; }
+
+  .code .kw { color: var(--accent); font-weight: 700; }
+  .code .cm { color: var(--ink-faint); font-style: italic; }
+
+  /* ===== Tabel ===== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.code-cell {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ===== Slide judul & pembatas ===== */
+
+  .title-slide { justify-content: center; }
+
+  .title-slide h1 { font-size: 3.6rem; max-width: 22ch; }
+
+  .title-slide .meta {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .divider { justify-content: center; }
+
+  .divider .num {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .divider h1 { font-size: 3.4rem; margin-bottom: 1.4rem; }
+
+  /* ===== Kelompok bernomor ===== */
+
+  .blocks { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .block {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .block .idx {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 2rem;
+  }
+
+  .block .body { font-size: 1.2rem; line-height: 1.5; color: var(--ink-soft); }
+  .block .body strong { display: block; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.15rem; }
+
+  /* ===== Kendali ===== */
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0.22rem;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.25s ease;
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 1.6rem;
+    right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+
+  .hint {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2.5rem 2rem; }
+    .cols { grid-template-columns: 1fr; gap: 1.2rem; }
+    .hint { display: none; }
+    .figure img { max-height: 48vh; }
+  }
+
+  /* ===== Cetak / ekspor PDF ===== */
+
+  @media print {
+    html { font-size: 13pt; }
+    body { height: auto; overflow: visible; }
+    .slide {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      page-break-after: always;
+      height: 100vh;
+      padding: 2.5rem 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .progress, .counter, .nav, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progressBar"></div>
+
+<!-- 1. Judul -->
+<div class="slide title-slide active">
+  <p class="kicker">Universitas Ahmad Dahlan Aceh · Fakultas Sains dan Teknologi</p>
+  <h1>Flowchart</h1>
+  <p class="sub">Algoritma dan Pemrograman I · INFUAD-003 · 2 SKS · Program Studi Informatika (S1)</p>
+  <div class="meta">
+    Pekan 4 · 5 Oktober 2026<br>
+    Muhammad Fadhil Al Amal, S.Kom., M.Kom
+  </div>
+</div>
+
+<!-- 2. Agenda -->
+<div class="slide">
+  <p class="kicker">Pekan 4</p>
+  <h2>Yang akan kita bahas</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Apa itu flowchart</strong>Menggambarkan algoritma sebagai diagram</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Simbol standar</strong>Lima bentuk yang menentukan arti</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Aturan menggambar</strong>Supaya diagram bisa dibaca orang lain</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Terjemahan dari pseudocode</strong>Satu baris menjadi satu simbol</span></div>
+    <div class="block"><span class="idx">05</span><span class="body"><strong>Tiga contoh runtunan</strong>Beserta perbandingannya dengan pseudocode</span></div>
+  </div>
+</div>
+
+<!-- 3. Pembatas 01 -->
+<div class="slide divider">
+  <p class="num">Bagian 01</p>
+  <h1>Apa itu flowchart</h1>
+  <p class="lead">Algoritma yang sama, disampaikan sebagai gambar.</p>
+</div>
+
+<!-- 4. Definisi -->
+<div class="slide">
+  <p class="kicker">Definisi</p>
+  <p class="statement">Diagram yang menggambarkan urutan langkah penyelesaian masalah memakai <span class="accent">simbol-simbol standar</span> yang dihubungkan garis alir.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:52ch;">Isinya tidak berubah dari pseudocode. Yang berubah hanya cara menyampaikannya.</p>
+</div>
+
+<!-- 5. Kenapa -->
+<div class="slide">
+  <p class="kicker">Alasannya</p>
+  <h2>Kenapa perlu digambar juga?</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Kesalahan alur lebih cepat terlihat</strong>Urutan yang keliru mudah terlewat saat hanya membaca teks.</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Bisa dibaca orang non-teknis</strong>Rekan dari bidang lain tidak perlu memahami notasi pseudocode.</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Memaksa kita menyederhanakan</strong>Karena menggambar butuh ruang, langkah yang tidak perlu terdorong keluar.</span></div>
+  </div>
+</div>
+
+<!-- 6. Pembatas 02 -->
+<div class="slide divider">
+  <p class="num">Bagian 02</p>
+  <h1>Simbol standar</h1>
+  <p class="lead">Bentuknya yang menentukan arti, bukan warnanya.</p>
+</div>
+
+<!-- 7. Gambar simbol -->
+<div class="slide">
+  <p class="kicker">Notasi standar</p>
+  <h2>Lima simbol yang akan kita pakai</h2>
+  <figure class="figure">
+    <img src="img/01-simbol-standar.svg" alt="Lima simbol standar flowchart: terminator, proses, masukan/keluaran, keputusan, dan garis alir">
+  </figure>
+</div>
+
+<!-- 8. Penjelasan simbol -->
+<div class="slide">
+  <p class="kicker">Artinya</p>
+  <h2>Masing-masing mewakili satu pekerjaan</h2>
+  <div class="list">
+    <ul class="list">
+      <li><strong>Terminator</strong> &mdash; awal dan akhir alur</li>
+      <li><strong>Persegi panjang</strong> &mdash; proses atau perhitungan</li>
+      <li><strong>Jajar genjang</strong> &mdash; masukan dan keluaran</li>
+      <li><strong>Belah ketupat</strong> &mdash; keputusan, dua cabang keluar</li>
+      <li><strong>Garis alir</strong> &mdash; arah urutan instruksi</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 9. Warna -->
+<div class="slide">
+  <p class="kicker">Yang perlu diingat</p>
+  <h2>Warna tidak punya makna</h2>
+  <div class="cols">
+    <div class="card good">
+      <p class="label">Yang menentukan</p>
+      <blockquote>Bentuk simbol. Inilah yang membedakan proses dari masukan, dan dari keputusan.</blockquote>
+    </div>
+    <div class="card">
+      <p class="label">Yang hanya membantu</p>
+      <blockquote>Warna, ketebalan garis, dan tata letak. Diagram hitam-putih tetap sah sepenuhnya.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 10. Pembatas 03 -->
+<div class="slide divider">
+  <p class="num">Bagian 03</p>
+  <h1>Aturan menggambar</h1>
+  <p class="lead">Supaya diagrammu bisa dibaca orang lain tanpa penjelasan tambahan.</p>
+</div>
+
+<!-- 11. Aturan -->
+<div class="slide">
+  <p class="kicker">Aturannya</p>
+  <h2>Enam hal yang kita pegang</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Arah alur dari atas ke bawah, lalu kiri ke kanan</li>
+      <li>Satu awal, satu akhir</li>
+      <li>Setiap simbol harus berisi label</li>
+      <li>Garis alir harus punya arah yang jelas</li>
+      <li>Hindari garis yang bersilangan</li>
+      <li>Satu simbol mewakili satu pekerjaan</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 12. Pembatas 04 -->
+<div class="slide divider">
+  <p class="num">Bagian 04</p>
+  <h1>Dari pseudocode ke flowchart</h1>
+  <p class="lead">Kalau pseudocodenya sudah benar, ini pekerjaan mekanis.</p>
+</div>
+
+<!-- 13. Tabel pemetaan -->
+<div class="slide">
+  <p class="kicker">Pemetaan</p>
+  <h2>Satu baris menjadi satu simbol</h2>
+  <table>
+    <thead>
+      <tr><th>Pseudocode</th><th>Simbol</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">BEGIN dan END</td><td>Terminator <strong>Mulai</strong> dan <strong>Selesai</strong></td></tr>
+      <tr><td class="code-cell">READ panjang, lebar</td><td>Jajar genjang masukan</td></tr>
+      <tr><td class="code-cell">WRITE luas</td><td>Jajar genjang keluaran</td></tr>
+      <tr><td class="code-cell">luas &larr; panjang &times; lebar</td><td>Persegi panjang proses</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:1.2rem;">Jumlah simbol akan sama dengan jumlah baris di dalam BEGIN &hellip; END, ditambah dua terminator.</p>
+</div>
+
+<!-- 14. Cocokkan -->
+<div class="slide">
+  <p class="kicker">Cara memeriksa</p>
+  <h2>Kalau jumlahnya tidak cocok</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Berarti ada langkah yang terlewat, atau ada dua langkah yang tergabung ke dalam satu simbol.</p>
+  <div class="card good">
+    <blockquote>Menghitung jumlah simbol adalah cara tercepat memeriksa apakah diagrammu lengkap.</blockquote>
+  </div>
+</div>
+
+<!-- 15. Pembatas 05 -->
+<div class="slide divider">
+  <p class="num">Bagian 05</p>
+  <h1>Tiga contoh</h1>
+  <p class="lead">Semuanya masih runtunan lurus dari atas ke bawah.</p>
+</div>
+
+<!-- 16. Luas -->
+<div class="slide">
+  <p class="kicker">Contoh 1</p>
+  <h2>Luas persegi panjang</h2>
+  <figure class="figure">
+    <img src="img/02-luas-persegi-panjang.svg" alt="Flowchart menghitung luas persegi panjang">
+    <figcaption>Setiap simbol hanya punya satu jalan masuk dan satu jalan keluar.</figcaption>
+  </figure>
+</div>
+
+<!-- 17. Rata-rata -->
+<div class="slide">
+  <p class="kicker">Contoh 2</p>
+  <h2>Rata-rata tiga nilai</h2>
+  <figure class="figure high">
+    <img src="img/03-rata-rata-tiga-nilai.svg" alt="Flowchart menghitung rata-rata tiga nilai">
+    <figcaption>Dua persegi panjang berurutan: <span style="font-family:var(--mono)">total</span> harus dihitung sebelum <span style="font-family:var(--mono)">rata_rata</span>.</figcaption>
+  </figure>
+</div>
+
+<!-- 18. Tukar -->
+<div class="slide">
+  <p class="kicker">Contoh 3</p>
+  <h2>Menukar isi dua variabel</h2>
+  <figure class="figure high">
+    <img src="img/04-menukar-dua-nilai.svg" alt="Flowchart menukar isi dua variabel">
+    <figcaption>Tiga persegi panjang yang urutannya tidak bisa ditukar.</figcaption>
+  </figure>
+</div>
+
+<!-- 19. Pembatas 06 -->
+<div class="slide divider">
+  <p class="num">Bagian 06</p>
+  <h1>Flowchart atau pseudocode?</h1>
+  <p class="lead">Keduanya menggambarkan algoritma yang sama.</p>
+</div>
+
+<!-- 20. Perbandingan -->
+<div class="slide">
+  <p class="kicker">Perbandingan</p>
+  <h2>Kelebihan masing-masing</h2>
+  <table>
+    <thead>
+      <tr><th></th><th>Pseudocode</th><th>Flowchart</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Menulis</td><td>Lebih cepat</td><td>Lebih lambat</td></tr>
+      <tr><td>Merevisi</td><td>Mudah</td><td>Perlu menata ulang tata letak</td></tr>
+      <tr><td>Melihat alur keseluruhan</td><td>Perlu dibaca baris demi baris</td><td>Terlihat sekaligus</td></tr>
+      <tr><td>Dibaca orang non-teknis</td><td>Sulit</td><td>Mudah</td></tr>
+      <tr><td>Alur bercabang dan berulang</td><td>Mulai sulit dibayangkan</td><td>Jauh lebih jelas</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 21. Aturan praktis -->
+<div class="slide">
+  <p class="kicker">Aturan praktis</p>
+  <p class="statement"><span class="accent">Pseudocode</span> untuk merinci langkah, <span class="accent">flowchart</span> untuk memeriksa alur.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:52ch;">Selama algoritmanya masih lurus, keduanya sama mudahnya. Keunggulan flowchart baru terasa saat alurnya mulai bercabang.</p>
+</div>
+
+<!-- 22. Kesalahan umum -->
+<div class="slide">
+  <p class="kicker">Hindari</p>
+  <h2>Kesalahan yang sering muncul</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Bentuk yang salah &mdash; perhitungan di jajar genjang, masukan di persegi panjang</li>
+      <li>Simbol tanpa label</li>
+      <li>Tanpa tanda panah, sehingga arah alurnya ambigu</li>
+      <li>Dua pekerjaan ditumpuk dalam satu simbol</li>
+      <li>Tata letak terlalu rapat untuk diproyeksikan</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 23. Selanjutnya -->
+<div class="slide">
+  <p class="kicker">Selanjutnya</p>
+  <h2>Menuju pertengahan semester</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">P5</span><span class="body"><strong>Konsep data</strong>Jenis nilai yang bisa disimpan variabel, dan pengaruhnya pada pengolahan</span></div>
+    <div class="block"><span class="idx">P6</span><span class="body"><strong>Operator dan ekspresi</strong>Bagaimana nilai diolah</span></div>
+    <div class="block"><span class="idx">P7</span><span class="body"><strong>Studi kasus</strong>Perhitungan nilai mahasiswa &mdash; menggabungkan pekan 1 sampai 6</span></div>
+  </div>
+</div>
+
+<!-- 24. Soal refleksi -->
+<div class="slide">
+  <p class="kicker">Tanpa jawaban benar atau salah</p>
+  <h2>Soal refleksi</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Gambarkan flowchart untuk menghitung keliling persegi panjang</li>
+      <li>Ubah pseudocode yang kamu tulis pekan lalu menjadi flowchart</li>
+      <li>Gambarkan versi salah dari flowchart menukar dua nilai, lalu tunjukkan bagian mana yang tidak masuk akal</li>
+      <li>Kenapa simbol keputusan berbentuk belah ketupat, bukan persegi panjang?</li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Dua soal lagi tersedia di catatan kuliah.</p>
+</div>
+
+<!-- 25. Penutup -->
+<div class="slide title-slide">
+  <p class="kicker">Terima kasih</p>
+  <h1>Gambar alurnya, bukan hanya langkahnya</h1>
+  <p class="sub">Kesalahan urutan jauh lebih cepat terlihat ketika alurnya tergambar.</p>
+  <div class="meta">
+    Catatan lengkap pekan ini: <strong>mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/</strong>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<div class="counter" id="slideNumber">1 / 25</div>
+<div class="hint">&larr; &rarr; navigasi &nbsp;·&nbsp; <kbd>F</kbd> layar penuh</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var current = 0;
+
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var counter = document.getElementById('slideNumber');
+    var progress = document.getElementById('progressBar');
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      update();
+    }
+
+    function update() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) { if (diff > 0) next(); else prev(); }
+    });
+
+    update();
+  })();
+</script>
+
+</body>
+</html>

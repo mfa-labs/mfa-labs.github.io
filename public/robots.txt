@@ -1,3 +1,31 @@
+# AI / LLM crawlers are explicitly welcome
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Human- and LLM-readable site summary: https://mfa-labs.github.io/llms.txt
+
 User-agent: *
 Allow: /
+
 Sitemap: https://mfa-labs.github.io/sitemap-index.xml

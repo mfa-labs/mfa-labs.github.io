@@ -1,0 +1,172 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ProseMateri from '../../components/ProseMateri.astro';
+
+export async function getStaticPaths() {
+  const courses = await getCollection('kuliah');
+  return courses
+    .filter((course) => !course.data.draft)
+    .map((course) => ({
+      params: { slug: course.id.replace(/\.mdx?$/, '') },
+      props: { course },
+    }));
+}
+
+interface Props {
+  course: CollectionEntry<'kuliah'>;
+}
+
+const { course } = Astro.props;
+const { data } = course;
+const { Content } = await course.render();
+
+const courseSlug = course.id.replace(/\.mdx?$/, '');
+const site = Astro.site ?? new URL('https://mfa-labs.github.io');
+const courseUrl = new URL(`/kuliah/${courseSlug}/`, site).href;
+const bodyText = (course.body ?? '').trim();
+
+const notes = (await getCollection('catatan')).filter(
+  (note) => !note.data.draft && note.data.course === courseSlug
+);
+const notesBySlug = new Map(notes.map((note) => [note.id.replace(/\.mdx?$/, ''), note]));
+
+const current = data.terms[0];
+const pastTerms = data.terms.slice(1);
+const meetings = current?.meetings ?? [];
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+const courseInstances = data.terms
+  .map((term) => {
+    const dates = term.meetings
+      .map((meeting) => meeting.date)
+      .filter((date): date is Date => date instanceof Date);
+    if (dates.length === 0) return null;
+    return {
+      '@type': 'CourseInstance',
+      name: term.label,
+      courseMode: 'onsite',
+      startDate: new Date(Math.min(...dates.map((d) => d.getTime()))).toISOString().slice(0, 10),
+      endDate: new Date(Math.max(...dates.map((d) => d.getTime()))).toISOString().slice(0, 10),
+    };
+  })
+  .filter((instance) => instance !== null);
+
+const jsonLd: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: data.title,
+  description: data.description,
+  courseCode: data.code,
+  inLanguage: 'id',
+  url: courseUrl,
+  numberOfCredits: { '@type': 'StructuredValue', value: data.credits },
+  provider: { '@type': 'CollegeOrUniversity', name: 'Universitas Ahmad Dahlan Aceh' },
+  instructor: {
+    '@type': 'Person',
+    name: 'Muhammad Fadhil Al Amal',
+    url: new URL('/', site).href,
+  },
+};
+
+if (courseInstances.length > 0) {
+  jsonLd.hasCourseInstance = courseInstances;
+}
+---
+
+<Layout title={data.title} description={data.description} lang="id" jsonLd={jsonLd}>
+  <Nav />
+
+  <main class="flex-grow w-full py-section-gap">
+    <div class="max-w-[860px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <a href="/kuliah/" class="link-arrow mb-12 inline-flex">
+        <span class="material-symbols-outlined mr-1">arrow_back</span>
+        Semua mata kuliah
+      </a>
+
+      <header class="mb-14">
+        <p class="font-mono text-xs uppercase tracking-widest mb-4" style="color: var(--color-secondary);">
+          {data.code} · {data.credits} SKS{current && <> · {current.label}</>}
+        </p>
+        <h1 class="font-display text-[40px] md:text-[52px] leading-[1.08] tracking-tight font-semibold mb-5" style="color: var(--color-primary);">{data.title}</h1>
+        <p class="font-body text-lg leading-relaxed mb-6" style="color: var(--color-on-surface-variant);">{data.description}</p>
+        <p class="font-mono text-xs" style="color: var(--color-on-surface-variant); opacity: 0.6;">{data.program} · Universitas Ahmad Dahlan Aceh</p>
+      </header>
+
+      <section class="mb-16">
+        <h2 class="font-display text-xl mb-6" style="color: var(--color-primary);">Jadwal Pertemuan</h2>
+        {
+          meetings.length === 0 ? (
+            <p class="font-body text-sm" style="color: var(--color-on-surface-variant);">Jadwal pertemuan belum tersedia.</p>
+          ) : (
+            <ol class="flex flex-col border-t" style="border-color: var(--color-outline-variant);">
+              {meetings.map((meeting) => {
+                const note = meeting.note ? notesBySlug.get(meeting.note) : undefined;
+                const isSlide = meeting.file ? /\.html?$/.test(meeting.file) : false;
+                const isExternal = meeting.file ? /^https?:\/\//.test(meeting.file) : false;
+                const opensInTab = isSlide || isExternal;
+                return (
+                  <li class="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 py-4 border-b" style="border-color: var(--color-outline-variant);">
+                    <div class="shrink-0" style="min-width: 9rem;">
+                      <p class="font-mono text-xs" style="color: var(--color-secondary);">Pekan {meeting.week}</p>
+                      {meeting.date && (
+                        <p class="font-mono text-xs" style="color: var(--color-on-surface-variant); opacity: 0.6;">{formatDate(meeting.date)}</p>
+                      )}
+                    </div>
+                    <span class="font-body text-base flex-grow" style="color: var(--color-on-surface-variant);">{meeting.topic}</span>
+                    <div class="flex items-center gap-5 shrink-0">
+                      {note && (
+                        <a href={`/kuliah/${courseSlug}/${meeting.note}/`} class="link-arrow text-xs">
+                          Baca catatan
+                          <span class="material-symbols-outlined text-base ml-1">article</span>
+                        </a>
+                      )}
+                      {meeting.file && (
+                        <a
+                          href={meeting.file}
+                          target={opensInTab ? '_blank' : undefined}
+                          rel={opensInTab ? 'noopener' : undefined}
+                          download={opensInTab ? undefined : true}
+                          class="link-arrow text-xs"
+                        >
+                          {isSlide ? 'Slide' : 'Materi'}
+                          <span class="material-symbols-outlined text-base ml-1">{opensInTab ? 'open_in_new' : 'download'}</span>
+                        </a>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          )
+        }
+      </section>
+
+      {
+        pastTerms.length > 0 && (
+          <section class="mb-16">
+            <h2 class="font-display text-xl mb-6" style="color: var(--color-primary);">Semester Sebelumnya</h2>
+            <ul class="flex flex-col border-t" style="border-color: var(--color-outline-variant);">
+              {pastTerms.map((term) => (
+                <li class="flex items-baseline justify-between gap-4 py-4 border-b" style="border-color: var(--color-outline-variant);">
+                  <span class="font-body text-base" style="color: var(--color-on-surface-variant);">{term.label}</span>
+                  <span class="font-mono text-xs" style="color: var(--color-on-surface-variant); opacity: 0.6;">{term.meetings.length} pertemuan</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {bodyText && <div class="prose-materi"><Content /></div>}
+    </div>
+  </main>
+
+  <Footer />
+  <ProseMateri />
+</Layout>

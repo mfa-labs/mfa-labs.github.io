@@ -1,0 +1,55 @@
+# Muhammad Fadhil Al Amal
+
+> Muhammad Fadhil Al Amal is an AI & software engineer based in Banda Aceh, Indonesia. He has 5+ years building and maintaining a healthcare SaaS platform at Kelola.net (CodeIgniter 3 / PHP, MySQL 8.0, REST API, Docker) that serves hundreds of clinics across Indonesia, and researches NLP for Indonesian regional languages. He also speaks at workshops on practical AI for office administration.
+
+The site is bilingual: Indonesian is the default (`/`) and English lives under `/en/`. All technical articles are written in Indonesian.
+
+## Profile
+
+- [Home — Bahasa Indonesia](https://mfa-labs.github.io/): Full portfolio — engineering case studies, research, publications, workshops, and projects.
+- [Home — English](https://mfa-labs.github.io/en/): English version of the same portfolio.
+- [Technical blog](https://mfa-labs.github.io/blog/): 10 long-form articles on healthcare SaaS engineering, interoperability, and infrastructure.
+- [RSS feed](https://mfa-labs.github.io/rss.xml): Feed for the technical blog.
+- [LinkedIn](https://www.linkedin.com/in/muhammad-fadhil-al-amal/): Professional profile.
+- [Google Scholar](https://scholar.google.com/citations?user=1pAz6xgAAAAJ&hl=id): Publication record.
+- [GitHub](https://github.com/mfa-labs): Code and projects.
+
+## Technical Articles
+
+All articles are first-hand engineering write-ups from a production healthcare SaaS platform (Indonesian language).
+
+- [Migrasi PHP 7 ke PHP 8](https://mfa-labs.github.io/blog/php7-to-php8-migration/): Migrating a live SaaS platform from PHP 7 to PHP 8.1 with no downtime across hundreds of clinics.
+- [Menghubungkan Klinik ke SATUSEHAT](https://mfa-labs.github.io/blog/satusehat-integration/): Integrating a clinic platform with Indonesia's national health data exchange (OAuth2, REST API, ICD-10, ICD-9).
+- [Sistem Notifikasi WhatsApp & CRM](https://mfa-labs.github.io/blog/whatsapp-notification-crm/): From legacy cron notifications to a modern CRM module with a template engine.
+- [Arsitektur Multi-Tenant & 12 Role](https://mfa-labs.github.io/blog/multi-tenant-role-architecture/): Multi-tenant data isolation and role-based routing across 12 user roles.
+- [Rekam Medis Elektronik & Alur Kerja Klinik](https://mfa-labs.github.io/blog/medical-records-clinical-workflow/): Digital odontogram, ICD coding, appointment booking, and cross-clinic record sharing.
+- [Sistem Laporan Keuangan & Jasa Medis](https://mfa-labs.github.io/blog/financial-reporting-jasmedis/): Multi-role financial reporting and medical fee-splitting calculations.
+- [Sistem Pembayaran & Kasir](https://mfa-labs.github.io/blog/billing-kasir/): Multi-method payments, invoicing, and debt tracking.
+- [Infrastruktur & DevOps](https://mfa-labs.github.io/blog/infrastructure-devops/): Server management, hosting migration, and Docker containerization.
+- [Optimasi Database & Performa](https://mfa-labs.github.io/blog/database-performance-optimization/): Indexing, query optimization, and a memory-leak fix for millions of transactions.
+- [SIBUNDA — Aplikasi Monitoring Gizi & Pencegahan Stunting](https://mfa-labs.github.io/blog/sibunda/): Flutter + Node.js REST API mobile app for child nutrition monitoring and stunting prevention, built with the Faculty of Nursing, Syiah Kuala University.
+
+## Workshops & Talks
+
+Slide decks, documentation, and source code from workshops delivered by Muhammad Fadhil Al Amal.
+
+- [AI-Powered Digital Archive System](https://mfa-labs.github.io/materi/workshop-ai-sekre.html): Workshop for the D3 Secretarial Study Programme, Faculty of Economics and Business, Syiah Kuala University (16 September 2026) on building an AI-powered digital archive with Google Form, Drive, Apps Script, and OpenRouter.
+- [Smart Archive — Apps Script documentation](https://mfa-labs.github.io/materi/smart-archive/): Setup guide and full source code for that workshop — Google Form → Google Drive → Apps Script → OpenRouter → Google Sheets, including the OpenRouter API key setup script.
+- [AI Bukan Sekadar ChatGPT](https://mfa-labs.github.io/materi/workshop-ai-tendik-sesi2.html): Session 2 of the workshop on AI archive innovation for study-programme education staff (7 July 2026) — Claude vs ChatGPT, cost strategy, and building tools with Gemini Canvas.
+- [SIBUNDA project](https://mfa-labs.github.io/#projek): Community-service mobile app monitoring child nutrition against WHO growth standards (2025–2026).
+
+## Teaching
+
+Course materials from undergraduate teaching at Universitas Ahmad Dahlan Aceh, Faculty of Science and Technology. Course pages are written in Indonesian.
+
+- [All course materials](https://mfa-labs.github.io/kuliah/): Listing of courses taught in the Informatics Study Programme (S1).
+- [Algoritma dan Pemrograman I](https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/): Introductory algorithms and programming course (INFUAD-003, 2 credits, odd semester 2026/2027) — a 16-week schedule covering computational thinking, pseudocode, flowcharts, data concepts, operators, selection, iteration, and an algorithm design mini project.
+
+## Research
+
+- [Hybrid Transformer-RNN Model for Classification of Indonesian Regional Language](https://ieeexplore.ieee.org/document/11389462/): Published in the 2025 International Conference on ICT for Smart Society (ICISS). DOI: 10.1109/ICISS66954.2025.11389462.
+
+## Optional
+
+- [Sitemap](https://mfa-labs.github.io/sitemap-index.xml)
+- [Robots policy](https://mfa-labs.github.io/robots.txt)

@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operator dan Ekspresi — Algoritma dan Pemrograman I</title>
+<meta name="description" content="Slide kuliah pekan 6 Algoritma dan Pemrograman I: operator aritmetika, operand, urutan pengerjaan, dan penulisan ekspresi dalam pseudocode.">
+<link rel="canonical" href="https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/06-operator-dan-ekspresi.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #14181b;
+    --ink-soft: #3f4549;
+    --ink-faint: #6b7277;
+    --accent: #006c4a;
+    --accent-soft: #e8f4ef;
+    --line: #d3d7db;
+    --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* Ukuran akar mengikuti resolusi proyektor: proporsional terhadap
+     sisi yang lebih kecil antara lebar layar dan tinggi 16:9. */
+  html {
+    font-size: clamp(16px, min(1.4vw, 2.49vh), 30px);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4.5rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ===== Tipografi ===== */
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .statement {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .sub {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .note {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  strong { font-weight: 700; color: var(--ink); }
+  .accent { color: var(--accent); }
+
+  /* ===== Daftar ===== */
+
+  ul, ol { list-style: none; }
+
+  .list li {
+    font-size: 1.35rem;
+    line-height: 1.55;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .list li:last-child { border-bottom: none; }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 1.35rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .list.numbered { counter-reset: item; }
+
+  .list.numbered li { padding-left: 3rem; }
+
+  .list.numbered li::before {
+    counter-increment: item;
+    content: counter(item);
+    top: 0.75rem;
+    left: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .list li strong { color: var(--ink); }
+
+  /* ===== Kartu & dua kolom ===== */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .cols.tight { gap: 1.5rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .card.bad { border-color: #e6c2c2; background: #fdf4f4; }
+
+  .card.good { border-color: #b9dccd; background: var(--accent-soft); }
+
+  .card .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .card blockquote {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card ul li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Blok pseudocode ===== */
+
+  .code {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+    padding: 1.3rem 1.6rem;
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+  }
+
+  .code.sm { font-size: 1rem; line-height: 1.7; }
+
+  .code .kw { color: var(--accent); font-weight: 700; }
+  .code .cm { color: var(--ink-faint); font-style: italic; }
+
+  /* ===== Tabel ===== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.code-cell {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ===== Slide judul & pembatas ===== */
+
+  .title-slide { justify-content: center; }
+
+  .title-slide h1 { font-size: 3.6rem; max-width: 22ch; }
+
+  .title-slide .meta {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .divider { justify-content: center; }
+
+  .divider .num {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .divider h1 { font-size: 3.4rem; margin-bottom: 1.4rem; }
+
+  /* ===== Kelompok bernomor ===== */
+
+  .blocks { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .block {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .block .idx {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 2rem;
+  }
+
+  .block .body { font-size: 1.2rem; line-height: 1.5; color: var(--ink-soft); }
+  .block .body strong { display: block; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.15rem; }
+
+  /* ===== Kendali ===== */
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0.22rem;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.25s ease;
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 1.6rem;
+    right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+
+  .hint {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2.5rem 2rem; }
+    .cols { grid-template-columns: 1fr; gap: 1.2rem; }
+    .hint { display: none; }
+  }
+
+  /* ===== Cetak / ekspor PDF ===== */
+
+  @media print {
+    html { font-size: 13pt; }
+    body { height: auto; overflow: visible; }
+    .slide {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      page-break-after: always;
+      height: 100vh;
+      padding: 2.5rem 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .progress, .counter, .nav, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progressBar"></div>
+
+<!-- 1. Judul -->
+<div class="slide title-slide active">
+  <p class="kicker">Universitas Ahmad Dahlan Aceh · Fakultas Sains dan Teknologi</p>
+  <h1>Operator dan Ekspresi</h1>
+  <p class="sub">Algoritma dan Pemrograman I · INFUAD-003 · 2 SKS · Program Studi Informatika (S1)</p>
+  <div class="meta">
+    Pekan 6 · 19 Oktober 2026<br>
+    Muhammad Fadhil Al Amal, S.Kom., M.Kom
+  </div>
+</div>
+
+<!-- 2. Agenda -->
+<div class="slide">
+  <p class="kicker">Pekan 6</p>
+  <h2>Yang akan kita bahas</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Operator, operand, ekspresi</strong>Tiga istilah yang akan sering dipakai</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Tujuh operator aritmetika</strong>Termasuk div dan mod</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Urutan pengerjaan</strong>Kenapa tanda kurung menentukan hasil</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Tipe hasil ekspresi</strong>Kaitan dengan materi pekan lalu</span></div>
+    <div class="block"><span class="idx">05</span><span class="body"><strong>Empat contoh runtunan</strong>Tanpa satu pun percabangan</span></div>
+  </div>
+</div>
+
+<!-- 3. Pembatas 01 -->
+<div class="slide divider">
+  <p class="num">Bagian 01</p>
+  <h1>Operator, operand, ekspresi</h1>
+  <p class="lead">Tiga istilah yang perlu dibedakan sejak awal.</p>
+</div>
+
+<!-- 4. Tiga istilah -->
+<div class="slide">
+  <p class="kicker">Definisi</p>
+  <h2>Tiga istilah</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Operator</strong>Simbol yang mengerjakan suatu operasi terhadap nilai</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Operand</strong>Nilai yang dikerjakan oleh operator tersebut</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Ekspresi</strong>Gabungan operand, operator, dan tanda kurung yang menghasilkan sebuah nilai</span></div>
+  </div>
+</div>
+
+<!-- 5. Anatomi -->
+<div class="slide">
+  <p class="kicker">Mari kita bedah satu baris</p>
+  <h2>Anatominya</h2>
+  <p class="code" style="font-size:1.4rem">luas &larr; panjang &times; lebar</p>
+  <div class="cols tight">
+    <div class="card">
+      <p class="label">Bagian-bagiannya</p>
+      <ul>
+        <li><span style="font-family:var(--mono)">&times;</span> &mdash; operator</li>
+        <li><span style="font-family:var(--mono)">panjang</span>, <span style="font-family:var(--mono)">lebar</span> &mdash; operand</li>
+        <li><span style="font-family:var(--mono)">panjang &times; lebar</span> &mdash; ekspresi</li>
+      </ul>
+    </div>
+    <div class="card good">
+      <p class="label">Keseluruhan barisnya</p>
+      <blockquote>Instruksi penugasan &mdash; menyimpan hasil ekspresi ke dalam sebuah variabel.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 6. Panah bukan operator -->
+<div class="slide">
+  <p class="kicker">Perlu ditegaskan</p>
+  <p class="statement">Tanda <span class="accent">&larr;</span> bukan operator.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:52ch;">Ia penanda instruksi, bukan operasi yang menghasilkan nilai. Yang menghasilkan nilai adalah ekspresi di sebelah kanannya.</p>
+</div>
+
+<!-- 7. Pembatas 02 -->
+<div class="slide divider">
+  <p class="num">Bagian 02</p>
+  <h1>Operator aritmetika</h1>
+  <p class="lead">Tujuh operator, dan tiga di antaranya perlu perhatian khusus.</p>
+</div>
+
+<!-- 8. Tabel operator -->
+<div class="slide">
+  <p class="kicker">Daftarnya</p>
+  <h2>Tujuh operator aritmetika</h2>
+  <table>
+    <thead>
+      <tr><th>Operator</th><th>Arti</th><th>Contoh</th><th>Hasil</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">+</td><td>Penjumlahan</td><td class="code-cell">7 + 3</td><td class="code-cell">10</td></tr>
+      <tr><td class="code-cell">&minus;</td><td>Pengurangan</td><td class="code-cell">7 &minus; 3</td><td class="code-cell">4</td></tr>
+      <tr><td class="code-cell">&times;</td><td>Perkalian</td><td class="code-cell">7 &times; 3</td><td class="code-cell">21</td></tr>
+      <tr><td class="code-cell">&divide;</td><td>Pembagian</td><td class="code-cell">7 &divide; 2</td><td class="code-cell">3.5</td></tr>
+      <tr><td class="code-cell">div</td><td>Hasil bagi bulat</td><td class="code-cell">7 div 2</td><td class="code-cell">3</td></tr>
+      <tr><td class="code-cell">mod</td><td>Sisa bagi</td><td class="code-cell">7 mod 2</td><td class="code-cell">1</td></tr>
+      <tr><td class="code-cell">^</td><td>Pemangkatan</td><td class="code-cell">2 ^ 3</td><td class="code-cell">8</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 9. div mod -->
+<div class="slide">
+  <p class="kicker">Sering tertukar</p>
+  <h2>Membedakan &divide;, div, dan mod</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Ambil contoh <span style="font-family:var(--mono)">7 &divide; 2</span>. Ada tiga pertanyaan berbeda yang bisa diajukan:</p>
+  <div class="blocks">
+    <div class="block"><span class="idx">&divide;</span><span class="body">Berapa hasilnya kalau boleh berpecahan? &rarr; <strong>3.5</strong></span></div>
+    <div class="block"><span class="idx">div</span><span class="body">Berapa kali angka 2 muat penuh ke dalam 7? &rarr; <strong>3</strong></span></div>
+    <div class="block"><span class="idx">mod</span><span class="body">Berapa sisanya? &rarr; <strong>1</strong></span></div>
+  </div>
+</div>
+
+<!-- 10. Hubungan -->
+<div class="slide">
+  <p class="kicker">Cara memeriksa</p>
+  <h2>Ketiganya saling terkait</h2>
+  <p class="code" style="font-size:1.3rem">(7 div 2) &times; 2 + (7 mod 2) = 3 &times; 2 + 1 = 7</p>
+  <p class="lead">Hasil <span style="font-family:var(--mono)">div</span> dikalikan pembagi, ditambah hasil <span style="font-family:var(--mono)">mod</span>, kembali menjadi bilangan asalnya. Hubungan ini berguna untuk memeriksa perhitunganmu.</p>
+</div>
+
+<!-- 11. Minus dua peran -->
+<div class="slide">
+  <p class="kicker">Simbol yang sama, dua peran</p>
+  <h2>Minus bisa berarti dua hal</h2>
+  <div class="cols">
+    <div class="card">
+      <p class="label">Pengurangan &mdash; dua operand</p>
+      <blockquote><span style="font-family:var(--mono);font-size:1.3rem">7 &minus; 3</span><br>Sebuah operasi.</blockquote>
+    </div>
+    <div class="card">
+      <p class="label">Penanda negatif &mdash; satu operand</p>
+      <blockquote><span style="font-family:var(--mono);font-size:1.3rem">&minus;3</span><br>Sebuah nilai.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 12. Pembatas 03 -->
+<div class="slide divider">
+  <p class="num">Bagian 03</p>
+  <h1>Urutan pengerjaan</h1>
+  <p class="lead">Urutannya menentukan hasil, bukan sekadar kerapian.</p>
+</div>
+
+<!-- 13. Prioritas -->
+<div class="slide">
+  <p class="kicker">Aturannya</p>
+  <h2>Empat tingkat prioritas</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Tanda kurung</li>
+      <li>Pemangkatan (<span style="font-family:var(--mono)">^</span>)</li>
+      <li>Perkalian, pembagian, <span style="font-family:var(--mono)">div</span>, dan <span style="font-family:var(--mono)">mod</span> &mdash; dari kiri ke kanan</li>
+      <li>Penjumlahan dan pengurangan &mdash; dari kiri ke kanan</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 14. Contoh prioritas -->
+<div class="slide">
+  <p class="kicker">Akibatnya</p>
+  <h2>Dua ekspresi yang tampak mirip</h2>
+  <table>
+    <thead>
+      <tr><th>Ekspresi</th><th>Dikerjakan sebagai</th><th>Hasil</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">2 + 3 &times; 4</td><td class="code-cell">2 + 12</td><td class="code-cell">14</td></tr>
+      <tr><td class="code-cell">(2 + 3) &times; 4</td><td class="code-cell">5 &times; 4</td><td class="code-cell">20</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 15. Prioritas sama -->
+<div class="slide">
+  <p class="kicker">Yang paling halus</p>
+  <h2>Kalau prioritasnya sama: kiri ke kanan</h2>
+  <table>
+    <thead>
+      <tr><th>Ekspresi</th><th>Dikerjakan sebagai</th><th>Hasil</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">20 &minus; 5 &minus; 3</td><td class="code-cell">15 &minus; 3</td><td class="code-cell">12</td></tr>
+      <tr><td class="code-cell">100 &divide; 10 &divide; 2</td><td class="code-cell">10 &divide; 2</td><td class="code-cell">5</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:1.2rem;">Menghitung <span style="font-family:var(--mono)">20 &minus; 5 &minus; 3</span> sebagai <span style="font-family:var(--mono)">20 &minus; 2</span> akan menghasilkan jawaban yang salah.</p>
+</div>
+
+<!-- 16. Tanda kurung -->
+<div class="slide">
+  <p class="kicker">Jalan keluar kalau ragu</p>
+  <p class="statement">Tanda kurung <span class="accent">mengalahkan</span> semua aturan di atas.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:52ch;">Bukan karena aturannya berubah, tetapi karena maksudmu menjadi terbaca &mdash; oleh orang lain, dan oleh dirimu sendiri di kemudian hari.</p>
+</div>
+
+<!-- 17. Pembatas 04 -->
+<div class="slide divider">
+  <p class="num">Bagian 04</p>
+  <h1>Tipe hasil ekspresi</h1>
+  <p class="lead">Kaitan langsung dengan materi pekan lalu.</p>
+</div>
+
+<!-- 18. Tipe hasil -->
+<div class="slide">
+  <p class="kicker">Aturannya</p>
+  <h2>Hasil ekspresi juga bertipe</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">&divide;</span><span class="body"><strong>Menghasilkan nilai yang bisa berpecahan</strong>Hasilnya sebaiknya disimpan di variabel <span style="font-family:var(--mono)">real</span>.</span></div>
+    <div class="block"><span class="idx">div</span><span class="body"><strong>Selalu bilangan bulat</strong>Keduanya mengambil bagian bulat dari pembagian.</span></div>
+    <div class="block"><span class="idx">+</span><span class="body"><strong>Integer dicampur real menghasilkan real</strong>Menjumlahkan 3 dan 0.5 tidak mungkin menghasilkan bilangan bulat.</span></div>
+  </div>
+</div>
+
+<!-- 19. Ekspresi panjang -->
+<div class="slide">
+  <p class="kicker">Kebiasaan yang baik</p>
+  <h2>Ekspresi panjang: pecah atau tidak?</h2>
+  <div class="cols tight">
+    <div>
+      <p class="code-label" style="font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.6rem">Sulit diperiksa</p>
+      <p class="code sm">rata_rata &larr; (nilai1 + nilai2
+  + nilai3 + nilai4) &divide; 4</p>
+    </div>
+    <div>
+      <p class="code-label" style="font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.6rem">Lebih jelas</p>
+      <p class="code sm">total &larr; nilai1 + nilai2
+  + nilai3 + nilai4
+rata_rata &larr; total &divide; 4</p>
+    </div>
+  </div>
+  <p class="note">Keduanya benar. Yang kedua lebih mudah diperiksa karena setiap baris memuat satu gagasan.</p>
+</div>
+
+<!-- 20. Pembatas 05 -->
+<div class="slide divider">
+  <p class="num">Bagian 05</p>
+  <h1>Empat contoh</h1>
+  <p class="lead">Semuanya masih runtunan lurus &mdash; tanpa percabangan, tanpa pengulangan.</p>
+</div>
+
+<!-- 21. Contoh 1 -->
+<div class="slide">
+  <p class="kicker">Contoh 1</p>
+  <h2>Luas dan keliling persegi panjang</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  panjang, lebar : integer
+  luas : integer
+  keliling : integer
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> panjang, lebar
+  luas &larr; panjang &times; lebar
+  keliling &larr; 2 &times; (panjang + lebar)
+  <span class="kw">WRITE</span> luas, keliling
+<span class="kw">END</span></p>
+  <p class="note">Tanpa tanda kurung, ekspresinya menjadi <span style="font-family:var(--mono)">2 &times; panjang + lebar</span> &mdash; hasilnya berbeda dan salah.</p>
+</div>
+
+<!-- 22. Contoh 2 -->
+<div class="slide">
+  <p class="kicker">Contoh 2 &mdash; div dan mod bekerja</p>
+  <h2>Mengubah detik menjadi menit</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  total_detik : integer
+  menit : integer
+  sisa_detik : integer
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> total_detik
+  menit &larr; total_detik div 60
+  sisa_detik &larr; total_detik mod 60
+  <span class="kw">WRITE</span> menit, sisa_detik
+<span class="kw">END</span></p>
+  <p class="note">Masukan 145 menghasilkan menit 2 dan sisa 25. Periksa: 2 &times; 60 + 25 = 145.</p>
+</div>
+
+<!-- 23. Contoh 3 -->
+<div class="slide">
+  <p class="kicker">Contoh 3</p>
+  <h2>Total belanja setelah diskon</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  harga : integer
+  jumlah : integer
+  subtotal : real
+  diskon : real
+  total : real
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> harga, jumlah
+  subtotal &larr; harga &times; jumlah
+  diskon &larr; subtotal &times; 10 &divide; 100
+  total &larr; subtotal &minus; diskon
+  <span class="kw">WRITE</span> total
+<span class="kw">END</span></p>
+  <p class="note">Angka 10 adalah persentase &mdash; kandidat konstanta, karena maknanya lebih jelas ketika diberi nama.</p>
+</div>
+
+<!-- 24. Contoh 4 -->
+<div class="slide">
+  <p class="kicker">Contoh 4</p>
+  <h2>Rata-rata dengan tipe yang tepat</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  nilai1, nilai2, nilai3 : integer
+  total : integer
+  rata_rata : real
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> nilai1, nilai2, nilai3
+  total &larr; nilai1 + nilai2 + nilai3
+  rata_rata &larr; total &divide; 3
+  <span class="kw">WRITE</span> rata_rata
+<span class="kw">END</span></p>
+  <p class="note">Tiga operator berbeda, dan pemilihan tipe yang menentukan apakah pecahannya tersimpan.</p>
+</div>
+
+<!-- 25. Batas pekan ini -->
+<div class="slide">
+  <p class="kicker">Yang sengaja belum dibahas</p>
+  <h2>Batas pekan ini</h2>
+  <div class="cols">
+    <div class="card">
+      <p class="label">Operator perbandingan</p>
+      <blockquote>Membandingkan dua nilai &mdash; menanyakan mana yang lebih besar.</blockquote>
+    </div>
+    <div class="card">
+      <p class="label">Operator logika</p>
+      <blockquote>Menggabungkan beberapa pertanyaan: &ldquo;dan&rdquo;, &ldquo;atau&rdquo;, &ldquo;tidak&rdquo;.</blockquote>
+    </div>
+  </div>
+  <p class="note" style="margin-top:1.6rem;">Keduanya baru terpakai saat seleksi di pekan 9. Ditahan supaya contoh di pekan ini tetap runtunan lurus, dan supaya operator aritmetika kamu kuasai lebih dulu.</p>
+</div>
+
+<!-- 26. Kesalahan umum -->
+<div class="slide">
+  <p class="kicker">Hindari</p>
+  <h2>Kesalahan yang sering muncul</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Pembagian dengan nol &mdash; tidak terdefinisi</li>
+      <li>Lupa tanda kurung pada ekspresi yang seharusnya dikelompokkan</li>
+      <li>Menghitung dari kanan ke kiri pada operator setingkat</li>
+      <li>Memakai <span style="font-family:var(--mono)">=</span> padahal yang dimaksud penugasan <span style="font-family:var(--mono)">&larr;</span></li>
+      <li>Tipe hasil tidak sesuai tipe variabel tujuan, sehingga pecahannya hilang</li>
+      <li>Memaksakan satu ekspresi panjang padahal bisa dipecah</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 27. Selanjutnya -->
+<div class="slide">
+  <p class="kicker">Selanjutnya</p>
+  <h2>Menuju UTS</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">P7</span><span class="body"><strong>Studi kasus perhitungan nilai mahasiswa</strong>Menggabungkan pekan 1 sampai 6 tanpa satu pun percabangan</span></div>
+    <div class="block"><span class="idx">P8</span><span class="body"><strong>UTS</strong></span></div>
+    <div class="block"><span class="idx">P9</span><span class="body"><strong>Seleksi</strong>Di sinilah operator perbandingan dan logika baru muncul</span></div>
+  </div>
+</div>
+
+<!-- 28. Soal refleksi -->
+<div class="slide">
+  <p class="kicker">Tanpa jawaban benar atau salah</p>
+  <h2>Soal refleksi</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Hitung <span style="font-family:var(--mono)">17 div 5</span>, <span style="font-family:var(--mono)">17 mod 5</span>, dan <span style="font-family:var(--mono)">17 &divide; 5</span>. Periksa apakah ketiganya kembali menghasilkan 17</li>
+      <li>Tulis pseudocode mengubah total hari menjadi minggu dan sisa harinya</li>
+      <li>Tulis pseudocode luas lingkaran dari jari-jarinya, dengan tipe yang tepat</li>
+      <li>Kenapa <span style="font-family:var(--mono)">20 &minus; 5 &minus; 3</span> bukan <span style="font-family:var(--mono)">20 &minus; 2</span>?</li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Dua soal lagi tersedia di catatan kuliah.</p>
+</div>
+
+<!-- 29. Penutup -->
+<div class="slide title-slide">
+  <p class="kicker">Terima kasih</p>
+  <h1>Urutan pengerjaan menentukan hasil</h1>
+  <p class="sub">Kalau ragu, tanda kurung bukan tanda kelemahan &mdash; ia cara menyampaikan maksudmu dengan pasti.</p>
+  <div class="meta">
+    Catatan lengkap pekan ini: <strong>mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/</strong>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<div class="counter" id="slideNumber">1 / 29</div>
+<div class="hint">&larr; &rarr; navigasi &nbsp;·&nbsp; <kbd>F</kbd> layar penuh</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var current = 0;
+
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var counter = document.getElementById('slideNumber');
+    var progress = document.getElementById('progressBar');
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      update();
+    }
+
+    function update() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) { if (diff > 0) next(); else prev(); }
+    });
+
+    update();
+  })();
+</script>
+
+</body>
+</html>

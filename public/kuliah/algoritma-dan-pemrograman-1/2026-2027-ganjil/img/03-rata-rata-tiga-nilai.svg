@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640" role="img" aria-label="Flowchart menghitung rata-rata tiga nilai">
+  <defs>
+    <marker id="ar-rata" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2b3034"/>
+    </marker>
+  </defs>
+  <style>
+    .box { fill: #ffffff; stroke: #2b3034; stroke-width: 2; }
+    .start { fill: #e8f4ef; stroke: #006c4a; stroke-width: 2; }
+    .io { fill: #eef3f8; stroke: #2b3034; stroke-width: 2; }
+    .t { font-family: Inter, system-ui, sans-serif; font-size: 18px; fill: #14181b; text-anchor: middle; dominant-baseline: middle; }
+    .line { stroke: #2b3034; stroke-width: 2; fill: none; }
+  </style>
+
+  <rect class="start" x="150" y="30" width="340" height="54" rx="27"/>
+  <text class="t" x="320" y="58">Mulai</text>
+
+  <line class="line" x1="320" y1="84" x2="320" y2="118" marker-end="url(#ar-rata)"/>
+
+  <polygon class="io" points="168,124 490,124 472,186 150,186"/>
+  <text class="t" x="320" y="156">Baca nilai1, nilai2, nilai3</text>
+
+  <line class="line" x1="320" y1="186" x2="320" y2="220" marker-end="url(#ar-rata)"/>
+
+  <rect class="box" x="150" y="226" width="340" height="62"/>
+  <text class="t" x="320" y="258">total &#8592; nilai1 + nilai2 + nilai3</text>
+
+  <line class="line" x1="320" y1="288" x2="320" y2="322" marker-end="url(#ar-rata)"/>
+
+  <rect class="box" x="150" y="328" width="340" height="62"/>
+  <text class="t" x="320" y="360">rata_rata &#8592; total &#247; 3</text>
+
+  <line class="line" x1="320" y1="390" x2="320" y2="424" marker-end="url(#ar-rata)"/>
+
+  <polygon class="io" points="168,430 490,430 472,492 150,492"/>
+  <text class="t" x="320" y="462">Tulis rata_rata</text>
+
+  <line class="line" x1="320" y1="492" x2="320" y2="526" marker-end="url(#ar-rata)"/>
+
+  <rect class="start" x="150" y="532" width="340" height="54" rx="27"/>
+  <text class="t" x="320" y="560">Selesai</text>
+</svg>

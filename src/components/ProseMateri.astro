@@ -1,0 +1,135 @@
+<style is:global>
+  .prose-materi {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: var(--color-on-surface-variant);
+  }
+
+  .prose-materi :where(h2) {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-primary);
+    margin-top: 3.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--color-outline);
+  }
+
+  .prose-materi :where(h3) {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prose-materi :where(p) {
+    margin-bottom: 1.25rem;
+  }
+
+  .prose-materi :where(ul, ol) {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.75;
+  }
+
+  .prose-materi :where(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .prose-materi :where(strong) {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .prose-materi :where(a) {
+    color: var(--color-secondary);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .prose-materi :where(code) {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    background: var(--color-surface-container);
+    color: var(--color-primary);
+  }
+
+  /* Blok kode bernama (```pseudocode, ```php, dst) — kode sungguhan, ditonjolkan */
+  .prose-materi :where(pre) {
+    background: var(--color-surface-container);
+    border: 1px solid var(--color-outline-variant);
+    border-left: 3px solid var(--color-secondary);
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-on-surface);
+  }
+
+  /* Blok polos tanpa tag bahasa — bukan kode, jadi dibuat lebih tenang */
+  .prose-materi :where(pre[data-language="plaintext"]) {
+    background-color: var(--color-surface-container-low);
+    border-left: 1px solid var(--color-outline-variant);
+    border-radius: 0.375rem;
+    padding: 0.875rem 1rem;
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    color: var(--color-on-surface-variant);
+  }
+
+  .prose-materi :where(pre code) {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    font-size: 0.8125rem;
+    color: inherit;
+  }
+
+  .prose-materi :where(blockquote) {
+    border-left: 3px solid var(--color-secondary);
+    padding-left: 1.25rem;
+    margin: 2rem 0;
+    font-style: italic;
+  }
+
+  .prose-materi :where(img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 2rem auto;
+    border-radius: 0.5rem;
+  }
+
+  .prose-materi :where(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.75rem;
+    font-size: 0.9375rem;
+  }
+
+  .prose-materi :where(th, td) {
+    padding: 0.75rem 0.875rem;
+    border: 1px solid var(--color-outline-variant);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .prose-materi :where(th) {
+    background: var(--color-surface-container);
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+</style>

@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konsep Data — Algoritma dan Pemrograman I</title>
+<meta name="description" content="Slide kuliah pekan 5 Algoritma dan Pemrograman I: variabel, aturan penamaan, lima tipe data dasar, konstanta, dan deklarasi dalam pseudocode.">
+<link rel="canonical" href="https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/05-konsep-data.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #14181b;
+    --ink-soft: #3f4549;
+    --ink-faint: #6b7277;
+    --accent: #006c4a;
+    --accent-soft: #e8f4ef;
+    --line: #d3d7db;
+    --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* Ukuran akar mengikuti resolusi proyektor: proporsional terhadap
+     sisi yang lebih kecil antara lebar layar dan tinggi 16:9. */
+  html {
+    font-size: clamp(16px, min(1.4vw, 2.49vh), 30px);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4.5rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ===== Tipografi ===== */
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .statement {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .sub {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .note {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  strong { font-weight: 700; color: var(--ink); }
+  .accent { color: var(--accent); }
+
+  /* ===== Daftar ===== */
+
+  ul, ol { list-style: none; }
+
+  .list li {
+    font-size: 1.35rem;
+    line-height: 1.55;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .list li:last-child { border-bottom: none; }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 1.35rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .list.numbered { counter-reset: item; }
+
+  .list.numbered li { padding-left: 3rem; }
+
+  .list.numbered li::before {
+    counter-increment: item;
+    content: counter(item);
+    top: 0.75rem;
+    left: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .list li strong { color: var(--ink); }
+
+  /* ===== Kartu & dua kolom ===== */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .cols.tight { gap: 1.5rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .card.bad { border-color: #e6c2c2; background: #fdf4f4; }
+
+  .card.good { border-color: #b9dccd; background: var(--accent-soft); }
+
+  .card .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .card blockquote {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card ul li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Blok pseudocode ===== */
+
+  .code {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+    padding: 1.3rem 1.6rem;
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+  }
+
+  .code.sm { font-size: 1rem; line-height: 1.7; }
+
+  .code .kw { color: var(--accent); font-weight: 700; }
+  .code .cm { color: var(--ink-faint); font-style: italic; }
+
+  /* ===== Tabel ===== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.code-cell {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ===== Slide judul & pembatas ===== */
+
+  .title-slide { justify-content: center; }
+
+  .title-slide h1 { font-size: 3.6rem; max-width: 22ch; }
+
+  .title-slide .meta {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .divider { justify-content: center; }
+
+  .divider .num {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .divider h1 { font-size: 3.4rem; margin-bottom: 1.4rem; }
+
+  /* ===== Kelompok bernomor ===== */
+
+  .blocks { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .block {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .block .idx {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 2rem;
+  }
+
+  .block .body { font-size: 1.2rem; line-height: 1.5; color: var(--ink-soft); }
+  .block .body strong { display: block; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.15rem; }
+
+  /* ===== Kendali ===== */
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0.22rem;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.25s ease;
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 1.6rem;
+    right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+
+  .hint {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2.5rem 2rem; }
+    .cols { grid-template-columns: 1fr; gap: 1.2rem; }
+    .hint { display: none; }
+  }
+
+  /* ===== Cetak / ekspor PDF ===== */
+
+  @media print {
+    html { font-size: 13pt; }
+    body { height: auto; overflow: visible; }
+    .slide {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      page-break-after: always;
+      height: 100vh;
+      padding: 2.5rem 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .progress, .counter, .nav, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progressBar"></div>
+
+<!-- 1. Judul -->
+<div class="slide title-slide active">
+  <p class="kicker">Universitas Ahmad Dahlan Aceh · Fakultas Sains dan Teknologi</p>
+  <h1>Konsep Data</h1>
+  <p class="sub">Algoritma dan Pemrograman I · INFUAD-003 · 2 SKS · Program Studi Informatika (S1)</p>
+  <div class="meta">
+    Pekan 5 · 12 Oktober 2026<br>
+    Muhammad Fadhil Al Amal, S.Kom., M.Kom
+  </div>
+</div>
+
+<!-- 2. Agenda -->
+<div class="slide">
+  <p class="kicker">Pekan 5</p>
+  <h2>Yang akan kita bahas</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Variabel</strong>Wadah bernama untuk menyimpan nilai</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Aturan penamaan</strong>Supaya program bisa dibaca seperti kalimat</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Lima tipe data dasar</strong>Dan kenapa tipe itu menentukan segalanya</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Konstanta</strong>Nilai yang tidak berubah</span></div>
+    <div class="block"><span class="idx">05</span><span class="body"><strong>Deklarasi</strong>Gaya pseudocode kita berubah mulai pekan ini</span></div>
+  </div>
+</div>
+
+<!-- 3. Pembatas 01 -->
+<div class="slide divider">
+  <p class="num">Bagian 01</p>
+  <h1>Dari nilai menjadi variabel</h1>
+  <p class="lead">Data perlu tempat untuk disimpan.</p>
+</div>
+
+<!-- 4. Variabel -->
+<div class="slide">
+  <p class="kicker">Definisi</p>
+  <p class="statement">Variabel adalah <span class="accent">wadah bernama</span> yang isinya bisa berubah selama program berjalan.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:52ch;">Bayangkan sekotak wadah berlabel: labelnya nama variabel, isinya nilai. Nama &ldquo;variabel&rdquo; berasal dari sifatnya &mdash; isinya bervariasi.</p>
+</div>
+
+<!-- 5. Menimpa -->
+<div class="slide">
+  <p class="kicker">Sifat yang perlu dipegang</p>
+  <h2>Satu variabel, satu nilai pada satu waktu</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Menyimpan nilai baru ke sebuah variabel berarti <strong>menimpa</strong> nilai lamanya. Nilai yang tertimpa tidak bisa dipanggil kembali.</p>
+  <div class="card good">
+    <blockquote>Inilah alasan contoh menukar dua nilai di pekan 3 butuh variabel bantu.</blockquote>
+  </div>
+</div>
+
+<!-- 6. Pembatas 02 -->
+<div class="slide divider">
+  <p class="num">Bagian 02</p>
+  <h1>Aturan penamaan</h1>
+  <p class="lead">Nama yang baik membuat program bisa dibaca hampir seperti kalimat.</p>
+</div>
+
+<!-- 7. Aturan penamaan -->
+<div class="slide">
+  <p class="kicker">Kebiasaan yang kita pakai</p>
+  <h2>Enam aturan penamaan</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Tidak boleh mengandung spasi &mdash; pakai garis bawah: <span style="font-family:var(--mono)">total_belanja</span></li>
+      <li>Tidak boleh diawali angka: <span style="font-family:var(--mono)">nilai1</span> benar, <span style="font-family:var(--mono)">1nilai</span> salah</li>
+      <li>Huruf kecil semua</li>
+      <li>Nama harus menjelaskan isinya: <span style="font-family:var(--mono)">rata_rata</span>, bukan <span style="font-family:var(--mono)">r</span></li>
+      <li>Hindari nama yang terlalu mirip: <span style="font-family:var(--mono)">total</span> dan <span style="font-family:var(--mono)">total1</span></li>
+      <li>Jangan memakai kata perintah seperti <span style="font-family:var(--mono)">READ</span> atau <span style="font-family:var(--mono)">WRITE</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- 8. Pembatas 03 -->
+<div class="slide divider">
+  <p class="num">Bagian 03</p>
+  <h1>Lima tipe data dasar</h1>
+  <p class="lead">Jenis nilai menentukan apa yang boleh dilakukan terhadapnya.</p>
+</div>
+
+<!-- 9. Tabel tipe -->
+<div class="slide">
+  <p class="kicker">Ringkasan</p>
+  <h2>Lima tipe yang akan kita pakai</h2>
+  <table>
+    <thead>
+      <tr><th>Tipe</th><th>Isinya</th><th>Contoh nilai</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">integer</td><td>Bilangan bulat</td><td class="code-cell">17 &nbsp; -3 &nbsp; 2026</td></tr>
+      <tr><td class="code-cell">real</td><td>Bilangan pecahan</td><td class="code-cell">3.14 &nbsp; 78.25</td></tr>
+      <tr><td class="code-cell">char</td><td>Satu karakter</td><td class="code-cell">'A' &nbsp; '7' &nbsp; '#'</td></tr>
+      <tr><td class="code-cell">string</td><td>Rangkaian karakter</td><td class="code-cell">"Banda Aceh"</td></tr>
+      <tr><td class="code-cell">boolean</td><td>Benar atau salah</td><td class="code-cell">true &nbsp; false</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 10. Integer real -->
+<div class="slide">
+  <p class="kicker">Tipe angka</p>
+  <h2>Kapan memakai integer, kapan real</h2>
+  <div class="cols">
+    <div class="card">
+      <p class="label">integer &mdash; satuan utuh</p>
+      <ul>
+        <li>Jumlah barang</li>
+        <li>Banyak pertemuan</li>
+        <li>Tahun</li>
+        <li>Banyak mahasiswa</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p class="label">real &mdash; boleh berpecahan</p>
+      <ul>
+        <li>Berat badan</li>
+        <li>Suhu</li>
+        <li>Nilai rata-rata</li>
+        <li>Persentase</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note" style="margin-top:1.6rem;">Angka 3.5 orang tidak punya arti &mdash; itulah petunjuk bahwa tipe yang tepat adalah integer.</p>
+</div>
+
+<!-- 11. Char string boolean -->
+<div class="slide">
+  <p class="kicker">Tipe bukan angka</p>
+  <h2>char, string, dan boolean</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">char</span><span class="body">Tepat satu karakter: jenis kelamin <span style="font-family:var(--mono)">'L'</span>, huruf mutu <span style="font-family:var(--mono)">'A'</span>, pilihan menu <span style="font-family:var(--mono)">'1'</span></span></div>
+    <div class="block"><span class="idx">string</span><span class="body">Rangkaian karakter: nama, alamat, judul, nomor identitas</span></div>
+    <div class="block"><span class="idx">boolean</span><span class="body">Hanya benar atau salah. Akan banyak dipakai saat seleksi di pekan 9</span></div>
+  </div>
+</div>
+
+<!-- 12. Tanda kutip -->
+<div class="slide">
+  <p class="kicker">Sering tertukar</p>
+  <h2>Tanda kutip bukan hiasan</h2>
+  <div class="cols">
+    <div class="card good">
+      <p class="label">Angka</p>
+      <blockquote><span style="font-family:var(--mono);font-size:1.3rem">80</span><br>Bilangan. Bisa dijumlahkan dan dikalikan.</blockquote>
+    </div>
+    <div class="card bad">
+      <p class="label">Teks</p>
+      <blockquote><span style="font-family:var(--mono);font-size:1.3rem">"80"</span><br>Teks berisi dua karakter. Tidak bisa dijumlahkan sebagai angka.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 13. Pembatas 04 -->
+<div class="slide divider">
+  <p class="num">Bagian 04</p>
+  <h1>Kenapa tipe perlu</h1>
+  <p class="lead">Tipe bukan keterangan tambahan. Ia menentukan empat hal.</p>
+</div>
+
+<!-- 14. Empat alasan -->
+<div class="slide">
+  <p class="kicker">Akibatnya nyata</p>
+  <h2>Tipe menentukan empat hal</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Operasi yang sah</strong>Angka bisa dijumlahkan; teks tidak.</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Hasil yang benar</strong>Rata-rata sebaiknya real. Kalau integer, pecahannya bisa hilang.</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Kesalahan lebih cepat terlihat</strong>Menaruh teks di variabel angka menjadi kekeliruan yang tampak di mata.</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Representasi yang tepat</strong>Nilai yang sama bisa perlu tipe berbeda tergantung keperluannya.</span></div>
+  </div>
+</div>
+
+<!-- 15. Jebakan -->
+<div class="slide">
+  <p class="kicker">Contoh jebakan klasik</p>
+  <h2>Nomor telepon dan NIM</h2>
+  <div class="cols">
+    <div class="card bad">
+      <p class="label">Kalau disimpan sebagai integer</p>
+      <ul>
+        <li>Angka nol di depan hilang</li>
+        <li>Padahal tidak ada perhitungan yang perlu dilakukan</li>
+      </ul>
+    </div>
+    <div class="card good">
+      <p class="label">Yang tepat: string</p>
+      <blockquote>Yang menentukan tipe bukan &ldquo;isinya berupa angka&rdquo;, melainkan <strong>bagaimana nilai itu akan diperlakukan</strong>.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 16. Pembatas 05 -->
+<div class="slide divider">
+  <p class="num">Bagian 05</p>
+  <h1>Konstanta</h1>
+  <p class="lead">Nilai yang tidak berubah selama program berjalan.</p>
+</div>
+
+<!-- 17. Konstanta -->
+<div class="slide">
+  <p class="kicker">Kenapa dipakai</p>
+  <h2>Konstanta</h2>
+  <div class="cols">
+    <div class="card">
+      <p class="label">Contohnya</p>
+      <ul>
+        <li>Nilai PI</li>
+        <li>Tarif pajak</li>
+        <li>Batas nilai minimum kelulusan</li>
+      </ul>
+    </div>
+    <div class="card good">
+      <p class="label">Alasannya</p>
+      <ul>
+        <li>Namanya menjelaskan makna sebuah angka</li>
+        <li>Kalau nilainya berubah, cukup diubah di satu tempat</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note" style="margin-top:1.6rem;">Konvensi penulisan: huruf besar semua, misalnya <span style="font-family:var(--mono)">PAJAK</span> atau <span style="font-family:var(--mono)">NILAI_MINIMUM</span>.</p>
+</div>
+
+<!-- 18. Pembatas 06 -->
+<div class="slide divider">
+  <p class="num">Bagian 06</p>
+  <h1>Deklarasi</h1>
+  <p class="lead">Gaya pseudocode kita berubah mulai pekan ini.</p>
+</div>
+
+<!-- 19. Blok deklarasi -->
+<div class="slide">
+  <p class="kicker">Bentuknya</p>
+  <h2>Blok DEKLARASI sebelum BEGIN</h2>
+  <p class="code"><span class="kw">DEKLARASI</span>
+  panjang, lebar : integer
+  luas : integer
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> panjang, lebar
+  luas &larr; panjang &times; lebar
+  <span class="kw">WRITE</span> luas
+<span class="kw">END</span></p>
+</div>
+
+<!-- 20. Aturan deklarasi -->
+<div class="slide">
+  <p class="kicker">Penulisannya</p>
+  <h2>Empat hal tentang deklarasi</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Satu baris bisa memuat beberapa variabel bertipe sama, dipisahkan koma</li>
+      <li>Nama dan tipe dipisahkan tanda titik dua</li>
+      <li>Deklarasi <strong>tidak dijalankan</strong> &mdash; ia hanya keterangan untuk pembaca</li>
+      <li>Semua variabel yang dipakai di dalam BEGIN &hellip; END harus muncul di deklarasi</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 21. Contoh 1 -->
+<div class="slide">
+  <p class="kicker">Contoh 1</p>
+  <h2>Luas persegi panjang</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  panjang, lebar : integer
+  luas : integer
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> panjang, lebar
+  luas &larr; panjang &times; lebar
+  <span class="kw">WRITE</span> luas
+<span class="kw">END</span></p>
+  <p class="note">Semuanya integer, karena diukur dalam satuan utuh.</p>
+</div>
+
+<!-- 22. Contoh 2 -->
+<div class="slide">
+  <p class="kicker">Contoh 2</p>
+  <h2>Rata-rata tiga nilai</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  nilai1, nilai2, nilai3 : integer
+  total : integer
+  rata_rata : <span class="kw">real</span>
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> nilai1, nilai2, nilai3
+  total &larr; nilai1 + nilai2 + nilai3
+  rata_rata &larr; total &divide; 3
+  <span class="kw">WRITE</span> rata_rata
+<span class="kw">END</span></p>
+  <p class="note">Contoh paling jelas: 80, 80, 81 menghasilkan rata-rata 80.33, bukan 80.</p>
+</div>
+
+<!-- 23. Contoh 3 -->
+<div class="slide">
+  <p class="kicker">Contoh 3</p>
+  <h2>Konversi suhu</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  celsius : real
+  fahrenheit : real
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> celsius
+  fahrenheit &larr; (celsius &times; 9 &divide; 5) + 32
+  <span class="kw">WRITE</span> fahrenheit
+<span class="kw">END</span></p>
+  <p class="note">Angka 32 dan 9 &divide; 5 sebenarnya bagian rumus yang tidak berubah &mdash; kandidat konstanta.</p>
+</div>
+
+<!-- 24. Contoh 4 -->
+<div class="slide">
+  <p class="kicker">Contoh 4</p>
+  <h2>Menampilkan data mahasiswa</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  nim : string
+  nama : string
+  ipk : real
+  aktif : boolean
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> nim, nama, ipk
+  aktif &larr; true
+  <span class="kw">WRITE</span> nim, nama, ipk, aktif
+<span class="kw">END</span></p>
+  <p class="note"><span style="font-family:var(--mono)">nim</span> sengaja string: nol di depan harus dipertahankan.</p>
+</div>
+
+<!-- 25. Memilih tipe -->
+<div class="slide">
+  <p class="kicker">Pola pikir</p>
+  <p class="statement">Berhenti bertanya <span class="accent">&ldquo;isinya apa&rdquo;</span>, mulai bertanya <span class="accent">&ldquo;akan diapakan&rdquo;</span>.</p>
+  <div class="list" style="margin-top:2rem">
+    <ul class="list">
+      <li>Dihitung, tidak boleh berpecahan &rarr; integer</li>
+      <li>Dihitung, boleh berpecahan &rarr; real</li>
+      <li>Ditampilkan atau disimpan sebagai urutan karakter &rarr; string</li>
+      <li>Hanya benar atau salah &rarr; boolean</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 26. Kesalahan umum -->
+<div class="slide">
+  <p class="kicker">Hindari</p>
+  <h2>Kesalahan yang sering muncul</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Memakai string untuk sesuatu yang akan dihitung</li>
+      <li>Memakai integer untuk nilai yang punya pecahan</li>
+      <li>Memakai integer untuk nomor telepon atau NIM</li>
+      <li>Lupa tanda kutip pada char dan string</li>
+      <li>Memakai variabel yang tidak pernah dideklarasikan</li>
+      <li>Nama variabel yang tidak menjelaskan isinya</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 27. Selanjutnya -->
+<div class="slide">
+  <p class="kicker">Selanjutnya</p>
+  <h2>Mengolah nilai yang sudah bertipe</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">P6</span><span class="body"><strong>Operator dan ekspresi</strong>Tipe yang kamu pilih pekan ini menentukan operasi mana yang boleh dipakai</span></div>
+    <div class="block"><span class="idx">P7</span><span class="body"><strong>Studi kasus perhitungan nilai</strong>Menggabungkan pekan 1 sampai 6</span></div>
+    <div class="block"><span class="idx">P8</span><span class="body"><strong>UTS</strong></span></div>
+  </div>
+</div>
+
+<!-- 28. Soal refleksi -->
+<div class="slide">
+  <p class="kicker">Tanpa jawaban benar atau salah</p>
+  <h2>Soal refleksi</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Tentukan tipe untuk: jumlah mahasiswa, berat badan, jenis kelamin, alamat, status pembayaran</li>
+      <li>Sebutkan dua alasan nomor telepon lebih tepat sebagai string</li>
+      <li>Tulis deklarasi untuk menghitung keliling dan luas lingkaran</li>
+      <li>Apa yang terjadi kalau <span style="font-family:var(--mono)">rata_rata</span> dideklarasikan sebagai integer?</li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Dua soal lagi tersedia di catatan kuliah.</p>
+</div>
+
+<!-- 29. Penutup -->
+<div class="slide title-slide">
+  <p class="kicker">Terima kasih</p>
+  <h1>Yang menentukan tipe bukan isinya, tapi perlakunya</h1>
+  <p class="sub">Nomor telepon berisi angka, tetapi tidak pernah dijumlahkan &mdash; karena itu ia string.</p>
+  <div class="meta">
+    Catatan lengkap pekan ini: <strong>mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/</strong>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<div class="counter" id="slideNumber">1 / 29</div>
+<div class="hint">&larr; &rarr; navigasi &nbsp;·&nbsp; <kbd>F</kbd> layar penuh</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var current = 0;
+
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var counter = document.getElementById('slideNumber');
+    var progress = document.getElementById('progressBar');
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      update();
+    }
+
+    function update() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) { if (diff > 0) next(); else prev(); }
+    });
+
+    update();
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,233 @@
+---
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+const codeDir = join(process.cwd(), 'public/materi/smart-archive');
+const readCode = (file: string) => readFileSync(join(codeDir, file), 'utf8').trimEnd();
+
+const mainScript = readCode('smart-archive.gs');
+const setupScript = readCode('openrouter-setup.gs');
+
+const site = Astro.site ?? new URL('https://mfa-labs.github.io');
+const pageUrl = new URL('/materi/smart-archive/', site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'Smart Archive — Sistem Arsip Digital Berbasis AI dengan Google Apps Script',
+  description:
+    'Panduan dan kode sumber sistem arsip digital berbasis AI: Google Form, Google Drive, Apps Script, dan OpenRouter, dengan metadata otomatis ke Google Sheets.',
+  inLanguage: 'id',
+  url: pageUrl,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+  author: {
+    '@type': 'Person',
+    name: 'Muhammad Fadhil Al Amal',
+    url: new URL('/', site).href,
+  },
+  about: {
+    '@type': 'Event',
+    name: 'Workshop Pengelolaan Administrasi bagi Sekretaris Berbasis Digital dengan Metode AI dan Big Data',
+    startDate: '2026-09-16',
+  },
+  keywords:
+    'Apps Script, OpenRouter, arsip digital, AI, Google Form, Google Drive, Google Sheets, prompt engineering',
+};
+---
+
+<Layout
+  title="Smart Archive — Kode Apps Script"
+  description="Panduan dan kode sumber Smart Archive: sistem arsip digital berbasis AI dengan Google Form, Drive, Apps Script, dan OpenRouter."
+  lang="id"
+  jsonLd={jsonLd}
+>
+  <Nav />
+
+  <main class="flex-grow w-full py-section-gap">
+    <div class="max-w-[860px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <a href="/#speaking" class="link-arrow mb-12 inline-flex">
+        <span class="material-symbols-outlined mr-1">arrow_back</span>
+        Kembali ke agenda workshop
+      </a>
+
+      <header class="mb-14">
+        <p class="font-mono text-xs uppercase tracking-widest mb-4" style="color: var(--color-secondary);">Materi Workshop · 16 September 2026</p>
+        <h1 class="font-display text-[40px] md:text-[52px] leading-[1.08] tracking-tight font-semibold mb-5" style="color: var(--color-primary);">Smart Archive</h1>
+        <p class="font-body text-lg leading-relaxed" style="color: var(--color-on-surface-variant);">
+          Sistem arsip digital berbasis AI yang dibangun dari Google Form, Google Drive, Apps Script, dan OpenRouter. Setiap PDF yang diunggah dibaca otomatis, lalu metadata-nya ditulis sebagai satu baris di Google Sheets — tanpa mengetik manual.
+        </p>
+        <div class="flex flex-wrap gap-2 mt-8">
+          <span class="tag-project">Workshop Prodi D3 Sekretari FEB USK</span>
+          <span class="tag-eng">Apps Script</span>
+          <span class="tag-eng">OpenRouter</span>
+          <span class="tag-eng">Prompt Engineering</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-6 mt-8">
+          <a href="/materi/workshop-ai-sekre.html" class="link-arrow text-sm group">
+            Slide materi
+            <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+          </a>
+        </div>
+      </header>
+
+      <div class="doc">
+        <h2>Ringkasan sistem</h2>
+        <p>
+          Alur kerjanya tujuh langkah: unggah PDF &rarr; file tersimpan di Drive &rarr; trigger Apps Script aktif &rarr; file dikirim ke AI &rarr; AI membaca isi dokumen &rarr; metadata dihasilkan &rarr; data disimpan ke Sheets.
+        </p>
+        <p class="flow">Google Form &rarr; Google Drive &rarr; Apps Script &rarr; OpenRouter &rarr; Google Sheets</p>
+        <p>
+          Dari tiap dokumen, AI mengekstrak <strong>jenis dokumen</strong>, <strong>nomor dokumen</strong>, <strong>tanggal</strong>, <strong>pengirim</strong>, <strong>penerima</strong>, <strong>perihal</strong>, <strong>ringkasan</strong> 2&ndash;3 kalimat, dan maksimal <strong>5 kata kunci</strong> — dikembalikan sebagai JSON valid tanpa markdown.
+        </p>
+
+        <h2>Prasyarat</h2>
+        <ul>
+          <li>Akun Google dan satu Google Spreadsheet yang terhubung ke Google Form.</li>
+          <li>Satu pertanyaan <strong>File Upload</strong> pada Form dengan judul persis <code>Upload File</code> — kode mencocokkan judul ini untuk mengambil ID file.</li>
+          <li>API key <a href="https://openrouter.ai/keys" rel="noopener">OpenRouter</a>. Model yang dipakai <code>openrouter/free</code>, dengan plugin <code>file-parser</code> (engine <code>cloudflare-ai</code>) untuk membaca PDF tanpa biaya tambahan.</li>
+        </ul>
+
+        <h2>Langkah pemasangan</h2>
+        <ol>
+          <li>Buka Spreadsheet jawaban Form, lalu <strong>Extensions &rarr; Apps Script</strong>.</li>
+          <li>Tempel isi <code>openrouter-setup.gs</code>, ganti placeholder <code>APIKEY_OPENROUTER</code> dengan API key kamu, lalu jalankan <code>saveApiKey()</code> sekali saja — key tersimpan di Script Properties, bukan di dalam kode.</li>
+          <li>Jalankan <code>testOpenRouter()</code> untuk memastikan koneksi berhasil; cek hasilnya di Execution log (harus membalas <code>BERHASIL</code>).</li>
+          <li>Tambahkan file kedua, tempel isi <code>smart-archive.gs</code>.</li>
+          <li>Buka <strong>Triggers</strong>, tambahkan trigger untuk fungsi <code>onFormSubmit</code> dengan event source <strong>From spreadsheet</strong> dan event type <strong>On form submit</strong>.</li>
+          <li>Uji dengan mengunggah satu PDF lewat Form. Sheet <code>AI Metadata</code> dibuat otomatis lengkap dengan header, dan hasil ekstraksi muncul sebagai satu baris.</li>
+        </ol>
+
+        <h2>Struktur sheet hasil</h2>
+        <p>
+          Sheet <code>AI Metadata</code> berisi kolom: Timestamp, Link File, Nama File, Jenis Dokumen, Nomor Dokumen, Tanggal Dokumen, Pengirim, Penerima, Perihal, Ringkasan, Kata Kunci, dan Status.
+        </p>
+
+        <h2>Kode: smart-archive.gs</h2>
+        <p>
+          Implementasi utama — <code>onFormSubmit()</code> menangkap unggahan dari Form, <code>analyzePdfWithOpenRouter()</code> mengubah PDF ke Base64 dan mengirimnya ke AI, lalu <code>saveMetadataToSheet()</code> menulis hasilnya ke Sheets.
+        </p>
+        <p>
+          <a href="/materi/smart-archive/smart-archive.gs" download class="btn-secondary px-6 py-2.5">Unduh smart-archive.gs</a>
+        </p>
+        <div class="doc-code">
+          <pre><code>{mainScript}</code></pre>
+        </div>
+
+        <h2>Kode: openrouter-setup.gs</h2>
+        <p>
+          Skrip penyiapan. <code>saveApiKey()</code> menyimpan API key ke Script Properties, <code>testOpenRouter()</code> mengirim satu permintaan uji ke OpenRouter untuk memastikan key dan jaringan sudah benar.
+        </p>
+        <p>
+          <a href="/materi/smart-archive/openrouter-setup.gs" download class="btn-secondary px-6 py-2.5">Unduh openrouter-setup.gs</a>
+        </p>
+        <div class="doc-code">
+          <pre><code>{setupScript}</code></pre>
+        </div>
+
+        <h2>Catatan keamanan</h2>
+        <ul>
+          <li>Jangan pernah menaruh API key langsung di dalam kode atau mengunggahnya ke repositori publik — gunakan Script Properties seperti pada <code>openrouter-setup.gs</code>.</li>
+          <li>Data sensitif (NIK, gaji, rekam medis) sebaiknya tidak dikirim ke layanan AI publik tanpa dasar kewenangan dan kehati-hatian.</li>
+          <li>Hasil AI tetap wajib diverifikasi manusia — ini prinsip <strong>human in the loop</strong>: AI membantu, bukan menggantikan keputusan.</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .doc {
+    font-family: var(--font-body);
+  }
+
+  .doc h2 {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-primary);
+    margin-top: 3.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--color-outline);
+  }
+
+  .doc p {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+    color: var(--color-on-surface-variant);
+  }
+
+  .doc ul,
+  .doc ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.75;
+    color: var(--color-on-surface-variant);
+  }
+
+  .doc li {
+    font-size: 1.0625rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .doc strong {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .doc a {
+    color: var(--color-secondary);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .doc p.flow {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    padding: 1rem 1.25rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-outline-variant);
+    border-left: 3px solid var(--color-secondary);
+    background: var(--color-surface-container-low);
+    color: var(--color-primary);
+  }
+
+  .doc code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    background: var(--color-surface-container);
+    color: var(--color-primary);
+  }
+
+  .doc-code pre {
+    background: var(--color-surface-container);
+    border: 1px solid var(--color-outline-variant);
+    border-left: 3px solid var(--color-secondary);
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--color-on-surface-variant);
+  }
+
+  .doc-code pre code {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+</style>

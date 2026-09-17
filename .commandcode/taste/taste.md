@@ -17,6 +17,7 @@
 - Prefers single-column (vertical stack) layout for portfolio/project listings over multi-column grids. Confidence: 0.7
 
 # ux
+- Prefers material links to behave according to the file's nature: HTML slides open in a new tab (labelled "Slide", external links included), while files meant to be saved (PDF/MD/TXT) download (labelled "Materi"); meetings without a file show no link at all. Confidence: 0.6
 - Prefers bilingual website content with English as the primary language for hero, section titles, and technical terminology, and Indonesian as a secondary/subdued translation (subtitles, smaller text, lower opacity). Confidence: 0.85
 
 # design
@@ -24,7 +25,7 @@
 - Prefers deliberate, zero-double-margin spacing between adjacent content elements (headings, paragraphs, lists, code blocks, tables) in long-form articles — only the originating element contributes margin, avoiding accumulated gaps. Confidence: 0.85
 - Prefers metadata blocks (Proyek/Peran/Periode) separated by blank lines in Markdown source so they render as three distinct paragraphs rather than one merged paragraph. Confidence: 0.85
 - Prefers section headings (h2) in long-form articles to be fully bold (font-weight 700) with a bottom border as a visual separator between sections, and adequate top spacing — no zero-margin on the first heading so it doesn't stick to the preceding horizontal rule. Confidence: 0.8
+- Prefers presentation slides designed for projector readability: a light, high-contrast theme over a dark one (classrooms are bright and dark decks wash out), font sizes that scale with projector resolution so proportions hold from 1280×720 to 1080p, and one idea per slide with minimal on-screen text — no heavy animation. Confidence: 0.65
 
 # workflow
-- Prefers ensuring `.nojekyll` is present in the build output directory when deploying static sites (Astro, etc.) to GitHub Pages, to prevent GitHub from running Jekyll on the static files. Confidence: 0.8
-
+See [workflow/taste.md](workflow/taste.md)

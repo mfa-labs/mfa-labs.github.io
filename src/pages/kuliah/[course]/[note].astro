@@ -1,0 +1,119 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import ProseMateri from '../../../components/ProseMateri.astro';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('catatan');
+  return notes
+    .filter((note) => !note.data.draft)
+    .map((note) => ({
+      params: { course: note.data.course, note: note.id.replace(/\.mdx?$/, '') },
+      props: { note },
+    }));
+}
+
+interface Props {
+  note: CollectionEntry<'catatan'>;
+}
+
+const { note } = Astro.props;
+const { data } = note;
+const { Content } = await note.render();
+
+const site = Astro.site ?? new URL('https://mfa-labs.github.io');
+const noteSlug = note.id.replace(/\.mdx?$/, '');
+const courseUrl = new URL(`/kuliah/${data.course}/`, site).href;
+const noteUrl = new URL(`/kuliah/${data.course}/${noteSlug}/`, site).href;
+const portraitUrl = new URL('/cropped_circle_image.png', site).href;
+
+const courses = await getCollection('kuliah');
+const parentCourse = courses.find((course) => course.id.replace(/\.mdx?$/, '') === data.course);
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+const breadcrumb = [
+  { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', site).href },
+  { '@type': 'ListItem', position: 2, name: 'Mata Kuliah', item: new URL('/kuliah/', site).href },
+];
+
+if (parentCourse) {
+  breadcrumb.push({ '@type': 'ListItem', position: 3, name: parentCourse.data.title, item: courseUrl });
+}
+
+breadcrumb.push({
+  '@type': 'ListItem',
+  position: breadcrumb.length + 1,
+  name: data.title,
+  item: noteUrl,
+});
+
+const jsonLd: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: data.title,
+    description: data.description,
+    image: portraitUrl,
+    inLanguage: 'id',
+    keywords: data.tags.join(', '),
+    datePublished: data.pubDate.toISOString(),
+    dateModified: (data.updatedDate ?? data.pubDate).toISOString(),
+    mainEntityOfPage: { '@type': 'WebPage', '@id': noteUrl },
+    url: noteUrl,
+    author: {
+      '@type': 'Person',
+      name: 'Muhammad Fadhil Al Amal',
+      url: new URL('/', site).href,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Muhammad Fadhil Al Amal',
+      logo: { '@type': 'ImageObject', url: portraitUrl },
+    },
+  },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: breadcrumb },
+];
+
+if (parentCourse) {
+  (jsonLd[0] as Record<string, unknown>).isPartOf = {
+    '@type': 'Course',
+    name: parentCourse.data.title,
+    url: courseUrl,
+  };
+}
+---
+
+<Layout title={data.title} description={data.description} lang="id" jsonLd={jsonLd}>
+  <Nav />
+
+  <main class="flex-grow w-full py-section-gap">
+    <div class="max-w-[860px] mx-auto px-margin-mobile md:px-margin-desktop">
+      <a href={parentCourse ? `/kuliah/${data.course}/` : '/kuliah/'} class="link-arrow mb-12 inline-flex">
+        <span class="material-symbols-outlined mr-1">arrow_back</span>
+        {parentCourse ? parentCourse.data.title : 'Semua mata kuliah'}
+      </a>
+
+      <header class="mb-12">
+        <p class="font-mono text-xs uppercase tracking-widest mb-4" style="color: var(--color-secondary);">
+          Catatan Kuliah{parentCourse && <> · {parentCourse.data.code}</>}
+        </p>
+        <h1 class="font-display text-[40px] md:text-[52px] leading-[1.08] tracking-tight font-semibold mb-5" style="color: var(--color-primary);">{data.title}</h1>
+        <p class="font-body text-lg leading-relaxed mb-6" style="color: var(--color-on-surface-variant);">{data.description}</p>
+        <div class="flex flex-wrap items-center gap-3">
+          <time class="font-mono text-xs" style="color: var(--color-on-surface-variant);">{formatDate(data.pubDate)}</time>
+          {data.tags.map((tag) => <span class="tag-research">{tag}</span>)}
+        </div>
+      </header>
+
+      <div class="prose-materi"><Content /></div>
+    </div>
+  </main>
+
+  <Footer />
+  <ProseMateri />
+</Layout>

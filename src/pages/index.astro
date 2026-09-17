@@ -9,6 +9,10 @@ const blogPosts = (await getCollection('blog'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 2);
 
+const courses = (await getCollection('kuliah'))
+  .filter((c) => !c.data.draft)
+  .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+
 function readingTime(body: string): string {
   const words = body.trim().split(/\s+/).length;
   const minutes = Math.max(1, Math.round(words / 200));
@@ -20,7 +24,7 @@ const jsonLd = {
   '@type': 'Person',
   name: 'Muhammad Fadhil Al Amal',
   alternateName: 'Fadhil Al Amal',
-  jobTitle: 'AI & Software Engineer',
+  jobTitle: 'AI & Software Engineer · Dosen Informatika',
   description: 'AI & Software Engineer | NLP Researcher | Health Information Systems Developer. Experiencing in secure healthcare ecosystems, database performance optimization, and regional language processing models.',
   url: 'https://mfa-labs.github.io',
   image: 'https://mfa-labs.github.io/cropped_circle_image.png',
@@ -30,11 +34,83 @@ const jsonLd = {
     'http://github.com/mfa-labs',
   ],
   knowsAbout: ['Software Engineering', 'Natural Language Processing', 'Healthcare IT', 'Machine Learning', 'SaaS'],
-  alumniOf: { '@type': 'CollegeOrUniversity', name: 'University of Syiah Kuala' },
+  alumniOf: [
+    { '@type': 'CollegeOrUniversity', name: 'Universitas Syiah Kuala' },
+    { '@type': 'CollegeOrUniversity', name: 'UIN Maulana Malik Ibrahim Malang' },
+  ],
+  worksFor: [
+    { '@type': 'Organization', name: 'PT Alfath Teknologi Kreatif' },
+    { '@type': 'Organization', name: 'Universitas Ahmad Dahlan Aceh' },
+  ],
 };
+
+const workshopEvents = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: 'Workshop Pengelolaan Administrasi bagi Sekretaris Berbasis Digital dengan Metode AI dan Big Data',
+    description:
+      'Workshop bagi mahasiswa Program Studi D3 Sekretari FEB USK: membangun prototype sistem arsip digital berbasis AI (AI-Powered Digital Archive).',
+    startDate: '2026-09-16',
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location: {
+      '@type': 'Place',
+      name: 'Aula Prodi D3 Sekretari, Fakultas Ekonomi dan Bisnis Universitas Syiah Kuala',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Banda Aceh',
+        addressRegion: 'Aceh',
+        addressCountry: 'ID',
+      },
+    },
+    organizer: {
+      '@type': 'Organization',
+      name: 'Program Studi D3 Sekretari, Fakultas Ekonomi dan Bisnis Universitas Syiah Kuala',
+    },
+    performer: {
+      '@type': 'Person',
+      name: 'Muhammad Fadhil Al Amal',
+      url: 'https://mfa-labs.github.io/',
+    },
+    image: 'https://mfa-labs.github.io/cropped_circle_image.png',
+    inLanguage: 'id',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: 'Inovasi Arsip dan Penggunaan AI bagi tendik Program Studi Semester Genap Tahun Akademik 2025/2026',
+    description:
+      'Workshop bagi tenaga kependidikan Program Studi Doktor Ilmu Akuntansi FEB USK: AI untuk membuat tools administrasi dengan Gemini Canvas, tanpa coding.',
+    startDate: '2026-07-07',
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location: {
+      '@type': 'Place',
+      name: 'Ruang Laboratorium FEB USK, Fakultas Ekonomi dan Bisnis Universitas Syiah Kuala',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Banda Aceh',
+        addressRegion: 'Aceh',
+        addressCountry: 'ID',
+      },
+    },
+    organizer: {
+      '@type': 'Organization',
+      name: 'Program Studi Doktor Ilmu Akuntansi, Fakultas Ekonomi dan Bisnis Universitas Syiah Kuala',
+    },
+    performer: {
+      '@type': 'Person',
+      name: 'Muhammad Fadhil Al Amal',
+      url: 'https://mfa-labs.github.io/',
+    },
+    image: 'https://mfa-labs.github.io/cropped_circle_image.png',
+    inLanguage: 'id',
+  },
+];
 ---
 
-<Layout title="Muhammad Fadhil Al Amal" description="AI & Software Engineer | NLP Researcher | Health Information Systems Developer" jsonLd={jsonLd}>
+<Layout title="Muhammad Fadhil Al Amal — AI & Software Engineer di Banda Aceh" description="AI & Software Engineer di Banda Aceh. 5+ tahun membangun platform SaaS kesehatan (CodeIgniter, MySQL, Docker) dan meneliti NLP bahasa daerah." lang="id" alternateUrl="/en/" jsonLd={[jsonLd, ...workshopEvents]}>
   <Nav />
 
   <main class="flex-grow w-full">
@@ -74,7 +150,7 @@ const jsonLd = {
         </div>
       </div>
       <div class="flex-1 w-full relative min-h-[400px] hidden lg:block">
-        <img src="/cropped_circle_image.png" alt="Muhammad Fadhil Al Amal" class="w-full h-full object-cover rounded-xl shadow-ambient grayscale hover:grayscale-0 transition-all duration-700" />
+        <img src="/cropped_circle_image.webp" alt="Muhammad Fadhil Al Amal" width="1000" height="1000" class="w-full h-full object-cover rounded-xl shadow-ambient grayscale hover:grayscale-0 transition-all duration-700" />
       </div>
     </section>
 
@@ -108,6 +184,136 @@ const jsonLd = {
       </div>
     </section>
 
+    <!-- Experience & Education -->
+    <section id="experience" class="py-section-gap border-t" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="mb-12">
+          <h2 class="section-title">Pengalaman &amp; Pendidikan</h2>
+          <p class="font-body text-sm leading-relaxed" style="color: var(--color-on-surface-variant); opacity: 0.6;">Lintasan profesi sebagai engineer dan pengajar, beserta latar pendidikan formal.</p>
+        </div>
+
+        <div class="flex flex-col gap-6 mb-16">
+          {[
+            {
+              role: 'Dosen — Program Studi Informatika (S1)',
+              org: 'Universitas Ahmad Dahlan Aceh',
+              period: '2026 – Sekarang',
+              type: 'Paralel dengan peran engineer',
+              items: ['Mengajar dan membimbing mahasiswa Program Studi Informatika jenjang S1'],
+            },
+            {
+              role: 'Software Engineer',
+              org: 'PT Alfath Teknologi Kreatif — platform Kelola.net',
+              period: 'Apr 2021 – Sekarang',
+              type: 'Full-time',
+              items: [
+                'Merancang dan membangun SaaS multi-tenant untuk manajemen klinik — arsitektur aplikasi, desain database, backend, dan deployment (PHP, MySQL, PostgreSQL, Docker, REST API)',
+                'Menurunkan waktu muat halaman kritis dari 75 detik menjadi sekitar 5 detik (perbaikan 93%) melalui optimasi aplikasi dan database',
+                'Memimpin implementasi teknis dan mengoordinasi tugas pengembangan tim, termasuk code review dan pengambilan keputusan teknis',
+                'Mengintegrasikan platform dengan SATUSEHAT (OAuth2, FHIR, ICD-10/ICD-9) untuk pengiriman rekam medis elektronik ke Kementerian Kesehatan',
+              ],
+            },
+            {
+              role: 'NLP Engineer',
+              org: 'PT Bahasa Kinerja Utama',
+              period: 'Jan 2023 – Des 2023',
+              type: 'Kontrak',
+              items: [
+                'Membangun dan mengeksperimen model deep learning (Python, PyTorch) untuk teks percakapan bahasa Indonesia',
+                'Mengembangkan solusi NLP untuk ekstraksi informasi otomatis dari transkrip panggilan yang tidak terstruktur',
+                'Melakukan prapemrosesan, pembersihan, dan transformasi data transkripsi yang berisik',
+                'Mengintegrasikan pemrosesan NLP ke alur aplikasi untuk mengubah teks tak terstruktur menjadi informasi terstruktur',
+              ],
+            },
+            {
+              role: 'Back End Developer',
+              org: 'PT Ina Gata Persada',
+              period: 'Feb 2020 – Mar 2021',
+              type: 'Full-time',
+              items: [
+                'Mengembangkan backend untuk 4 aplikasi web dan 1 aplikasi mobile',
+                'Merancang dan mengimplementasikan fitur backend, REST API, operasi database, dan business logic',
+                'Mempelajari Flutter dan mengirimkan aplikasi mobile dalam waktu kurang dari tiga bulan',
+              ],
+            },
+            {
+              role: 'Web Developer',
+              org: 'UIN Maulana Malik Ibrahim Malang',
+              period: 'Jan 2019 – Des 2019',
+              type: 'Part-time',
+              items: [
+                'Membangun sistem informasi penentuan Uang Kuliah Tunggal (UKT)',
+                'Memangkas waktu kalkulasi data dari 10 menit menjadi di bawah 2 menit melalui optimasi query dan normalisasi database',
+              ],
+            },
+          ].map((job) => (
+            <div class="border rounded-xl p-6 md:p-8" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
+              <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
+                <div>
+                  <h3 class="font-display text-xl" style="color: var(--color-primary);">{job.role}</h3>
+                  <p class="font-mono text-sm" style="color: var(--color-secondary);">{job.org}</p>
+                </div>
+                <div class="md:text-right shrink-0">
+                  <p class="font-mono text-xs" style="color: var(--color-on-surface-variant);">{job.period}</p>
+                  <p class="font-mono text-xs" style="color: var(--color-on-surface-variant); opacity: 0.6;">{job.type}</p>
+                </div>
+              </div>
+              <ul class="space-y-1 text-sm list-disc pl-4" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">
+                {job.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <h3 class="font-display text-xl mb-6" style="color: var(--color-primary);">Pendidikan</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[
+            { degree: 'Magister Artificial Intelligence', school: 'Universitas Syiah Kuala', period: '2021 – 2023' },
+            { degree: 'Sarjana Informatika', school: 'UIN Maulana Malik Ibrahim Malang', period: '2015 – 2020' },
+          ].map((edu) => (
+            <div class="border rounded-xl p-6" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
+              <h4 class="font-display text-lg mb-1" style="color: var(--color-primary);">{edu.degree}</h4>
+              <p class="font-mono text-sm mb-1" style="color: var(--color-secondary);">{edu.school}</p>
+              <p class="font-mono text-xs" style="color: var(--color-on-surface-variant);">{edu.period}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {courses.length > 0 && (
+      <section id="pengajaran" class="py-section-gap border-t" style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);">
+        <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+          <div class="mb-12">
+            <h2 class="section-title">Pengajaran</h2>
+            <p class="font-body text-sm leading-relaxed" style="color: var(--color-on-surface-variant); opacity: 0.6;">Mata kuliah yang saya ampu di Program Studi Informatika (S1), Universitas Ahmad Dahlan Aceh — beserta topik dan materi tiap pertemuan.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {courses.map((course) => (
+              <article class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-ambient" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+                <div class="p-8 flex-grow flex flex-col">
+                  <p class="font-mono text-xs mb-4" style="color: var(--color-secondary);">{course.data.code} · {course.data.credits} SKS{course.data.terms[0] && <> · {course.data.terms[0].label}</>}</p>
+                  <h3 class="font-display text-xl font-semibold mb-3 leading-snug" style="color: var(--color-primary);">
+                    <a href={`/kuliah/${course.id.replace(/\.mdx?$/, '')}/`} class="hover:underline decoration-2 underline-offset-2 decoration-secondary">{course.data.title}</a>
+                  </h3>
+                  <p class="mb-6 text-base leading-relaxed flex-grow" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">{course.data.description}</p>
+                </div>
+                <div class="px-8 py-4 border-t flex items-center justify-between" style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);">
+                  <a href={`/kuliah/${course.id.replace(/\.mdx?$/, '')}/`} class="link-arrow text-sm group">
+                    {(course.data.terms[0]?.meetings.length ?? 0)} pertemuan
+                    <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div class="mt-12">
+            <a href="/kuliah/" class="btn-secondary px-8 py-3.5">Lihat semua mata kuliah →</a>
+          </div>
+        </div>
+      </section>
+    )}
+
     <!-- Engineering -->
     <section id="engineering" class="bg-background py-section-gap" style="background: var(--color-surface);">
       <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
@@ -115,7 +321,7 @@ const jsonLd = {
           <h2 class="section-title">Enterprise Software Engineering</h2>
           <p class="font-body text-sm leading-relaxed mb-1" style="color: var(--color-on-surface-variant); opacity: 0.6;">Rekayasa Perangkat Lunak Enterprise</p>
           <span class="tag-green-pill inline-flex items-center gap-2 px-3 py-1">
-            <span class="font-display text-xs font-medium">5+ Years Software Engineer at Kelola.net — SaaS Manajemen Klinik (2021–2026)</span>
+            <span class="font-display text-xs font-medium">5+ Tahun Software Engineer di PT Alfath Teknologi Kreatif (Kelola.net) — SaaS Manajemen Klinik (2021–Sekarang)</span>
           </span>
           <p class="section-desc mt-4">Full-stack contributions across <strong>9 major workstreams</strong> — <strong>646 commits</strong>, 10.252 files touched, 204 controller files, 36 models, 646 views, serving hundreds of clinics across Indonesia.</p>
         </div>
@@ -189,7 +395,7 @@ const jsonLd = {
                 <ul class="space-y-1 text-sm list-disc pl-4 mb-4" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">
                   {proj.items.map((item) => <li>{item}</li>)}
                 </ul>
-                {proj.link && <a href={proj.link} class="link-arrow text-sm mt-2">Baca artikel teknis →</a>}
+                {proj.link && <a href={proj.link} class="link-arrow text-sm mt-2">Baca studi kasus: {proj.title} →</a>}
               </div>
               <div class="px-6 py-4 border-t flex flex-wrap gap-2" style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);">
                 {proj.tags.map((t) => <span class="tag-eng">{t}</span>)}
@@ -261,16 +467,29 @@ const jsonLd = {
         <div class="flex flex-col gap-8">
           {[
             {
-              tag: 'Pemateri Workshop · Juli 2025',
-              title: 'Workshop Pemanfaatan AI untuk Tenaga Kependidikan',
-              role: 'Membuat Tools Administrasi dengan Gemini Canvas',
-              desc: 'Pemateri workshop bagi tenaga kependidikan (tendik) fakultas untuk membangun tools administrasi perkantoran — surat resmi, SOP, laporan, dan notulensi — langsung dari bahasa alami via Gemini Canvas, tanpa coding.',
-              highlights: ['Pemateri Sesi 2 — "AI untuk Membuat Tools": Claude vs ChatGPT, strategi hemat, dan budaya membuat tools', 'Modul 6 sesi: pengenalan Canvas, praktik 4 tools administrasi, sesi bebas bikin tools sendiri', 'Peserta praktik langsung membuat tools dan membawa pulang 4 tools siap pakai untuk pekerjaan sehari-hari'],
+              tag: 'Pemateri Workshop · Rabu, 16 September 2026',
+              title: 'Workshop Pengelolaan Administrasi bagi Sekretaris Berbasis Digital dengan Metode AI dan Big Data',
+              role: 'AI-Powered Digital Archive System — Menjadi Sekretaris yang Relevan di Era AI',
+              desc: 'Pemateri workshop bagi mahasiswa Program Studi D3 Sekretari, Fakultas Ekonomi dan Bisnis Universitas Syiah Kuala, bertempat di Aula Prodi D3 Sekretari FEB USK. Materi membangun prototype sistem arsip digital berbasis AI — dari arsip yang sekadar menyimpan file menuju sumber pengetahuan organisasi.',
+              highlights: ['Kerangka "Manusia & AI": AI adalah mesin cetak abad ke-21 yang menggeser nilai manusia dari mengingat menuju analisis, evaluasi, dan kreativitas', 'Bloom Taxonomy: AI sangat kuat di Remember–Understand–Apply, sehingga sekretaris harus makin kuat di Analyze–Evaluate–Create', 'Studi kasus AI di meja sekretaris: screening CV, draft balasan email, ringkasan berita harian, notulen rapat (MoM), agenda & prioritas harian, dan riset cepat bahan rapat', 'Membangun prototype AI-Powered Digital Archive: Google Form → Google Drive → Apps Script → OpenRouter → metadata otomatis tersimpan di Google Sheets', 'Implementasi teknis: trigger onFormSubmit, konversi PDF ke Base64, panggilan OpenRouter API, dan prompt engineering yang mengembalikan metadata JSON (jenis, nomor, tanggal, pengirim, perihal, ringkasan, kata kunci)', 'Etika & Human in the Loop: AI bisa berhalusinasi dan wajib diverifikasi, dokumen sensitif harus dijaga, dan keputusan akhir tetap di tangan manusia'],
               links: [
-                { label: 'Materi Modul Workshop', href: '/materi/workshop-ai-tendik.md' },
-                { label: 'Slide Sesi 2', href: '/materi/workshop-ai-tendik-sesi2.html' },
+                { label: 'Undangan', href: 'https://drive.google.com/file/d/1lkJdYrXGXqnGiThrJo0v_3BMZN167DDL/view?usp=sharing' },
+                { label: 'Slide Materi', href: '/materi/workshop-ai-sekre.html' },
+                { label: 'Kode Apps Script', href: '/materi/smart-archive/' },
               ],
-              tags: ['Gemini Canvas', 'AI untuk Administrasi', 'No-Code Tools'],
+              tags: ['Arsip Digital', 'Apps Script', 'OpenRouter', 'Prompt Engineering', 'Human in the Loop'],
+            },
+            {
+              tag: 'Pemateri Workshop · Selasa, 7 Juli 2026',
+              title: 'Inovasi Arsip dan Penggunaan AI bagi tendik Program Studi Semester Genap Tahun Akademik 2025/2026',
+              role: 'Sesi 2 — AI Bukan Sekadar ChatGPT: Claude, Gemini Canvas, dan Budaya Membuat Tools',
+              desc: 'Pemateri workshop bagi tenaga kependidikan (tendik) Program Studi Doktor Ilmu Akuntansi, Fakultas Ekonomi dan Bisnis Universitas Syiah Kuala, bertempat di Ruang Laboratorium FEB USK. Membangun tools administrasi perkantoran — surat resmi, SOP, laporan, dan notulensi — langsung dari bahasa alami via Gemini Canvas, tanpa coding.',
+              highlights: ['Sesi 2 "AI untuk Membuat Tools": perbandingan Claude vs ChatGPT — konteks 200K token, thinking mode (mikir dulu baru jawab), dan data tidak dipakai untuk training', 'Analisis biaya: Claude 3.5 Sonnet $3/$15 per 1M token vs Gemini 2.5 Flash yang gratis — strategi hematnya pakai Gemini untuk tugas harian, Claude hanya untuk dokumen panjang', 'Jangan masukkan data sensitif (NIK, gaji) ke AI publik, dan pahami kenapa ChatGPT tetap lebih populer meski Claude unggul secara teknis', 'Budaya membuat tools — "kita bukan pemakai, tapi pembuat": AI sebagai tool maker, Gemini Canvas bikin tools tanpa coding', 'Workshop Gemini Canvas: 4 tools administrasi (Surat Resmi, SOP, Laporan, Notulensi) pada Sesi 3–6 — peserta pulang dengan 4 tools siap pakai'],
+              links: [
+                { label: 'Undangan', href: 'https://drive.google.com/file/d/1HniMlZeaUVmIv4g_D19orzwuJavaWDMA/view?usp=sharing' },
+                { label: 'Slide Materi', href: '/materi/workshop-ai-tendik-sesi2.html' },
+              ],
+              tags: ['Claude vs ChatGPT', 'Gemini Canvas', 'Strategi Hemat AI', 'Budaya Membuat Tools'],
             },
           ].map((talk) => (
             <div class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-ambient" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
@@ -300,17 +519,17 @@ const jsonLd = {
       </div>
     </section>
 
-    <!-- Mobile Health App / SIBUNDA -->
-    <section id="sibunda" class="py-section-gap border-t" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+    <!-- Projects / Products -->
+    <section id="projek" class="py-section-gap border-t" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
       <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="mb-12">
-          <h2 class="section-title">Mobile Health Application</h2>
-          <p class="font-body text-sm leading-relaxed" style="color: var(--color-on-surface-variant); opacity: 0.6;">Aplikasi mobile &amp; kesehatan masyarakat — kolaborasi dengan Fakultas Keperawatan Universitas Syiah Kuala (USK).</p>
+          <h2 class="section-title">Projek / Produk</h2>
+          <p class="font-body text-sm leading-relaxed" style="color: var(--color-on-surface-variant); opacity: 0.6;">Kumpulan proyek &amp; produk yang saya kerjakan — dari aplikasi mobile hingga riset AI.</p>
         </div>
         <div class="flex flex-col gap-8">
           {[
             {
-              tag: 'Proyek Institusi · Flutter + REST API',
+              tag: 'Projek Pengabdian Masyarakat · 2025–2026 · Flutter + REST API',
               title: 'SIBUNDA — Sistem Informasi Bunda',
               role: 'Fullstack Developer · Aplikasi Mobile Android + Backend Node.js',
               desc: 'Aplikasi monitoring gizi dan pencegahan stunting untuk anak batita/balita — membantu kader kesehatan dan ibu balita memantau pertumbuhan anak secara mandiri berbasis standar WHO, lengkap dengan edukasi gizi, resep sehat, forum komunitas, dan pengingat jadwal makan.',

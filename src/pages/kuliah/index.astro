@@ -1,0 +1,95 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+const courses = (await getCollection('kuliah'))
+  .filter((c) => !c.data.draft)
+  .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+
+const site = Astro.site ?? new URL('https://mfa-labs.github.io');
+const pageUrl = new URL('/kuliah/', site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Mata Kuliah',
+  description:
+    'Materi perkuliahan yang saya ampu di Program Studi Informatika (S1), Universitas Ahmad Dahlan Aceh.',
+  inLanguage: 'id',
+  url: pageUrl,
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: courses.map((course, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: course.data.title,
+      url: new URL(`/kuliah/${course.id.replace(/\.mdx?$/, '')}/`, site).href,
+    })),
+  },
+};
+---
+
+<Layout
+  title="Mata Kuliah"
+  description="Materi perkuliahan yang saya ampu di Program Studi Informatika (S1), Universitas Ahmad Dahlan Aceh."
+  lang="id"
+  jsonLd={jsonLd}
+>
+  <Nav />
+
+  <main class="flex-grow w-full py-section-gap">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="mb-16 max-w-3xl">
+        <p class="font-mono text-xs uppercase tracking-widest mb-4" style="color: var(--color-secondary);">Pengajaran</p>
+        <h1 class="font-display text-4xl md:text-5xl font-semibold tracking-tight mb-4" style="color: var(--color-primary);">Mata Kuliah</h1>
+        <p class="font-body text-lg leading-relaxed" style="color: var(--color-on-surface-variant);">
+          Materi perkuliahan yang saya ampu di Program Studi Informatika (S1), Universitas Ahmad Dahlan Aceh — beserta topik dan materi tiap pertemuan.
+        </p>
+      </div>
+
+      {
+        courses.length === 0 ? (
+          <div class="text-center py-20" style="color: var(--color-on-surface-variant);">
+            <span class="material-symbols-outlined text-5xl mb-4 block">school</span>
+            <p class="font-body text-lg">Materi kuliah sedang disiapkan. Silakan kembali lagi nanti.</p>
+          </div>
+        ) : (
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {courses.map((course) => {
+              const slug = course.id.replace(/\.mdx?$/, '');
+              const current = course.data.terms[0];
+              const meetingCount = current?.meetings.length ?? 0;
+              return (
+                <article class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-ambient" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+                  <div class="p-8 flex-grow flex flex-col">
+                    <p class="font-mono text-xs mb-4" style="color: var(--color-secondary);">
+                      {course.data.code} · {course.data.credits} SKS{current && <> · {current.label}</>}
+                    </p>
+                    <h2 class="font-display text-xl font-semibold mb-3 leading-snug" style="color: var(--color-primary);">
+                      <a href={`/kuliah/${slug}/`} class="hover:underline decoration-2 underline-offset-2 decoration-secondary">{course.data.title}</a>
+                    </h2>
+                    <p class="mb-6 text-base leading-relaxed flex-grow" style="color: var(--color-on-surface-variant); font-family: var(--font-body);">{course.data.description}</p>
+                    <p class="font-mono text-xs" style="color: var(--color-on-surface-variant); opacity: 0.6;">{course.data.program}</p>
+                  </div>
+                  <div class="px-8 py-4 border-t flex items-center justify-between" style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);">
+                    <a href={`/kuliah/${slug}/`} class="link-arrow text-sm group">
+                      {meetingCount} pertemuan
+                      <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">arrow_outward</span>
+                    </a>
+                    {course.data.terms.length > 1 && (
+                      <span class="font-mono text-xs" style="color: var(--color-on-surface-variant); opacity: 0.6;">{course.data.terms.length} semester</span>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )
+      }
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

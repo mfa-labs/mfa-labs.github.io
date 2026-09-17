@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 545" width="660" height="545" role="img" aria-label="Lima simbol standar flowchart beserta artinya">
+  <defs>
+    <marker id="ar-legenda" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2b3034"/>
+    </marker>
+  </defs>
+  <style>
+    .box { fill: #ffffff; stroke: #2b3034; stroke-width: 2; }
+    .start { fill: #e8f4ef; stroke: #006c4a; stroke-width: 2; }
+    .io { fill: #eef3f8; stroke: #2b3034; stroke-width: 2; }
+    .dec { fill: #fdf6e6; stroke: #2b3034; stroke-width: 2; }
+    .t { font-family: Inter, system-ui, sans-serif; font-size: 17px; fill: #14181b; text-anchor: middle; dominant-baseline: middle; }
+    .lbl { font-family: Inter, system-ui, sans-serif; font-size: 19px; font-weight: 600; fill: #14181b; }
+    .sub { font-family: Inter, system-ui, sans-serif; font-size: 15px; fill: #6b7277; }
+    .line { stroke: #2b3034; stroke-width: 2; fill: none; }
+  </style>
+
+  <text class="sub" x="24" y="24">Bentuk simbol yang menentukan artinya — warna hanya membantu membaca.</text>
+
+  <!-- Terminator -->
+  <rect class="start" x="40" y="45" width="200" height="52" rx="26"/>
+  <text class="t" x="140" y="71">Mulai</text>
+  <text class="lbl" x="290" y="64">Terminator</text>
+  <text class="sub" x="290" y="86">Awal dan akhir alur</text>
+
+  <!-- Proses -->
+  <rect class="box" x="40" y="145" width="200" height="56"/>
+  <text class="t" x="140" y="173">hitung luas</text>
+  <text class="lbl" x="290" y="166">Proses</text>
+  <text class="sub" x="290" y="188">Perhitungan atau pengolahan</text>
+
+  <!-- Masukan / Keluaran -->
+  <polygon class="io" points="60,245 240,245 220,301 40,301"/>
+  <text class="t" x="140" y="273">baca panjang</text>
+  <text class="lbl" x="290" y="266">Masukan / Keluaran</text>
+  <text class="sub" x="290" y="288">Membaca data, menampilkan hasil</text>
+
+  <!-- Keputusan -->
+  <polygon class="dec" points="140,345 255,383 140,421 25,383"/>
+  <text class="t" x="140" y="383">kondisi?</text>
+  <text class="lbl" x="290" y="376">Keputusan</text>
+  <text class="sub" x="290" y="398">Percabangan — dipakai mulai pekan 9</text>
+
+  <!-- Garis alir -->
+  <line class="line" x1="40" y1="480" x2="228" y2="480" marker-end="url(#ar-legenda)"/>
+  <text class="lbl" x="290" y="473">Garis alir</text>
+  <text class="sub" x="290" y="495">Arah urutan instruksi</text>
+</svg>

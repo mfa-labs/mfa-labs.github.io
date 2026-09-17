@@ -6,9 +6,10 @@ export interface Props {
   description?: string;
   ogImage?: string;
   ogType?: string;
-  ogUrl?: string;
-  canonicalUrl?: string;
-  jsonLd?: Record<string, unknown>;
+  lang?: 'en' | 'id';
+  alternateUrl?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -16,10 +17,19 @@ const {
   description = 'Muhammad Fadhil Al Amal — AI & Software Engineer | NLP Researcher',
   ogImage = '/cropped_circle_image.png',
   ogType = 'website',
-  ogUrl = 'https://mfa-labs.github.io',
-  canonicalUrl = ogUrl,
+  lang = 'en',
+  alternateUrl = undefined,
+  noindex = false,
   jsonLd = undefined,
 } = Astro.props;
+
+const site = Astro.site ?? new URL('https://mfa-labs.github.io');
+const canonicalUrl = new URL(Astro.url.pathname, site).href;
+const ogImageUrl = new URL(ogImage, site).href;
+const alternateHref = alternateUrl ? new URL(alternateUrl, site).href : undefined;
+const rootUrl = new URL('/', site).href;
+const ogLocale = lang === 'en' ? 'en_US' : 'id_ID';
+const alternateLocale = lang === 'en' ? 'id_ID' : 'en_US';
 
 const siteTitle = title.includes('Muhammad Fadhil')
   ? title
@@ -27,30 +37,48 @@ const siteTitle = title.includes('Muhammad Fadhil')
 ---
 
 <!doctype html>
-<html lang="en" class="light">
+<html lang={lang} class="light">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{siteTitle}</title>
   <meta name="description" content={description} />
   <meta name="author" content="Muhammad Fadhil Al Amal" />
+  {noindex && <meta name="robots" content="noindex" />}
 
-  <!-- Canonical -->
-  <link rel="canonical" href={canonicalUrl} />
+  <!-- Icons -->
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+
+  <!-- Canonical & Language Alternates -->
+  {!noindex && <link rel="canonical" href={canonicalUrl} />}
+  {
+    alternateHref && (
+      <>
+        <link rel="alternate" hreflang={lang} href={canonicalUrl} />
+        <link rel="alternate" hreflang={lang === 'en' ? 'id' : 'en'} href={alternateHref} />
+        <link rel="alternate" hreflang="x-default" href={rootUrl} />
+      </>
+    )
+  }
 
   <!-- Open Graph -->
+  <meta property="og:locale" content={ogLocale} />
+  {alternateHref && <meta property="og:locale:alternate" content={alternateLocale} />}
   <meta property="og:title" content={siteTitle} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content={ogType} />
-  <meta property="og:url" content={ogUrl} />
-  <meta property="og:image" content={`https://mfa-labs.github.io${ogImage}`} />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:image:alt" content="Muhammad Fadhil Al Amal" />
   <meta property="og:site_name" content="Muhammad Fadhil Al Amal" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={siteTitle} />
   <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content={`https://mfa-labs.github.io${ogImage}`} />
+  <meta name="twitter:image" content={ogImageUrl} />
+  <meta name="twitter:image:alt" content="Muhammad Fadhil Al Amal" />
 
   <!-- JSON-LD Schema -->
   {
