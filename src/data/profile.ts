@@ -86,6 +86,28 @@ export const profile = {
   },
 };
 
+export interface AcademicProfile {
+  provider: string;
+  label: string;
+  value: string;
+  url: string;
+}
+
+export const academicProfiles: AcademicProfile[] = [
+  {
+    provider: 'SINTA',
+    label: 'SINTA ID',
+    value: '7019928',
+    url: 'https://sinta.kemdiktisaintek.go.id/authors/profile/7019928',
+  },
+  {
+    provider: 'Scopus',
+    label: 'Scopus ID',
+    value: '60571643900',
+    url: 'https://www.scopus.com/authid/detail.uri?authorId=60571643900',
+  },
+];
+
 export interface NavItem {
   href: string;
   en: string;

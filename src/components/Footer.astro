@@ -1,5 +1,5 @@
 ---
-import { navHref, navItems, profile } from '../data/profile';
+import { navHref, navItems, profile, academicProfiles } from '../data/profile';
 import { homeHref, type Lang } from '../lib/i18n';
 
 export interface Props {
@@ -120,6 +120,21 @@ const browseItems = navItems;
             >
           </a>
         </nav>
+        <div class="flex flex-col gap-2 md:items-end">
+          {
+            academicProfiles.map((p) => (
+              <a
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-mono text-xs transition-colors hover:text-secondary"
+                style="color: var(--color-on-surface-variant);"
+              >
+                {p.label}: {p.value}
+              </a>
+            ))
+          }
+        </div>
         <p class="font-mono text-xs" style="color: var(--color-secondary);">
           {brand} — {brandTagline}
         </p>

@@ -54,6 +54,8 @@ Course materials from undergraduate teaching at Universitas Ahmad Dahlan Aceh, F
 ## Research
 
 - [Hybrid Transformer-RNN Model for Classification of Indonesian Regional Language](https://ieeexplore.ieee.org/document/11389462/): Published in the 2025 International Conference on ICT for Smart Society (ICISS). DOI: 10.1109/ICISS66954.2025.11389462.
+- [SINTA author profile](https://sinta.kemdiktisaintek.go.id/authors/profile/7019928): SINTA Author ID 7019928 — Universitas Ahmad Dahlan Aceh, Informatics (S1).
+- [Scopus author profile](https://www.scopus.com/authid/detail.uri?authorId=60571643900): Scopus Author ID 60571643900.
 
 ## Optional
 

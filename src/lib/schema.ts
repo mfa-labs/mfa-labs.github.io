@@ -1,4 +1,4 @@
-import { SITE, profile } from '../data/profile';
+import { SITE, academicProfiles, profile } from '../data/profile';
 import { publications } from '../data/research';
 import type { Lang } from './i18n';
 
@@ -12,7 +12,18 @@ export function personSchema(lang: Lang) {
     description: profile.metaDescription[lang],
     url: `${SITE}${lang === 'id' ? '/id/' : '/'}`,
     image: profile.image,
-    sameAs: [profile.socials.linkedin, profile.socials.scholar, profile.socials.github],
+    sameAs: [
+      profile.socials.linkedin,
+      profile.socials.scholar,
+      profile.socials.github,
+      ...academicProfiles.map((p) => p.url),
+    ],
+    identifier: academicProfiles.map((p) => ({
+      '@type': 'PropertyValue',
+      propertyID: p.provider,
+      name: p.label,
+      value: p.value,
+    })),
     knowsAbout: profile.knowsAbout,
     address: { '@type': 'PostalAddress', ...profile.address },
     alumniOf: profile.alumniOf.map((name) => ({ '@type': 'CollegeOrUniversity', name })),
