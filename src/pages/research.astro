@@ -1,0 +1,20 @@
+---
+import DetailLayout from '../layouts/DetailLayout.astro';
+import Research from '../components/sections/Research.astro';
+import { publicationSchema } from '../lib/schema';
+
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Research' }];
+---
+
+<DetailLayout
+  lang="en"
+  title="Research & Publications"
+  kicker="AI & Natural Language Processing"
+  description="Research on NLP for Indonesian regional languages and applied AI — including a published hybrid Transformer-RNN classification model (IEEE ICISS 2025)."
+  intro="Research focus, peer-reviewed publication, and ongoing work on regional language processing and applied AI."
+  crumbs={crumbs}
+  selfPath="/research/"
+  extraSchema={publicationSchema()}
+>
+  <Research lang="en" variant="full" />
+</DetailLayout>

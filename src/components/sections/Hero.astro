@@ -1,0 +1,81 @@
+---
+import { profile } from '../../data/profile';
+import { localePath, pick, type Bilingual, type Lang } from '../../lib/i18n';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const { hero, availability, stack } = profile;
+
+function t<T>(pair: Bilingual<T>): T {
+  return pick(pair, lang);
+}
+---
+
+<section
+  id="about"
+  class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden"
+>
+  <div
+    class="absolute top-0 right-0 -z-10 w-full h-full pointer-events-none opacity-20"
+    style="background: radial-gradient(ellipse at top right, var(--color-secondary-container), transparent 70%);"
+  >
+  </div>
+  <div class="flex-1 flex flex-col items-start text-left z-10 max-w-3xl">
+    <div
+      class="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-full"
+      style="background: var(--color-surface-container); border: 1px solid var(--color-outline-variant);"
+    >
+      <span class="w-2 h-2 rounded-full bg-secondary"></span>
+      <span class="font-mono text-xs" style="color: var(--color-on-surface-variant);">
+        {t(availability)}
+      </span>
+    </div>
+
+    <h1
+      class="font-display text-[40px] leading-[1.1] tracking-tight font-semibold md:text-[56px] md:leading-[1.05] mb-5"
+      style="color: var(--color-primary);"
+    >
+      {hero.headlineTop}
+      <span class="block mt-2" style="color: var(--color-on-surface-variant);">
+        {t(hero.headlineBottom)}
+      </span>
+    </h1>
+
+    <p class="font-body text-base leading-relaxed mb-10 max-w-2xl" style="color: var(--color-on-surface-variant);">
+      {t(hero.support)}
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
+      <a href={localePath('/engineering/', lang)} class="w-full sm:w-auto btn-primary px-8 py-4">
+        {t(hero.engineeringCta)}
+      </a>
+      <a href={localePath('/research/', lang)} class="w-full sm:w-auto btn-secondary px-8 py-4 group">
+        {t(hero.researchCta)}
+        <span
+          class="material-symbols-outlined ml-2 text-lg group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+          >arrow_outward</span
+        >
+      </a>
+    </div>
+
+    <div
+      class="mt-12 pt-8 border-t w-full flex flex-wrap gap-3"
+      style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);"
+    >
+      {stack.map((item) => <span class="tag-green">{item}</span>)}
+    </div>
+  </div>
+
+  <div class="flex-1 w-full relative min-h-[400px] hidden lg:block">
+    <img
+      src="/cropped_circle_image.webp"
+      alt={profile.name}
+      width="1000"
+      height="1000"
+      class="w-full h-full object-cover rounded-xl shadow-ambient grayscale hover:grayscale-0 transition-all duration-700"
+    />
+  </div>
+</section>

@@ -1,0 +1,130 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import { education, jobs, skills } from '../../data/experience';
+import { pick, type Bilingual, type Lang } from '../../lib/i18n';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+function t<T>(pair: Bilingual<T>): T {
+  return pick(pair, lang);
+}
+
+const copy = {
+  title: { en: 'Experience & Education', id: 'Pengalaman & Pendidikan' },
+  desc: {
+    en: 'A career spanning software engineering and teaching, alongside formal education.',
+    id: 'Lintasan profesi sebagai engineer dan pengajar, beserta latar pendidikan formal.',
+  },
+  education: { en: 'Education', id: 'Pendidikan' },
+  skills: { en: 'Core Skills Matrix', id: 'Matriks Kompetensi' },
+  skillsDesc: {
+    en: 'Specialised technical expertise across the full software development lifecycle.',
+    id: 'Spesialisasi teknis di seluruh siklus pengembangan perangkat lunak.',
+  },
+};
+---
+
+<section class="py-section-gap" style="background: var(--color-surface-container-lowest);">
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+    <SectionHeading title={t(copy.title)} desc={t(copy.desc)} />
+
+    <div class="flex flex-col gap-6 mb-16">
+      {
+        jobs.map((job) => (
+          <div
+            class="border rounded-xl p-6 md:p-8"
+            style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);"
+          >
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
+              <div>
+                <h3 class="font-display text-xl" style="color: var(--color-primary);">
+                  {t(job.role)}
+                </h3>
+                <p class="font-mono text-sm" style="color: var(--color-secondary);">
+                  {job.org}
+                </p>
+              </div>
+              <div class="md:text-right shrink-0">
+                <p class="font-mono text-xs" style="color: var(--color-on-surface-variant);">
+                  {t(job.period)}
+                </p>
+                <p
+                  class="font-mono text-xs"
+                  style="color: var(--color-on-surface-variant); opacity: 0.7;"
+                >
+                  {t(job.type)}
+                </p>
+              </div>
+            </div>
+            <ul
+              class="space-y-1 text-sm list-disc pl-4 max-w-[70ch]"
+              style="color: var(--color-on-surface-variant); font-family: var(--font-body);"
+            >
+              {t(job.items).map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <h3 class="font-display text-xl mb-6" style="color: var(--color-primary);">
+      {t(copy.education)}
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+      {
+        education.map((edu) => (
+          <div
+            class="border rounded-xl p-6"
+            style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);"
+          >
+            <h4 class="font-display text-lg mb-1" style="color: var(--color-primary);">
+              {t(edu.degree)}
+            </h4>
+            <p class="font-mono text-sm mb-1" style="color: var(--color-secondary);">
+              {edu.school}
+            </p>
+            <p class="font-mono text-xs" style="color: var(--color-on-surface-variant);">
+              {edu.period}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+
+    <h3 class="font-display text-xl mb-2" style="color: var(--color-primary);">{t(copy.skills)}</h3>
+    <p class="section-desc mb-8">{t(copy.skillsDesc)}</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {
+        skills.map((group) => (
+          <div
+            class="p-6 border rounded-xl shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-ambient"
+            style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);"
+          >
+            <div class="flex items-center gap-3 mb-4">
+              <span class="material-symbols-outlined" style="color: var(--color-secondary);">
+                {group.icon}
+              </span>
+              <h4 class="font-display text-xl" style="color: var(--color-primary);">
+                {t(group.title)}
+              </h4>
+            </div>
+            <ul
+              class="space-y-2 text-sm"
+              style="color: var(--color-on-surface-variant); font-family: var(--font-body);"
+            >
+              {group.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

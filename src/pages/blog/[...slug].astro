@@ -66,7 +66,7 @@ const jsonLd = [
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', site).href },
+      { '@type': 'ListItem', position: 1, name: 'Beranda', item: new URL('/id/', site).href },
       { '@type': 'ListItem', position: 2, name: 'Blog', item: new URL('/blog/', site).href },
       { '@type': 'ListItem', position: 3, name: post.data.title, item: postUrl },
     ],
@@ -81,7 +81,7 @@ const jsonLd = [
   lang="id"
   jsonLd={jsonLd}
 >
-  <Nav />
+  <Nav lang="id" />
 
   <main class="flex-grow w-full py-section-gap">
     <div class="max-w-[720px] mx-auto px-margin-mobile md:px-margin-desktop">
@@ -120,7 +120,7 @@ const jsonLd = [
     </div>
   </main>
 
-  <Footer />
+  <Footer lang="id" />
 </Layout>
 
 <style is:global>

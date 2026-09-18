@@ -68,7 +68,7 @@ PHP 8 punya tipe data yang lebih ketat. Ini menyebabkan bug di tempat yang tidak
 | Area | Error | Fix |
 |------|-------|-----|
 | **Laporan harian & jasmed** (`b19d939`, `117eee5`) | Perbandingan `int` vs `string` di perhitungan tanggal | Casting eksplisit |
-| **Detail pasien** (`5f005c2`, `cb4b527`) | `null` dikirim ke fungsi yang期待 `string` | Null coalescing |
+| **Detail pasien** (`5f005c2`, `cb4b527`) | `null` dikirim ke fungsi yang mengharapkan `string` | Null coalescing |
 | **Tambah pasien baru** (`2721105`, `c671280`) | `count()` dipanggil pada `null` | Guard clause |
 | **Send email invoice** (`ebcb42b`, `2f68c44`) | Method signature PHPMailer berubah | Upgrade + parameter fix |
 | **Pemeriksaan dokter umum** (`bc51407`) | `undefined array key` di checkbox | `isset()` |

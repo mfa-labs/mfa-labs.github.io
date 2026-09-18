@@ -84,11 +84,11 @@ Setiap role punya view booking yang disesuaikan — daftar pasien, slot waktu, d
 Klinik dalam satu grup perlu berbagi data pasien. Saya implementasikan secara bertahap:
 
 ```
-bb32002 (Sep 2023) — combine rm — grup GrupA
+bb32002 (Sep 2023) — combine rm — grup A
 fa4340f (Nov 2024) — fixing sharing rm on perawatan
-e32573f (Apr 2025) — combine rm GrupC
-2c3d1be (Apr 2025) — merge rm GrupD
-c528430 (Jul 2024) — GrupF aggregat rm
+e32573f (Apr 2025) — combine rm grup C
+2c3d1be (Apr 2025) — merge rm grup D
+c528430 (Jul 2024) — aggregat rm grup baru
 ```
 
 ### 6. Bug Fix: RM Data Gigi Kosong
@@ -104,16 +104,16 @@ d8f121a — fix: tidak ada data gigi di rm akun dokter
 
 Solusi: tambahkan pengecekan apakah data gigi ada sebelum merender odontogram.
 
-### 7. GrupBaru Implementation (Aug 2024)
+### 7. Implementasi RM untuk Grup Klinik Baru (Aug 2024)
 
-Implementasi RM lengkap untuk grup klinik GrupBaru — dengan view berbeda untuk klinik, admin, dan dokter:
+Implementasi RM lengkap untuk sebuah grup klinik baru — dengan view berbeda untuk klinik, admin, dan dokter:
 
 ```
-3304ebe — GrupBaru: klinik rm
-191a853 — GrupBaru: klinik rm
-1d92346 — GrupBaru: admin rm
-6ea24e1 — GrupBaru: dokter rm
-55c9324 — GrupBaru: booking
+3304ebe — klinik rm
+191a853 — klinik rm
+1d92346 — admin rm
+6ea24e1 — dokter rm
+55c9324 — booking
 ```
 
 ### 8. Alur Pemeriksaan
@@ -133,7 +133,7 @@ c7d6fa4 — fixing periksakan dokter oldpasien
 | Jul 2021 | RM dasar, odontogram |
 | Jun 2023 | Booking manual untuk semua role |
 | Sep 2023 | Combined RM untuk grup klinik |
-| Jul 2024 | GrupBaru: RM multi-role |
+| Jul 2024 | RM multi-role untuk grup klinik baru |
 | Jul 2025 | ICD-9 mapping, optimasi checkout |
 | Mar 2026 | Fix RM data gigi kosong |
 

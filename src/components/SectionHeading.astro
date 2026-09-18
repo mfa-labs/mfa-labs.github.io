@@ -1,0 +1,21 @@
+---
+export interface Props {
+  title: string;
+  kicker?: string;
+  desc?: string;
+}
+
+const { title, kicker, desc } = Astro.props;
+---
+
+<div class="mb-12 max-w-3xl">
+  {
+    kicker && (
+      <p class="font-mono text-xs uppercase tracking-widest mb-3" style="color: var(--color-secondary);">
+        {kicker}
+      </p>
+    )
+  }
+  <h2 class="section-title">{title}</h2>
+  {desc && <p class="section-desc">{desc}</p>}
+</div>

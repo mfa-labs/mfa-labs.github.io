@@ -1,0 +1,18 @@
+---
+import DetailLayout from '../layouts/DetailLayout.astro';
+import Experience from '../components/sections/Experience.astro';
+
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Experience' }];
+---
+
+<DetailLayout
+  lang="en"
+  title="Experience & Education"
+  kicker="Career"
+  description="Career history and formal education of Muhammad Fadhil Al Amal — software engineering, NLP engineering, and undergraduate teaching."
+  intro="A career spanning software engineering and teaching, alongside formal education and the technical skills I apply day to day."
+  crumbs={crumbs}
+  selfPath="/experience/"
+>
+  <Experience lang="en" />
+</DetailLayout>

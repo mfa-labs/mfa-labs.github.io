@@ -1,0 +1,22 @@
+---
+import DetailLayout from '../../layouts/DetailLayout.astro';
+import Speaking from '../../components/sections/Speaking.astro';
+import { eventSchema, talks } from '../../data/speaking';
+
+const crumbs = [{ label: 'Beranda', href: '/id/' }, { label: 'Pembicara' }];
+
+const schema = talks.map((talk) => eventSchema(talk, 'id'));
+---
+
+<DetailLayout
+  lang="id"
+  title="Pembicara & Workshop"
+  kicker="Sesi & Pelatihan"
+  description="Workshop dan pelatihan pemanfaatan AI praktis untuk administrasi perkantoran — arsip digital, prompt engineering, dan membuat tools tanpa coding."
+  intro="Workshop dan pelatihan tempat saya berbagi praktik AI terapan untuk administrasi perkantoran, dari arsip digital hingga membuat tools tanpa coding."
+  crumbs={crumbs}
+  selfPath="/speaking/"
+  extraSchema={schema}
+>
+  <Speaking lang="id" variant="full" />
+</DetailLayout>

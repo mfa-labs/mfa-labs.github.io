@@ -1,0 +1,20 @@
+---
+import DetailLayout from '../../layouts/DetailLayout.astro';
+import Research from '../../components/sections/Research.astro';
+import { publicationSchema } from '../../lib/schema';
+
+const crumbs = [{ label: 'Beranda', href: '/id/' }, { label: 'Riset' }];
+---
+
+<DetailLayout
+  lang="id"
+  title="Riset & Publikasi"
+  kicker="AI & Pemrosesan Bahasa Alami"
+  description="Riset NLP bahasa daerah Indonesia dan applied AI — termasuk model klasifikasi hybrid Transformer-RNN yang terbit di IEEE ICISS 2025."
+  intro="Fokus riset, publikasi peer-review, dan pekerjaan berjalan di bidang pemrosesan bahasa daerah serta applied AI."
+  crumbs={crumbs}
+  selfPath="/research/"
+  extraSchema={publicationSchema()}
+>
+  <Research lang="id" variant="full" />
+</DetailLayout>

@@ -27,7 +27,7 @@ Tantangan yang muncul:
 
 ## Proses Berpikir
 
-Sistem ini berevolusi dalam dua fase besar.
+Sistem ini berevolusi dalam dua fase besar, dan keduanya sempat hidup berdampingan.
 
 **Fase 1 (2021–2025):** Karena keterbatasan shared hosting, pendekatan paling sederhana adalah menggunakan cron job PHP. Setiap jam, server menjalankan script yang mengecek database — siapa yang punya janji besok? Siapa yang ulang tahun hari ini? Lalu kirim pesan.
 
@@ -37,7 +37,7 @@ Sistem ini berevolusi dalam dua fase besar.
 
 ### Fase 1: Cron-Based Legacy (2021–2025)
 
-Saya membuat `WorkerNotif.php` yang berjalan via cron:
+Saya membuat worker cron notifikasi yang berjalan tiap jam:
 
 - **H-1 reminder**: query jadwal besok, kirim pengingat ke pasien
 - **Same-day reminder**: pengingat di hari yang sama untuk janji siang/sore
@@ -113,7 +113,7 @@ Memanfaatkan webhook, saya buat bot WhatsApp untuk command admin — `Helpme.php
 | 2026 | CRM module: device mgmt, template engine, bulk save |
 | Jul 2026 | CRM model, rate limiting, fallback template |
 
-Total ~28 komit non-merge, 3 file utama: `WorkerNotif.php`, `ModelUtama.php` (2.488 baris), dan modul CRM.
+Total ~28 komit non-merge, terbagi antara worker cron notifikasi, lapisan model bersama, dan modul CRM.
 
 ## Apa yang Dapat Dipelajari
 

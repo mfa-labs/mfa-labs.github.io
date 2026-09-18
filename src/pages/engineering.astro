@@ -1,0 +1,18 @@
+---
+import DetailLayout from '../layouts/DetailLayout.astro';
+import Engineering from '../components/sections/Engineering.astro';
+
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Engineering' }];
+---
+
+<DetailLayout
+  lang="en"
+  title="Engineering Case Studies"
+  kicker="Enterprise Software Engineering"
+  description="Nine production workstreams from a multi-tenant clinic-management SaaS — performance engineering, healthcare interoperability, architecture, and infrastructure."
+  intro="Nine production workstreams from a clinic-management SaaS serving hundreds of clinics across Indonesia. Each case study covers the problem, the engineering decisions, and the measured result."
+  crumbs={crumbs}
+  selfPath="/engineering/"
+>
+  <Engineering lang="en" variant="full" />
+</DetailLayout>

@@ -1,0 +1,30 @@
+---
+import Breadcrumbs, { type Crumb } from './Breadcrumbs.astro';
+
+export interface Props {
+  kicker?: string;
+  title: string;
+  desc?: string;
+  crumbs: Crumb[];
+}
+
+const { kicker, title, desc, crumbs } = Astro.props;
+---
+
+<section class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-16 pb-12">
+  <Breadcrumbs items={crumbs} />
+  {
+    kicker && (
+      <p class="font-mono text-xs uppercase tracking-widest mb-3" style="color: var(--color-secondary);">
+        {kicker}
+      </p>
+    )
+  }
+  <h1
+    class="font-display text-[36px] md:text-[52px] leading-[1.1] tracking-tight font-semibold mb-4"
+    style="color: var(--color-primary);"
+  >
+    {title}
+  </h1>
+  {desc && <p class="font-body text-lg leading-relaxed max-w-3xl" style="color: var(--color-on-surface-variant);">{desc}</p>}
+</section>

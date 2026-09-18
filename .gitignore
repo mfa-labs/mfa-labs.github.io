@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 node_modules/
 .commandcode
+
+# internal working notes — memuat kredensial & nama klien, jangan di-commit
+perbaikan.md

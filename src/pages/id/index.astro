@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import Hero from '../../components/sections/Hero.astro';
+import Engineering from '../../components/sections/Engineering.astro';
+import Research from '../../components/sections/Research.astro';
+import Projects from '../../components/sections/Projects.astro';
+import Teaching from '../../components/sections/Teaching.astro';
+import Speaking from '../../components/sections/Speaking.astro';
+import BlogPreview from '../../components/sections/BlogPreview.astro';
+import Contact from '../../components/sections/Contact.astro';
+import { profile } from '../../data/profile';
+import { personSchema } from '../../lib/schema';
+
+const lang = 'id' as const;
+---
+
+<Layout
+  title={profile.title.id}
+  description={profile.metaDescription.id}
+  lang="id"
+  alternateUrl="/"
+  jsonLd={personSchema(lang)}
+>
+  <Nav lang="id" alternateHref="/" />
+
+  <main class="flex-grow w-full">
+    <Hero lang="id" />
+    <Engineering lang="id" variant="teaser" />
+    <Research lang="id" variant="teaser" />
+    <Projects lang="id" variant="teaser" />
+    <Teaching lang="id" limit={2} />
+    <Speaking lang="id" limit={2} />
+    <BlogPreview lang="id" limit={2} />
+    <Contact lang="id" />
+  </main>
+
+  <Footer lang="id" />
+</Layout>

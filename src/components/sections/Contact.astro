@@ -1,0 +1,129 @@
+---
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { profile } from '../../data/profile';
+import { pick, type Bilingual, type Lang } from '../../lib/i18n';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const { socials, cv } = profile;
+
+function t<T>(pair: Bilingual<T>): T {
+  return pick(pair, lang);
+}
+
+const cvExists = existsSync(
+  join(process.cwd(), 'public', cv.path.replace(/^\//, ''))
+);
+
+const copy = {
+  title: {
+    en: "Let's Connect for Industry Projects or Research Collaborations.",
+    id: 'Mari Terhubung untuk Proyek Industri atau Kolaborasi Riset.',
+  },
+  industry: { en: 'Industry Collaboration', id: 'Kolaborasi Industri' },
+  industryDesc: {
+    en: 'Expertise in SaaS development, healthcare interoperability, and performance engineering.',
+    id: 'Keahlian di pengembangan SaaS, interoperabilitas kesehatan, dan performance engineering.',
+  },
+  research: { en: 'Academic Research', id: 'Riset Akademik' },
+  researchDesc: {
+    en: 'Open to joint publications in NLP, Regional Languages, and Applied AI.',
+    id: 'Terbuka untuk publikasi bersama di bidang NLP, Bahasa Daerah, dan Applied AI.',
+  },
+  contactMe: { en: 'Contact Me', id: 'Hubungi Saya' },
+  collaborate: { en: 'Collaborate', id: 'Kolaborasi' },
+  emailMe: { en: 'Email', id: 'Email' },
+};
+---
+
+<section id="contact" class="py-20" style="background: var(--color-surface);">
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+    <div
+      class="border rounded-2xl p-8 md:p-16 text-center max-w-4xl mx-auto shadow-ambient"
+      style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);"
+    >
+      <h2
+        class="font-display text-3xl md:text-[40px] leading-tight mb-8"
+        style="color: var(--color-primary);"
+      >
+        {t(copy.title)}
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+        <div class="p-6 flex flex-col items-center gap-4">
+          <h3 class="font-display text-xl" style="color: var(--color-primary);">
+            {t(copy.industry)}
+          </h3>
+          <p
+            class="mb-6 max-w-[45ch]"
+            style="color: var(--color-on-surface-variant); font-family: var(--font-body);"
+          >
+            {t(copy.industryDesc)}
+          </p>
+          <a
+            href={socials.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full btn-primary px-6 py-3"
+          >
+            {t(copy.contactMe)}
+          </a>
+        </div>
+        <div
+          class="p-6 flex flex-col items-center gap-4 border-t md:border-t-0 md:border-l"
+          style="border-color: var(--color-outline-variant);"
+        >
+          <h3 class="font-display text-xl" style="color: var(--color-primary);">
+            {t(copy.research)}
+          </h3>
+          <p
+            class="mb-6 max-w-[45ch]"
+            style="color: var(--color-on-surface-variant); font-family: var(--font-body);"
+          >
+            {t(copy.researchDesc)}
+          </p>
+          <a
+            href={`mailto:${socials.email}`}
+            class="w-full btn-primary px-6 py-3"
+            style="background: var(--color-secondary); color: var(--color-on-secondary);"
+          >
+            {t(copy.collaborate)}
+          </a>
+        </div>
+      </div>
+
+      <div
+        class="mt-12 pt-8 border-t flex flex-wrap items-center justify-center gap-x-8 gap-y-4"
+        style="border-color: var(--color-outline-variant);"
+      >
+        <a
+          href={socials.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link-arrow text-sm">LinkedIn</a
+        >
+        <a href={socials.github} target="_blank" rel="noopener noreferrer" class="link-arrow text-sm"
+          >GitHub</a
+        >
+        <a
+          href={socials.scholar}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link-arrow text-sm">Google Scholar</a
+        >
+        <a href={`mailto:${socials.email}`} class="link-arrow text-sm">{t(copy.emailMe)}</a>
+        {
+          cvExists && (
+            <a href={cv.path} download class="btn-secondary px-6 py-2.5">
+              {t(cv.label)}
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

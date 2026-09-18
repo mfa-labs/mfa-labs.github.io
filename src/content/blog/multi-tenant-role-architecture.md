@@ -78,21 +78,21 @@ a81ad25 — Styling klinik (role klinik pertama)
 
 ### 3. Shared Clinic Groups
 
-Beberapa klinik butuh berbagi data pasien — misalnya grup GrupA yang punya beberapa cabang:
+Beberapa klinik butuh berbagi data pasien — misalnya satu grup klinik yang punya beberapa cabang. Nama grup di bawah ini disamarkan:
 
-| Grup | Klinik | Fitur |
-|------|--------|-------|
-| GrupA | GrupA, GrupA Cabang | RM gabungan |
-| GrupB | — | Grup dental |
-| GrupC | — | Sharing multi-cabang |
-| GrupD | — | Rujukan antar klinik |
-| GrupE | — | Chain dental |
+| Grup | Cakupan | Fitur |
+|------|---------|-------|
+| Grup A | Multi-cabang | RM gabungan |
+| Grup B | Klinik dental | Grup dental |
+| Grup C | Multi-cabang | Sharing multi-cabang |
+| Grup D | Antar klinik | Rujukan antar klinik |
+| Grup E | Klinik dental | Chain dental |
 
 ```
-bb32002 (Sep 2023) — combine rm (GrupA group)
-e32573f (Apr 2025) — combine rm GrupC
-2c3d1be (Apr 2025) — merge rm GrupD
-145f91e (Mar 2025) — GrupE klinik bersama
+bb32002 (Sep 2023) — combine rm (grup A)
+e32573f (Apr 2025) — combine rm (grup C)
+2c3d1be (Apr 2025) — merge rm (grup D)
+145f91e (Mar 2025) — klinik bersama (grup E)
 5ba18c9 (Mar 2025) — fix: klinik bersama id user
 ```
 
@@ -121,7 +121,7 @@ Arsitektur ini tidak dibangun dalam satu sprint — berkembang selama 5 tahun se
 | 2022 | Praktik Pribadi, BPJS |
 | 2023 | Partner/Affiliate |
 | 2024 | Umum, Klinik Umum, Dokter Klinik Umum, Admin Klinik Umum |
-| 2025 | Shared clinic groups (GrupA, GrupC, GrupD, GrupE) |
+| 2025 | Shared clinic groups (4 grup klinik mitra) |
 
 ## Apa yang Dapat Dipelajari
 

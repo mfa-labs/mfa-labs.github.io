@@ -1,0 +1,112 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import { talks } from '../../data/speaking';
+import { localePath, pick, type Bilingual, type Lang } from '../../lib/i18n';
+
+export interface Props {
+  lang: Lang;
+  variant?: 'teaser' | 'full';
+  limit?: number;
+}
+
+const { lang, variant = 'teaser', limit } = Astro.props;
+
+function t<T>(pair: Bilingual<T>): T {
+  return pick(pair, lang);
+}
+
+const shown = limit ? talks.slice(0, limit) : talks;
+
+const copy = {
+  title: { en: 'Speaking & Workshops', id: 'Pembicara & Workshop' },
+  desc: {
+    en: 'Workshops and training — sharing hands-on AI practices for office administration.',
+    id: 'Workshop & pelatihan — berbagi praktik pemanfaatan AI untuk administrasi perkantoran.',
+  },
+  seeAll: { en: 'View All Talks', id: 'Lihat Semua Sesi' },
+};
+---
+
+<section
+  id="speaking"
+  class="py-section-gap border-t"
+  style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);"
+>
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+    <SectionHeading title={t(copy.title)} desc={t(copy.desc)} />
+
+    <div class="flex flex-col gap-8">
+      {
+        shown.map((talk) => (
+          <article
+            class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-ambient"
+            style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);"
+          >
+            <div class="p-6 md:p-8 flex-grow">
+              <span class="tag-project mb-4 inline-block">{t(talk.dateLabel)}</span>
+              <h3 class="font-display text-xl mb-1 mt-3" style="color: var(--color-primary);">
+                {t(talk.title)}
+              </h3>
+              <p class="font-mono text-sm mb-4" style="color: var(--color-secondary);">
+                {t(talk.role)}
+              </p>
+
+              {variant === 'full' && (
+                <>
+                  <p
+                    class="mb-4 max-w-[70ch]"
+                    style="color: var(--color-on-surface-variant); font-family: var(--font-body);"
+                  >
+                    {t(talk.desc)}
+                  </p>
+                  <ul
+                    class="space-y-1 text-sm list-disc pl-4 mb-6 max-w-[70ch]"
+                    style="color: var(--color-on-surface-variant); font-family: var(--font-body);"
+                  >
+                    {t(talk.highlights).map((h) => (
+                      <li>{h}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+
+              <div class="flex flex-wrap items-center gap-6">
+                {talk.links.map((l) => (
+                  <a
+                    href={l.href}
+                    target={l.newTab ? '_blank' : undefined}
+                    rel={l.newTab ? 'noopener noreferrer' : undefined}
+                    class="link-arrow text-sm group"
+                  >
+                    {t(l.label)}
+                    <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">
+                      {l.newTab ? 'arrow_outward' : 'arrow_forward'}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div
+              class="px-6 md:px-8 py-4 border-t flex flex-wrap gap-2"
+              style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);"
+            >
+              {talk.tags.map((tag) => (
+                <span class="tag-eng">{tag}</span>
+              ))}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    {
+      variant === 'teaser' && (
+        <div class="mt-12">
+          <a href={localePath('/speaking/', lang)} class="btn-secondary px-8 py-3.5">
+            {t(copy.seeAll)} →
+          </a>
+        </div>
+      )
+    }
+  </div>
+</section>

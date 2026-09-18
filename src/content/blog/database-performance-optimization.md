@@ -134,7 +134,7 @@ Solusi (commit `1468c94`, Jul 2025): Batasi ke 50 kunjungan terakhir dengan pagi
 | `4. icd9.sql` | Mapping ICD-9 (2025) |
 | `5. wa_crm.sql` | Modul CRM WhatsApp (2026) |
 | `6. gaji_pokok.sql` | Fitur gaji dokter (2026) |
-| `7. tenantdua.sql` | Grup klinik TenantDua (2026) |
+| `7. grup_klinik.sql` | Grup klinik bersama (2026) |
 
 ## Implementasi
 

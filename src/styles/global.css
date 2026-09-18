@@ -57,6 +57,12 @@
 
   --color-primary: #e1e3e5;
   --color-on-primary: #0f1113;
+
+  /* Hijau tua #006c4a hanya 2.92:1 di atas surface gelap — gagal WCAG AA.
+     Di dark mode token ini dibalik supaya tetap bisa dipakai sebagai teks. */
+  --color-secondary: #6ee7b7;
+  --color-on-secondary: #0f1113;
+
   --color-tag-green-bg: #064e2e;
   --color-tag-green-text: #6ee7b7;
   --color-tag-green-border: #065f46;

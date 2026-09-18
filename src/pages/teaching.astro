@@ -1,0 +1,18 @@
+---
+import DetailLayout from '../layouts/DetailLayout.astro';
+import Teaching from '../components/sections/Teaching.astro';
+
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Teaching' }];
+---
+
+<DetailLayout
+  lang="en"
+  title="Teaching"
+  kicker="Informatics Study Programme (S1)"
+  description="Courses taught in the Informatics Study Programme at Universitas Ahmad Dahlan Aceh, with session topics and materials for each meeting."
+  intro="Courses I teach in the Informatics Study Programme (S1), Universitas Ahmad Dahlan Aceh. Course pages and materials are written in Indonesian."
+  crumbs={crumbs}
+  selfPath="/teaching/"
+>
+  <Teaching lang="en" variant="full" />
+</DetailLayout>

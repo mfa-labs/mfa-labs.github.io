@@ -36,6 +36,8 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
+      // /en/ hanya stub redirect ke root — jangan pernah masuk sitemap.
+      filter: (page) => !/\/en\/?$/.test(new URL(page).pathname),
       customPages: [
         'https://mfa-labs.github.io/materi/workshop-ai-sekre.html',
         'https://mfa-labs.github.io/materi/workshop-ai-tendik-sesi2.html',

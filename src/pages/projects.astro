@@ -1,0 +1,18 @@
+---
+import DetailLayout from '../layouts/DetailLayout.astro';
+import Projects from '../components/sections/Projects.astro';
+
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Projects' }];
+---
+
+<DetailLayout
+  lang="en"
+  title="Projects & Products"
+  kicker="Selected Work"
+  description="Products and systems built end to end — a Flutter stunting-prevention app with a Node.js API, and an AI-powered digital archive pipeline."
+  intro="Products and systems I have built end to end, from mobile applications to applied AI tooling, each with its source material published."
+  crumbs={crumbs}
+  selfPath="/projects/"
+>
+  <Projects lang="en" variant="full" />
+</DetailLayout>

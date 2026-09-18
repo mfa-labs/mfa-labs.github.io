@@ -1,42 +1,149 @@
 ---
-const googleScholarUrl = 'https://scholar.google.com/citations?user=1pAz6xgAAAAJ&hl=id';
+import { navHref, navItems, profile } from '../data/profile';
+import { homeHref, type Lang } from '../lib/i18n';
+
+export interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const { socials, brand, brandTagline, name } = profile;
+
+const copy = {
+  engineering: { en: 'Engineering & Contact', id: 'Engineering & Kontak' },
+  academic: { en: 'Academic & Research', id: 'Akademik & Riset' },
+  browse: { en: 'Browse', id: 'Jelajahi' },
+  rights: {
+    en: `© ${new Date().getFullYear()} ${name}. All rights reserved.`,
+    id: `© ${new Date().getFullYear()} ${name}. Hak cipta dilindungi.`,
+  },
+};
+
+const browseItems = navItems;
 ---
 
-<footer class="border-t pt-20 pb-10" style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);">
+<footer
+  class="border-t pt-20 pb-10"
+  style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);"
+>
   <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
       <div class="flex flex-col gap-6">
-        <h3 class="font-mono text-xs uppercase tracking-[0.2em]" style="color: var(--color-on-surface-variant);">Corporate &amp; Engineering</h3>
+        <h3
+          class="font-mono text-xs uppercase tracking-[0.2em]"
+          style="color: var(--color-on-surface-variant);"
+        >
+          {copy.engineering[lang]}
+        </h3>
         <nav class="flex flex-col gap-4">
-          <a href="https://www.linkedin.com/in/muhammad-fadhil-al-amal/" class="font-display text-xl inline-flex items-center gap-3 group" style="color: var(--color-primary);">
+          <a
+            href={socials.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-display text-xl inline-flex items-center gap-3 group"
+            style="color: var(--color-primary);"
+          >
             LinkedIn
-            <span class="material-symbols-outlined text-lg opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+            <span
+              class="material-symbols-outlined text-lg opacity-0 group-hover:opacity-100 transition-opacity"
+              >arrow_forward</span
+            >
           </a>
-          <a href="mailto:fadhil.muq@gmail.com" class="font-display text-xl inline-flex items-center gap-3 group" style="color: var(--color-primary);">
+          <a
+            href={`mailto:${socials.email}`}
+            class="font-display text-xl inline-flex items-center gap-3 group"
+            style="color: var(--color-primary);"
+          >
             Email
-            <span class="material-symbols-outlined text-lg opacity-0 group-hover:opacity-100 transition-opacity">alternate_email</span>
+            <span
+              class="material-symbols-outlined text-lg opacity-0 group-hover:opacity-100 transition-opacity"
+              >alternate_email</span
+            >
           </a>
         </nav>
       </div>
+
+      <div class="flex flex-col gap-6">
+        <h3
+          class="font-mono text-xs uppercase tracking-[0.2em]"
+          style="color: var(--color-on-surface-variant);"
+        >
+          {copy.browse[lang]}
+        </h3>
+        <nav class="flex flex-col gap-3">
+          {
+            browseItems.map((item) => (
+              <a
+                href={navHref(item, lang)}
+                class="font-mono text-sm transition-colors hover:text-secondary"
+                style="color: var(--color-on-surface-variant);"
+              >
+                {item[lang]}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+
       <div class="flex flex-col gap-6 md:items-end md:text-right">
-        <h3 class="font-mono text-xs uppercase tracking-[0.2em]" style="color: var(--color-on-surface-variant);">Academic &amp; Research</h3>
+        <h3
+          class="font-mono text-xs uppercase tracking-[0.2em]"
+          style="color: var(--color-on-surface-variant);"
+        >
+          {copy.academic[lang]}
+        </h3>
         <nav class="flex flex-col gap-4 md:items-end">
-          <a href={googleScholarUrl} class="font-display text-xl inline-flex items-center gap-3 group" style="color: var(--color-primary);">
+          <a
+            href={socials.scholar}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-display text-xl inline-flex items-center gap-3 group"
+            style="color: var(--color-primary);"
+          >
             Google Scholar
-            <span class="material-symbols-outlined text-lg opacity-0 group-hover:opacity-100 transition-opacity">school</span>
+            <span
+              class="material-symbols-outlined text-lg opacity-0 group-hover:opacity-100 transition-opacity"
+              >school</span
+            >
           </a>
-          <a href="https://github.com/mfa-labs" class="font-display text-xl inline-flex items-center gap-3 group" style="color: var(--color-primary);">
+          <a
+            href={socials.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-display text-xl inline-flex items-center gap-3 group"
+            style="color: var(--color-primary);"
+          >
             GitHub
-            <span class="material-symbols-outlined text-lg opacity-0 group-hover:opacity-100 transition-opacity">code</span>
+            <span
+              class="material-symbols-outlined text-lg opacity-0 group-hover:opacity-100 transition-opacity"
+              >code</span
+            >
           </a>
         </nav>
+        <p class="font-mono text-xs" style="color: var(--color-secondary);">
+          {brand} — {brandTagline}
+        </p>
       </div>
     </div>
-    <div class="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4" style="border-color: var(--color-outline-variant);">
-      <p class="font-mono text-xs" style="color: var(--color-on-surface-variant);">{'\u00A9'} 2026 Muhammad Fadhil Al Amal. All rights reserved.</p>
+
+    <div
+      class="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4"
+      style="border-color: var(--color-outline-variant);"
+    >
+      <p class="font-mono text-xs" style="color: var(--color-on-surface-variant);">
+        {copy.rights[lang]}
+      </p>
       <div class="flex gap-8">
-        <a href="/" class="font-mono text-xs transition-colors" style="color: var(--color-on-surface-variant);">Home</a>
-        <a href="/blog" class="font-mono text-xs transition-colors" style="color: var(--color-on-surface-variant);">Blog</a>
+        <a
+          href={homeHref(lang)}
+          class="font-mono text-xs transition-colors"
+          style="color: var(--color-on-surface-variant);">{lang === 'id' ? 'Beranda' : 'Home'}</a
+        >
+        <a
+          href="/rss.xml"
+          class="font-mono text-xs transition-colors"
+          style="color: var(--color-on-surface-variant);">RSS</a
+        >
       </div>
     </div>
   </div>

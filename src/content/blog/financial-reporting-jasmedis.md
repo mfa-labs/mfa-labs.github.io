@@ -61,7 +61,7 @@ Hasil: response time turun dari 10+ detik menjadi <200ms.
 | Praktik Pribadi | Revenue & biaya praktik |
 | Owner | Breakdown pendapatan per klinik |
 | BPJS | Laporan klaim asuransi |
-| Dinkes | Laporan SKP dokter, laporan GrupA |
+| Dinkes | Laporan SKP dokter, laporan rawat inap |
 
 Salah satu fitur yang paling berguna: **detail biaya klinik owner** — pemilik beberapa klinik bisa lihat pendapatan tiap klinik dalam satu halaman (commit `3254447`).
 
@@ -94,8 +94,8 @@ b19d939 — fix: v81 php - laporan harian dan laporan jasmed
 Bug di mana diskon tidak mengurangi perhitungan Jasa Medis — dokter tetap dapat fee penuh meskipun pasien dapat diskon:
 
 ```
-08e5cf7 — tenantdua diskon tidak mengurangi jasmed di laporan jasmed
-b15af94 — tenantdua pendapatan lain diskon tidak mengurangi jasmed
+08e5cf7 — diskon tidak mengurangi jasmed di laporan jasmed
+b15af94 — pendapatan lain diskon tidak mengurangi jasmed
 ```
 
 ### 4. Laporan Dinkes
@@ -107,8 +107,8 @@ Untuk memenuhi kebutuhan Dinas Kesehatan:
 15864b3 — dinkes pribadi
 3d3e8ad — implemen laporan dinkes
 24e3f1f — laporan dinkes dokter (Aug 2024)
-767b52a — laporan dinkes GrupA (Mar 2025) — laporan rawat inap
-2281d7e — skp GrupA dokter
+767b52a — laporan dinkes (Mar 2025) — laporan rawat inap
+2281d7e — laporan skp dokter
 ```
 
 ### 5. Export System
@@ -148,7 +148,7 @@ Sekarang `Rp1.000.000` tampil konsisten di semua role.
 | Jun 2023 | Fix tanggal 31 Jasa Medis |
 | Feb 2024 | Laporan Dinkes, SKP |
 | Nov 2024 | PHP 8 migration fix |
-| Mar 2025 | Laporan GrupA, SKP dokter |
+| Mar 2025 | Laporan rawat inap Dinkes, SKP dokter |
 | Jun 2026 | Fix diskon Jasmed |
 
 Total ~44 komit non-merge.

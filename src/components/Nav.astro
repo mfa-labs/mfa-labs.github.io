@@ -1,16 +1,106 @@
-<header class="sticky top-0 w-full z-50 border-b border-outline-variant" style="background: color-mix(in srgb, var(--color-surface) 80%, transparent); backdrop-filter: blur(12px);">
-  <div class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-    <a href="/" class="font-display text-2xl font-bold tracking-tight" style="color: var(--color-primary);">
-      Muhammad Fadhil Al Amal
+---
+import { navHref, navItems, profile } from '../data/profile';
+import { homeHref, otherLang, type Lang } from '../lib/i18n';
+
+export interface Props {
+  lang?: Lang;
+  /** URL versi bahasa lain. Bila kosong, toggle mengarah ke beranda bahasa lain. */
+  alternateHref?: string;
+}
+
+const { lang = 'en', alternateHref } = Astro.props;
+
+const path = Astro.url.pathname;
+const home = homeHref(lang);
+const other = otherLang(lang);
+const toggleHref = alternateHref ?? homeHref(other);
+const toggleLabel = other === 'id' ? 'ID' : 'EN';
+
+const isActive = (href: string) => path === href || path === href.replace(/\/$/, '');
+---
+
+<header
+  class="sticky top-0 w-full z-50 border-b border-outline-variant"
+  style="background: color-mix(in srgb, var(--color-surface) 85%, transparent); backdrop-filter: blur(12px);"
+>
+  <div
+    class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto"
+  >
+    <a href={home} class="font-display text-lg md:text-2xl font-bold tracking-tight" style="color: var(--color-primary);">
+      {profile.name}
     </a>
-    <div class="hidden md:flex items-center gap-4">
-      <a href={Astro.url.pathname.startsWith('/en') ? '/' : '/en'} class="font-mono text-xs px-3 py-1.5 rounded transition-colors" style="color: var(--color-on-surface-variant); border: 1px solid var(--color-outline-variant);" aria-label="Toggle language">
-        {Astro.url.pathname.startsWith('/en') ? 'ID' : 'EN'}
+
+    <nav class="hidden lg:flex items-center gap-6" aria-label="Main">
+      {
+        navItems.map((item) => {
+          const href = navHref(item, lang);
+          return (
+            <a
+              href={href}
+              aria-current={isActive(href) ? 'page' : undefined}
+              class="font-mono text-xs uppercase tracking-wider transition-colors hover:text-secondary"
+              style={`color: var(--color-${isActive(href) ? 'secondary' : 'on-surface-variant'});`}
+            >
+              {item[lang]}
+            </a>
+          );
+        })
+      }
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a
+        href={toggleHref}
+        class="font-mono text-xs px-3 py-1.5 rounded transition-colors"
+        style="color: var(--color-on-surface-variant); border: 1px solid var(--color-outline-variant);"
+        aria-label={other === 'id' ? 'Ganti ke Bahasa Indonesia' : 'Switch to English'}
+      >
+        {toggleLabel}
       </a>
-      <button id="theme-toggle" class="p-2 rounded transition-colors" style="color: var(--color-on-surface-variant);" aria-label="Toggle dark mode">
+      <button
+        id="theme-toggle"
+        class="p-2 rounded transition-colors"
+        style="color: var(--color-on-surface-variant);"
+        aria-label="Toggle dark mode"
+      >
         <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
       </button>
-      <a href="/#contact" class="btn-primary px-6 py-2.5">Contact</a>
+      <a href={`${home}#contact`} class="hidden md:inline-flex btn-primary px-6 py-2.5">
+        {lang === 'id' ? 'Kontak' : 'Contact'}
+      </a>
+
+      <details class="lg:hidden relative">
+        <summary
+          class="p-2 cursor-pointer list-none"
+          style="color: var(--color-on-surface-variant);"
+          aria-label="Open menu"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+        </summary>
+        <div
+          class="absolute right-0 mt-3 min-w-[220px] flex flex-col border rounded-xl overflow-hidden shadow-ambient"
+          style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);"
+        >
+          {
+            navItems.map((item) => (
+              <a
+                href={navHref(item, lang)}
+                class="px-5 py-3 font-mono text-xs uppercase tracking-wider border-b last:border-b-0"
+                style="color: var(--color-on-surface-variant); border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);"
+              >
+                {item[lang]}
+              </a>
+            ))
+          }
+          <a
+            href={`${home}#contact`}
+            class="px-5 py-3 font-mono text-xs uppercase tracking-wider"
+            style="color: var(--color-secondary);"
+          >
+            {lang === 'id' ? 'Kontak' : 'Contact'}
+          </a>
+        </div>
+      </details>
     </div>
   </div>
 </header>

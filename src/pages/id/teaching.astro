@@ -1,0 +1,18 @@
+---
+import DetailLayout from '../../layouts/DetailLayout.astro';
+import Teaching from '../../components/sections/Teaching.astro';
+
+const crumbs = [{ label: 'Beranda', href: '/id/' }, { label: 'Pengajaran' }];
+---
+
+<DetailLayout
+  lang="id"
+  title="Pengajaran"
+  kicker="Program Studi Informatika (S1)"
+  description="Mata kuliah yang diampu di Program Studi Informatika, Universitas Ahmad Dahlan Aceh — beserta topik dan materi tiap pertemuan."
+  intro="Mata kuliah yang saya ampu di Program Studi Informatika (S1), Universitas Ahmad Dahlan Aceh — beserta topik dan materi tiap pertemuan."
+  crumbs={crumbs}
+  selfPath="/teaching/"
+>
+  <Teaching lang="id" variant="full" />
+</DetailLayout>

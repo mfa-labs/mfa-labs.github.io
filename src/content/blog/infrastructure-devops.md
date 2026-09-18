@@ -77,10 +77,10 @@ Redis diimplementasikan untuk session storage — lebih cepat dari file-based se
 | `03b2208` (Feb 2024) | 3 files | Redis configuration |
 | `aa3bebe` (Dec 2024) | 1 line | PHP 8 null fix |
 
-Redis dikonfigurasi via unix socket — lebih cepat daripada TCP:
+Redis dikonfigurasi via unix socket — lebih cepat daripada TCP. Kredensialnya dibaca dari `configuration.php` (gitignored), tidak pernah ditulis di kode maupun di repositori:
 ```php
 $config['sess_driver'] = 'redis';
-$config['sess_save_path'] = 'tcp://127.0.0.1:6379?auth=REDACTED';
+$config['sess_save_path'] = 'tcp://127.0.0.1:6379?auth=' . REDIS_PASSWORD;
 ```
 
 ### 4. Configuration Management
@@ -121,7 +121,7 @@ a0f3c2e (May 2021) — Start ignore configuration.php
 | Feb 2024 | Redis configuration, htaccess security |
 | Sep 2024 | Multi-tenant htaccess |
 | Nov 2024 | PHP 8.1 htaccess update |
-| Feb 2025 | TenantSatu & TenantDua hosting |
+| Feb 2025 | Migrasi hosting tenant |
 | Jun 2026 | Docker Compose setup |
 
 ## Apa yang Dapat Dipelajari

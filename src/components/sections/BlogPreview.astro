@@ -1,0 +1,117 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHeading from '../SectionHeading.astro';
+import { pick, type Bilingual, type Lang } from '../../lib/i18n';
+
+export interface Props {
+  lang: Lang;
+  limit?: number;
+}
+
+const { lang, limit = 2 } = Astro.props;
+
+function t<T>(pair: Bilingual<T>): T {
+  return pick(pair, lang);
+}
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, limit);
+
+function readingTime(body: string): string {
+  const words = body.trim().split(/\s+/).length;
+  return `${Math.max(1, Math.round(words / 200))} min read`;
+}
+
+const copy = {
+  kicker: { en: 'Writing', id: 'Tulisan' },
+  title: { en: 'Technical Blog', id: 'Blog Teknis' },
+  desc: {
+    en: 'Long-form engineering write-ups from building and operating a production healthcare SaaS. Articles are written in Indonesian.',
+    id: 'Tulisan teknis panjang dari pengalaman membangun dan mengoperasikan SaaS kesehatan produksi.',
+  },
+  read: { en: 'Read article', id: 'Baca artikel' },
+  all: { en: 'View All Articles', id: 'Lihat Semua Artikel' },
+};
+---
+
+{
+  posts.length > 0 && (
+    <section
+      id="blog"
+      class="py-20 border-t"
+      style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);"
+    >
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <SectionHeading kicker={t(copy.kicker)} title={t(copy.title)} desc={t(copy.desc)} />
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {posts.map((post) => {
+            const slug = post.id.replace(/\.mdx?$/, '');
+            const body = post.body ?? '';
+            return (
+              <article
+                class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-ambient"
+                style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);"
+              >
+                <div class="p-8 flex-grow flex flex-col">
+                  <div class="flex items-center gap-3 mb-4">
+                    <time class="font-mono text-xs" style="color: var(--color-on-surface-variant);">
+                      {post.data.pubDate
+                        .toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                        .toUpperCase()}
+                    </time>
+                    <span class="w-1 h-1 rounded-full" style="background: var(--color-outline-variant);" />
+                    <span class="font-mono text-xs" style="color: var(--color-on-surface-variant);">
+                      {readingTime(body)}
+                    </span>
+                  </div>
+                  <h3
+                    class="font-display text-xl font-semibold mb-3 leading-snug"
+                    style="color: var(--color-primary);"
+                  >
+                    <a
+                      href={`/blog/${slug}`}
+                      class="hover:underline decoration-2 underline-offset-2 decoration-secondary"
+                    >
+                      {post.data.title}
+                    </a>
+                  </h3>
+                  <p
+                    class="mb-6 line-clamp-3 text-base leading-relaxed flex-grow max-w-[70ch]"
+                    style="color: var(--color-on-surface-variant); font-family: var(--font-body);"
+                  >
+                    {post.data.description}
+                  </p>
+                  {post.data.tags.length > 0 && (
+                    <div class="flex flex-wrap gap-2">
+                      {post.data.tags.map((tag) => (
+                        <span class="tag-research">{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div
+                  class="px-8 py-4 border-t flex items-center justify-between"
+                  style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);"
+                >
+                  <a href={`/blog/${slug}`} class="link-arrow text-sm group">
+                    {t(copy.read)}: {post.data.title}
+                    <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">
+                      arrow_forward
+                    </span>
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <div class="mt-12">
+          <a href="/blog" class="btn-secondary px-8 py-3.5">{t(copy.all)} →</a>
+        </div>
+      </div>
+    </section>
+  )
+}

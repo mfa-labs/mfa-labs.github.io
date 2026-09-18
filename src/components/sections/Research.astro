@@ -1,0 +1,136 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import {
+  publications,
+  researchFocus,
+  researchProjects,
+  researchTagline,
+} from '../../data/research';
+import { localePath, pick, type Bilingual, type Lang } from '../../lib/i18n';
+
+export interface Props {
+  lang: Lang;
+  variant?: 'teaser' | 'full';
+}
+
+const { lang, variant = 'teaser' } = Astro.props;
+const isFull = variant === 'full';
+
+function t<T>(pair: Bilingual<T>): T {
+  return pick(pair, lang);
+}
+
+const copy = {
+  title: { en: 'Research & Publications', id: 'Riset & Publikasi' },
+  desc: {
+    en: 'Advancing regional language processing and applied AI through academic inquiry.',
+    id: 'Memajukan pemrosesan bahasa daerah dan applied AI melalui penelitian akademis.',
+  },
+  focus: { en: 'Research Focus', id: 'Fokus Riset' },
+  projects: { en: 'Research Projects', id: 'Proyek Riset' },
+  paper: { en: 'Read Paper', id: 'Baca Paper' },
+  seeAll: { en: 'View Research', id: 'Lihat Riset' },
+};
+---
+
+<section
+  id="research"
+  class="py-section-gap border-t"
+  style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);"
+>
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+    <SectionHeading title={t(copy.title)} desc={t(copy.desc)} />
+
+    <p class="font-mono text-sm mb-8" style="color: var(--color-secondary);">{t(researchTagline)}</p>
+
+    <div class="mb-12">
+      <h3 class="font-display text-lg mb-4" style="color: var(--color-primary);">{t(copy.focus)}</h3>
+      <div class="flex flex-wrap gap-2">
+        {t(researchFocus).map((f) => <span class="tag-research">{f}</span>)}
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      {
+        publications.map((p) => (
+          <div
+            class="border rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-ambient"
+            style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);"
+          >
+            <div class="flex items-start gap-4">
+              <span
+                class="material-symbols-outlined mt-1"
+                style="color: var(--color-on-surface-variant);"
+              >
+                description
+              </span>
+              <div>
+                <h4 class="font-body text-lg font-medium" style="color: var(--color-primary);">
+                  {p.title}
+                </h4>
+                <p class="text-sm" style="color: var(--color-on-surface-variant);">
+                  {p.venue} · {p.year}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 shrink-0">
+              <span class="badge-doi">DOI: {p.doi}</span>
+              <a
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-arrow text-sm"
+              >
+                {t(copy.paper)}
+                <span class="material-symbols-outlined text-lg ml-1">arrow_outward</span>
+              </a>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    {
+      isFull && (
+        <div class="mt-16">
+          <h3 class="font-display text-lg mb-6" style="color: var(--color-primary);">
+            {t(copy.projects)}
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {researchProjects.map((r) => (
+              <div
+                class="border rounded-xl p-6 flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-ambient"
+                style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);"
+              >
+                <h4 class="font-display text-lg mb-2" style="color: var(--color-primary);">
+                  {t(r.title)}
+                </h4>
+                <p
+                  class="text-sm mb-6 flex-grow"
+                  style="color: var(--color-on-surface-variant); font-family: var(--font-body);"
+                >
+                  {t(r.desc)}
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  {r.tags.map((tag) => (
+                    <span class="tag-research">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      !isFull && (
+        <div class="mt-12">
+          <a href={localePath('/research/', lang)} class="btn-secondary px-8 py-3.5">
+            {t(copy.seeAll)} →
+          </a>
+        </div>
+      )
+    }
+  </div>
+</section>

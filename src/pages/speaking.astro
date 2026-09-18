@@ -1,0 +1,22 @@
+---
+import DetailLayout from '../layouts/DetailLayout.astro';
+import Speaking from '../components/sections/Speaking.astro';
+import { eventSchema, talks } from '../data/speaking';
+
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Speaking' }];
+
+const schema = talks.map((talk) => eventSchema(talk, 'en'));
+---
+
+<DetailLayout
+  lang="en"
+  title="Speaking & Workshops"
+  kicker="Talks"
+  description="Workshops and training sessions on practical AI for office administration — digital archives, prompt engineering, and building tools without code."
+  intro="Workshops and training sessions where I share hands-on AI practices for office administration, from digital archiving to building tools without code."
+  crumbs={crumbs}
+  selfPath="/speaking/"
+  extraSchema={schema}
+>
+  <Speaking lang="en" variant="full" />
+</DetailLayout>

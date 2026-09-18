@@ -1,0 +1,45 @@
+---
+import Layout from './Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { alternateHref, type Lang } from '../lib/i18n';
+import { breadcrumbSchema, personSchema } from '../lib/schema';
+
+export interface Crumb {
+  label: string;
+  href?: string;
+}
+
+export interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  intro: string;
+  kicker?: string;
+  crumbs: Crumb[];
+  /** Path halaman ini tanpa prefix bahasa, mis. /engineering/. */
+  selfPath: string;
+  extraSchema?: Record<string, unknown>[];
+}
+
+const { lang, title, description, intro, kicker, crumbs, selfPath, extraSchema = [] } = Astro.props;
+
+const alternate = alternateHref(selfPath, lang);
+const crumbsForSchema = crumbs.map((c) => ({ label: c.label, href: c.href ?? selfPath }));
+---
+
+<Layout
+  title={title}
+  description={description}
+  lang={lang}
+  alternateUrl={alternate}
+  jsonLd={[personSchema(lang), breadcrumbSchema(crumbsForSchema), ...extraSchema]}
+>
+  <Nav lang={lang} alternateHref={alternate} />
+  <main class="flex-grow w-full">
+    <PageIntro kicker={kicker} title={title} desc={intro} crumbs={crumbs} />
+    <slot />
+  </main>
+  <Footer lang={lang} />
+</Layout>

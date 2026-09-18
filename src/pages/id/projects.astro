@@ -1,0 +1,18 @@
+---
+import DetailLayout from '../../layouts/DetailLayout.astro';
+import Projects from '../../components/sections/Projects.astro';
+
+const crumbs = [{ label: 'Beranda', href: '/id/' }, { label: 'Proyek' }];
+---
+
+<DetailLayout
+  lang="id"
+  title="Proyek & Produk"
+  kicker="Karya Terpilih"
+  description="Produk dan sistem yang dibangun dari ujung ke ujung — aplikasi Flutter pencegahan stunting dengan API Node.js, dan pipeline arsip digital berbasis AI."
+  intro="Produk dan sistem yang saya bangun dari ujung ke ujung, dari aplikasi mobile hingga tooling AI terapan, masing-masing dengan materi sumbernya yang diterbitkan."
+  crumbs={crumbs}
+  selfPath="/projects/"
+>
+  <Projects lang="id" variant="full" />
+</DetailLayout>

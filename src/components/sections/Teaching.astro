@@ -1,0 +1,114 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHeading from '../SectionHeading.astro';
+import { localePath, pick, type Bilingual, type Lang } from '../../lib/i18n';
+
+export interface Props {
+  lang: Lang;
+  variant?: 'teaser' | 'full';
+  limit?: number;
+}
+
+const { lang, variant = 'teaser', limit } = Astro.props;
+
+function t<T>(pair: Bilingual<T>): T {
+  return pick(pair, lang);
+}
+
+const all = (await getCollection('kuliah'))
+  .filter((c) => !c.data.draft)
+  .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+
+const courses = limit ? all.slice(0, limit) : all;
+
+const copy = {
+  title: { en: 'Teaching', id: 'Pengajaran' },
+  desc: {
+    en: 'Courses I teach in the Informatics Study Programme (S1), Universitas Ahmad Dahlan Aceh. Course pages and materials are written in Indonesian.',
+    id: 'Mata kuliah yang saya ampu di Program Studi Informatika (S1), Universitas Ahmad Dahlan Aceh — beserta topik dan materi tiap pertemuan.',
+  },
+  sessions: { en: 'sessions', id: 'pertemuan' },
+  seeAll: { en: 'View Teaching & Courses', id: 'Lihat Semua Mata Kuliah' },
+};
+---
+
+{
+  courses.length > 0 && (
+    <section
+      id="teaching"
+      class="py-section-gap border-t"
+      style="background: var(--color-surface-container-low); border-color: var(--color-outline-variant);"
+    >
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <SectionHeading title={t(copy.title)} desc={t(copy.desc)} />
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {courses.map((course) => {
+            const slug = course.id.replace(/\.mdx?$/, '');
+            const current = course.data.terms[0];
+            const meetingCount = current?.meetings.length ?? 0;
+            return (
+              <article
+                class="flex flex-col border rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-ambient"
+                style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);"
+              >
+                <div class="p-8 flex-grow flex flex-col">
+                  <p class="font-mono text-xs mb-4" style="color: var(--color-secondary);">
+                    {course.data.code} · {course.data.credits} SKS{current && <> · {current.label}</>}
+                  </p>
+                  <h3
+                    class="font-display text-xl font-semibold mb-3 leading-snug"
+                    style="color: var(--color-primary);"
+                  >
+                    <a
+                      href={`/kuliah/${slug}/`}
+                      class="hover:underline decoration-2 underline-offset-2 decoration-secondary"
+                    >
+                      {course.data.title}
+                    </a>
+                  </h3>
+                  <p
+                    class="mb-6 text-base leading-relaxed flex-grow max-w-[70ch]"
+                    style="color: var(--color-on-surface-variant); font-family: var(--font-body);"
+                  >
+                    {course.data.description}
+                  </p>
+                  <p class="font-mono text-xs" style="color: var(--color-on-surface-variant); opacity: 0.7;">
+                    {course.data.program}
+                  </p>
+                </div>
+                <div
+                  class="px-8 py-4 border-t flex items-center justify-between"
+                  style="border-color: color-mix(in srgb, var(--color-outline-variant) 50%, transparent);"
+                >
+                  <a href={`/kuliah/${slug}/`} class="link-arrow text-sm group">
+                    {meetingCount} {t(copy.sessions)}
+                    <span class="material-symbols-outlined text-lg ml-1 group-hover:translate-x-1 transition-transform">
+                      arrow_outward
+                    </span>
+                  </a>
+                  {course.data.terms.length > 1 && (
+                    <span
+                      class="font-mono text-xs"
+                      style="color: var(--color-on-surface-variant); opacity: 0.7;"
+                    >
+                      {course.data.terms.length} semester
+                    </span>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        {variant === 'teaser' && (
+          <div class="mt-12">
+            <a href={localePath('/teaching/', lang)} class="btn-secondary px-8 py-3.5">
+              {t(copy.seeAll)} →
+            </a>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}

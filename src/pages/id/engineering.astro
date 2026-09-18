@@ -1,0 +1,18 @@
+---
+import DetailLayout from '../../layouts/DetailLayout.astro';
+import Engineering from '../../components/sections/Engineering.astro';
+
+const crumbs = [{ label: 'Beranda', href: '/id/' }, { label: 'Engineering' }];
+---
+
+<DetailLayout
+  lang="id"
+  title="Studi Kasus Engineering"
+  kicker="Rekayasa Perangkat Lunak Enterprise"
+  description="Sembilan workstream produksi dari SaaS manajemen klinik multi-tenant — performance engineering, interoperabilitas kesehatan, arsitektur, dan infrastruktur."
+  intro="Sembilan workstream produksi dari SaaS manajemen klinik yang melayani ratusan klinik di Indonesia. Setiap studi kasus memuat masalah, keputusan engineering, dan hasil yang terukur."
+  crumbs={crumbs}
+  selfPath="/engineering/"
+>
+  <Engineering lang="id" variant="full" />
+</DetailLayout>
