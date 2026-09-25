@@ -1,6 +1,6 @@
 # Muhammad Fadhil Al Amal
 
-> Muhammad Fadhil Al Amal is an AI & software engineer based in Banda Aceh, Indonesia. He has 5+ years building and maintaining a healthcare SaaS platform at Kelola.net (CodeIgniter 3 / PHP, MySQL 8.0, REST API, Docker) that serves hundreds of clinics across Indonesia, and researches NLP for Indonesian regional languages. He also teaches in the Informatics Study Programme at Universitas Ahmad Dahlan Aceh and speaks at workshops on practical AI for office administration.
+> Muhammad Fadhil Al Amal is an AI & software engineer based in Banda Aceh, Indonesia. He has 5+ years building and maintaining a healthcare SaaS platform at Kelola.net (CodeIgniter 3 / PHP, MySQL 8.0, REST API, Docker) that serves hundreds of clinics across Indonesia, and researches NLP for Indonesian regional languages. He also teaches in the Informatics Study Programme at Universitas Ahmad Dahlan Aceh and speaks at workshops on practical AI for office administration and academic research.
 
 The site is bilingual: English is the default at `/`, Indonesian lives under `/id/`. Each portfolio page exists in both languages. Long-form content — technical articles and course materials — is written in Indonesian only and sits at the site root.
 
@@ -40,6 +40,7 @@ All articles are first-hand engineering write-ups from a production healthcare S
 
 Slide decks, documentation, and source code from workshops delivered by Muhammad Fadhil Al Amal.
 
+- [AI untuk Research Akuntansi](https://mfa-labs.github.io/materi/workshop-ai-research-akuntansi.html): Hands-on workshop for the Doctoral Programme in Accounting, Faculty of Economics and Business, Syiah Kuala University (26 September 2026) — agentic AI with OpenCode + Obsidian, from searching and downloading open-access literature to writing a LaTeX paper on Overleaf.
 - [AI-Powered Digital Archive System](https://mfa-labs.github.io/materi/workshop-ai-sekre.html): Workshop for the D3 Secretarial Study Programme, Faculty of Economics and Business, Syiah Kuala University (16 September 2026) on building an AI-powered digital archive with Google Form, Drive, Apps Script, and OpenRouter.
 - [Smart Archive — Apps Script documentation](https://mfa-labs.github.io/materi/smart-archive/): Setup guide and full source code for that workshop — Google Form → Google Drive → Apps Script → OpenRouter → Google Sheets, including the OpenRouter API key setup script.
 - [AI Bukan Sekadar ChatGPT](https://mfa-labs.github.io/materi/workshop-ai-tendik-sesi2.html): Session 2 of the workshop on AI archive innovation for study-programme education staff (7 July 2026) — Claude vs ChatGPT, cost strategy, and building tools with Gemini Canvas.

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI untuk Research Akuntansi — Agentic AI dengan OpenCode + Obsidian</title>
+<meta name="description" content="Materi workshop Pelatihan Penggunaan AI dalam Research Akuntansi, Prodi Doktor Ilmu Akuntansi FEB USK: setiap topik langsung disusul praktik dengan OpenCode + Obsidian, dari mencari & mengunduh literatur sampai menulis paper LaTeX.">
+<link rel="canonical" href="https://mfa-labs.github.io/materi/workshop-ai-research-akuntansi.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --panel: #f1f5f9;
+    --panel-2: #e2e8f0;
+    --text: #0f172a;
+    --text-dim: #475569;
+    --accent: #0369a1;
+    --accent2: #6d28d9;
+    --border: #cbd5e1;
+    --green: #15803d;
+    --green-soft: #f0fdf4;
+    --green-border: #bbf7d0;
+    --red: #b91c1c;
+    --amber: #b45309;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .slides-container { position: relative; height: 100vh; width: 100vw; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(2rem, 4.5vw, 5rem) clamp(2rem, 6vw, 7rem);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+  .slide.practice { background: var(--green-soft); }
+
+  .slide::-webkit-scrollbar { width: 6px; }
+  .slide::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .slide-number {
+    position: fixed; bottom: 1.4rem; right: 2rem;
+    font-size: clamp(0.75rem, 1vw, 1rem);
+    color: var(--text-dim); z-index: 100; font-weight: 500; letter-spacing: 0.05em;
+  }
+
+  .nav-arrows { position: fixed; bottom: 1.4rem; left: 2rem; display: flex; gap: 0.75rem; z-index: 100; }
+
+  .nav-arrows button {
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    width: clamp(2.2rem, 3vw, 3rem); height: clamp(2.2rem, 3vw, 3rem);
+    border-radius: 50%; cursor: pointer; font-size: clamp(1rem, 1.4vw, 1.4rem);
+    display: flex; align-items: center; justify-content: center; transition: background 0.2s, color 0.2s;
+  }
+
+  .nav-arrows button:hover { background: var(--accent); color: #fff; }
+  .nav-arrows button:disabled { opacity: 0.3; cursor: default; }
+  .nav-arrows button:disabled:hover { background: var(--panel); color: var(--text); }
+
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    z-index: 100; transition: width 0.3s ease;
+  }
+
+  h1 { font-size: clamp(2.2rem, 5vw, 4.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 0.9rem; color: var(--accent); }
+  h2 { font-size: clamp(1.5rem, 3.1vw, 3rem); font-weight: 800; line-height: 1.15; margin-bottom: clamp(0.9rem, 1.6vw, 1.6rem); color: var(--accent); }
+  h3 { font-size: clamp(1.1rem, 1.9vw, 1.8rem); font-weight: 700; margin: 1rem 0 0.5rem; color: var(--accent2); }
+  h4 { font-size: clamp(1rem, 1.5vw, 1.4rem); font-weight: 700; margin: 0.8rem 0 0.4rem; color: var(--amber); }
+
+  p, li { font-size: clamp(0.95rem, 1.5vw, 1.5rem); line-height: 1.55; color: var(--text-dim); }
+  p { margin-bottom: 0.6rem; }
+  strong { color: var(--text); font-weight: 700; }
+
+  ul, ol { margin: 0.4rem 0 0.6rem 1.4rem; }
+  li { margin-bottom: 0.3rem; }
+
+  .subtitle { font-size: clamp(1.1rem, 2vw, 1.9rem); color: var(--text-dim); font-weight: 500; margin-top: 0.3rem; }
+
+  .quote {
+    font-size: clamp(1rem, 1.6vw, 1.6rem); color: var(--accent);
+    border-left: 4px solid var(--accent); padding-left: 1.1rem; margin: 1rem 0; font-weight: 500;
+  }
+  .quote p { color: var(--accent); margin: 0; }
+
+  .table-wrap { overflow-x: auto; margin: 0.9rem 0; border-radius: 10px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: clamp(0.85rem, 1.25vw, 1.3rem); }
+  thead { background: var(--panel-2); }
+  th { padding: 0.6rem 0.9rem; text-align: left; font-weight: 700; color: var(--accent); border-bottom: 2px solid var(--accent); }
+  td { padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--border); color: var(--text-dim); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+
+  pre {
+    background: var(--panel); border: 1px solid var(--border); border-left: 4px solid var(--accent);
+    border-radius: 8px; padding: clamp(0.8rem, 1.3vw, 1.3rem);
+    font-family: 'JetBrains Mono', monospace; font-size: clamp(0.72rem, 1.05vw, 1.1rem);
+    line-height: 1.5; overflow-x: auto; margin: 0.8rem 0; color: #334155;
+  }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: var(--panel); padding: 0.1em 0.35em; border-radius: 4px; border: 1px solid var(--border); color: #334155; }
+  pre code { background: none; border: none; padding: 0; }
+  .slide.practice pre { background: #ffffff; border-left-color: var(--green); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 2.5vw, 2.5rem); margin: 0.6rem 0; }
+  .two-col h3, .two-col h4 { margin-top: 0; }
+
+  .badge {
+    display: inline-block; background: var(--accent); color: #fff;
+    font-size: clamp(0.65rem, 0.95vw, 0.95rem); font-weight: 800;
+    padding: 0.2rem 0.6rem; border-radius: 5px; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .badge-green { background: var(--green); }
+  .badge-red { background: var(--red); }
+  .badge-amber { background: var(--amber); }
+
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: clamp(0.8rem, 1.4vw, 1.4rem); }
+  .card-accent { border-left: 5px solid var(--accent); }
+  .card-danger { border-left: 5px solid var(--red); background: #fef2f2; }
+  .card-danger strong { color: var(--red); }
+  .card-green { border-left: 5px solid var(--green); background: #ffffff; }
+
+  .step { display: flex; gap: 0.8rem; align-items: baseline; margin-bottom: 0.5rem; }
+  .step .n {
+    flex: none; width: clamp(1.6rem, 2.2vw, 2.2rem); height: clamp(1.6rem, 2.2vw, 2.2rem);
+    background: var(--accent); color: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: clamp(0.8rem, 1.1vw, 1.1rem);
+  }
+  .step .n.green { background: var(--green); }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.8rem 0; }
+  .flow .node { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.8rem; font-weight: 700; color: var(--accent); font-size: clamp(0.8rem, 1.2vw, 1.2rem); }
+  .flow .arrow { color: var(--text-dim); font-weight: 700; }
+
+  .tag-practice {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: var(--green); color: #fff; font-weight: 800; letter-spacing: 0.06em;
+    font-size: clamp(0.7rem, 1vw, 1rem); padding: 0.3rem 0.8rem; border-radius: 6px;
+    text-transform: uppercase; margin-bottom: 0.8rem; align-self: flex-start;
+  }
+
+  .expect {
+    margin-top: 0.6rem; padding: 0.7rem 1rem; background: #ffffff;
+    border: 1px dashed var(--green); border-radius: 8px;
+    font-size: clamp(0.85rem, 1.25vw, 1.25rem); color: var(--text-dim);
+  }
+  .expect strong { color: var(--green); }
+
+  .title-slide { text-align: center; align-items: center; }
+  .title-slide h1 { font-size: clamp(2.4rem, 5.4vw, 5rem); background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .title-slide .subtitle { max-width: 62ch; font-size: clamp(1.05rem, 1.9vw, 1.8rem); }
+  .title-slide .meta { margin-top: 1.8rem; font-size: clamp(0.85rem, 1.2vw, 1.2rem); color: var(--text-dim); line-height: 1.8; }
+
+  .summary-list { list-style: none; margin: 0; padding: 0; }
+  .summary-list li { padding: 0.6rem 0.9rem; margin-bottom: 0.4rem; background: var(--panel); border-radius: 8px; border-left: 4px solid var(--accent); }
+
+  @media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr; }
+    .slide { padding: 1.6rem 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slides-container" id="slidesContainer">
+
+  <!-- 1. Judul -->
+  <div class="slide title-slide active">
+    <h1>AI untuk Research Akuntansi</h1>
+    <p class="subtitle">Agentic AI dengan <strong>OpenCode + Obsidian</strong> — dari mencari literatur sampai menulis paper LaTeX</p>
+    <p class="meta">
+      Pelatihan Penggunaan AI dalam Research Akuntansi<br>
+      Sabtu, 26 September 2026 · 14.00–18.00 WIB<br>
+      Ruang Rapim 1 FEB USK, Lantai 2<br>
+      Program Studi Doktor Ilmu Akuntansi, FEB Universitas Syiah Kuala
+    </p>
+  </div>
+
+  <!-- 2. Agenda -->
+  <div class="slide">
+    <h2>Peta Sesi — Setiap Ide Langsung Praktik</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ide</th><th>Praktik / Prompt</th></tr></thead>
+        <tbody>
+          <tr><td>Agentic AI vs chat biasa</td><td><strong>Setup:</strong> pasang OpenCode + Obsidian, login model gratis</td></tr>
+          <tr><td>Vault sebagai memori</td><td><strong>Prompt #1:</strong> agen membangun struktur vault</td></tr>
+          <tr><td>Literatur: manual &amp; agen</td><td><strong>Prompt #2:</strong> cari &amp; unduh PDF open access ke vault</td></tr>
+          <tr><td>PDF → catatan bertaut</td><td><strong>Prompt #3:</strong> ringkas PDF → catatan bertaut → graph</td></tr>
+          <tr><td>Analisis kuantitatif</td><td><strong>Prompt #4 &amp; #5:</strong> sintaks Stata, lalu Python (Grunfeld)</td></tr>
+          <tr><td>Analisis kualitatif</td><td><strong>Prompt #6:</strong> first-pass coding transkrip sintetis</td></tr>
+          <tr><td>Menulis paper</td><td><strong>Prompt #7 &amp; #8:</strong> cari jurnal → template → draf → Overleaf</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Pola sesi:</strong> satu ide → langsung praktik. Jadi setiap konsep langsung diuji di layar Anda.</p>
+  </div>
+
+  <!-- 3. IDE: tesis agentic -->
+  <div class="slide">
+    <h2>Ide — Bedanya Bukan "Lebih Pintar", Tapi "Punya Tangan"</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Chat biasa (ChatGPT/Gemini)</th><th>Agentic (OpenCode)</th></tr></thead>
+        <tbody>
+          <tr><td>Output = teks di chat, Anda copy-paste sendiri</td><td><strong>File nyata langsung tertulis di vault Anda</strong></td></tr>
+          <tr><td>Tidak bisa menjalankan kode</td><td><strong>Bisa menjalankan Python untuk analisis</strong></td></tr>
+          <tr><td>Lupa konteks antar sesi</td><td><strong>Membaca konteks dari file &amp; instruksi</strong></td></tr>
+          <tr><td>Anda yang menyalin hasil ke catatan</td><td><strong>Agen yang menulis, menautkan, merapikan</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="quote"><p>"Bayangkan asisten riset yang rajin — yang mengerjakan tugas di folder yang Anda miliki."</p></div>
+  </div>
+
+  <!-- 4. IDE: dua tools -->
+  <div class="slide">
+    <h2>Ide — Dua Tools, Satu Alur</h2>
+    <div class="two-col">
+      <div class="card card-accent">
+        <h3>OpenCode — sang agen</h3>
+        <ul>
+          <li>Agent dengan <strong>GUI</strong> (Windows/Mac), tanpa terminal</li>
+          <li>"Tangan": baca/tulis file, jalankan kode, akses web &amp; API</li>
+        </ul>
+      </div>
+      <div class="card card-accent">
+        <h3>Obsidian — memori &amp; ruang kerja</h3>
+        <ul>
+          <li>Vault = folder berisi file <strong>Markdown</strong></li>
+          <li>Graph <strong>muncul otomatis</strong> dari <code>[[wikilink]]</code></li>
+        </ul>
+      </div>
+    </div>
+    <div class="flow">
+      <span class="node">OpenCode (agen)</span><span class="arrow">→</span>
+      <span class="node">Vault Obsidian</span><span class="arrow">→</span>
+      <span class="node">Python (analisis)</span><span class="arrow">→</span>
+      <span class="node">Overleaf (paper)</span>
+    </div>
+  </div>
+
+  <!-- 5. IDE: model gratis & privasi -->
+  <div class="slide">
+    <h2>Ide — Model Gratis &amp; Jebakan Privasinya</h2>
+    <div class="card card-danger">
+      <p><strong>Big Pickle, MiMo Free, Ling Free</strong> — data boleh dipakai memperbaiki model selama masa gratis.</p>
+      <p><strong>Nemotron Free (NVIDIA)</strong> — trial use only, jangan kirim data pribadi/rahasia; sesi dicatat.</p>
+      <p><strong>Muse Spark Contributor Free</strong> — prompt &amp; jawaban dipakai melatih model Meta.</p>
+      <p style="margin:0;"><strong>Space Bunny Free</strong> — zero-retention, tidak dipakai untuk training.</p>
+    </div>
+    <div class="quote"><p><strong>Konsekuensi:</strong> "gratis" ≠ "aman". Semua praktik kita memakai <strong>data publik</strong>.</p></div>
+  </div>
+
+  <!-- 6. PRAKTIK 1: setup -->
+  <div class="slide practice">
+    <span class="tag-practice">▶ Praktik 1 — Setup</span>
+    <h2>Ayo Pasang &amp; Setting</h2>
+    <div class="step"><span class="n green">1</span><p>Pasang <strong>Obsidian</strong> + <strong>OpenCode Desktop</strong> (installer offline tersedia)</p></div>
+    <div class="step"><span class="n green">2</span><p>Buat folder kosong → buka sebagai <strong>vault Obsidian</strong> = working directory OpenCode</p></div>
+    <div class="step"><span class="n green">3</span><p>Login <strong>OpenCode Zen</strong> → pilih <strong>model gratis</strong> lewat <code>/models</code></p></div>
+    <div class="step"><span class="n green">4</span><p>Buka akun <strong>Overleaf</strong> (untuk praktik terakhir)</p></div>
+    <div class="expect"><strong>Hasil:</strong> OpenCode &amp; Obsidian terbuka; model gratis terpilih; vault kosong siap.</div>
+  </div>
+
+  <!-- 7. IDE: vault kosong -->
+  <div class="slide">
+    <h2>Ide — Vault Dimulai dari Kosong</h2>
+    <p>Kita <strong>tidak</strong> membagikan vault jadi. <strong>Agen sendiri yang membangun struktur</strong> — bukti agentic yang sebenarnya.</p>
+    <pre><code>vault/
+├── literatur/
+│   ├── _index.md       ← MOC: peta literatur
+│   ├── catatan/        ← catatan literatur (bertag &amp; bertaut)
+│   └── pdf/            ← PDF asli (arsip + anotasi)
+├── data/               ← dataset
+├── draf/               ← tulisan &amp; paper
+├── _templates/         ← template catatan
+└── AGENTS.md           ← konvensi penautan untuk agen</code></pre>
+    <p><code>AGENTS.md</code> = <strong>infrastruktur kunci</strong>: karena peserta tidak mengetik Markdown, agen harus tahu konvensi kita.</p>
+  </div>
+
+  <!-- 8. PRAKTIK 2: prompt #1 -->
+  <div class="slide practice">
+    <span class="tag-practice">▶ Praktik 2 — Prompt #1</span>
+    <h2>Agen Membangun Vault</h2>
+    <pre><code>Kamu asisten riset saya. Buat struktur vault riset ini:
+folder literatur/catatan, literatur/pdf, data, draf, _templates.
+Buat _templates/literatur.md dengan frontmatter: title, authors,
+year, journal, doi, tags; bagian Ringkasan, Metode, Temuan Kunci.
+Buat AGENTS.md berisi konvensi penautan: catatan disimpan di
+literatur/catatan/NamaDepan-Tahun-Judul.md, tautkan ke [[_index]]
+dan teori terkait, beri tag #metode/... dan #topik/....</code></pre>
+    <div class="expect"><strong>Hasil:</strong> folder, template, dan <code>AGENTS.md</code> muncul sendiri di vault Anda.</div>
+  </div>
+
+  <!-- 9. IDE: pencarian literatur -->
+  <div class="slide">
+    <h2>Ide — Pencarian Literatur: Manual &amp; Agen</h2>
+    <div class="two-col">
+      <div>
+        <h4>Manual — untuk kualitas</h4>
+        <ul>
+          <li>Google Scholar</li>
+          <li>Scopus / Web of Science (langganan kampus)</li>
+          <li>Garuda &amp; SINTA (konteks Indonesia)</li>
+        </ul>
+        <p>Peneliti yang menilai kata kunci &amp; kualitas jurnal.</p>
+      </div>
+      <div>
+        <h4>Agen — untuk melengkapi</h4>
+        <ul>
+          <li>Cari via API terbuka: <strong>OpenAlex, Crossref</strong></li>
+          <li>Cek status <strong>open access</strong> (Unpaywall)</li>
+          <li>Unduh PDF open access ke <code>literatur/pdf/</code></li>
+        </ul>
+        <p>Metadata dari API — bukan dari ingatan model.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. PRAKTIK 3: prompt #2 cari & unduh -->
+  <div class="slide practice">
+    <span class="tag-practice">▶ Praktik 3 — Prompt #2</span>
+    <h2>Agen Mencari &amp; Mengunduh PDF</h2>
+    <pre><code>Topik: "audit quality and earnings management".
+Cari 5 artikel lewat API OpenAlex/Crossref (jangan dari ingatan).
+Untuk tiap artikel tampilkan judul, penulis, tahun, jurnal, DOI,
+dan status open access. Unduh PDF yang open access ke literatur/pdf/
+dengan nama Penulis-Tahun-JudulSingkat.pdf.
+Jangan unduh artikel berbayar.</code></pre>
+    <div class="expect"><strong>Hasil:</strong> PDF open access tersimpan di <code>literatur/pdf/</code> + daftar metadata (DOI) dari API.</div>
+  </div>
+
+  <!-- 11. IDE: PDF ke Obsidian -->
+  <div class="slide">
+    <h2>Ide — PDF ke Obsidian: Perlu Dikonversi?</h2>
+    <div class="two-col">
+      <div class="card">
+        <h4>Untuk dibaca manusia</h4>
+        <p>PDF <strong>bisa langsung dimasukkan</strong> ke vault (penampil PDF bawaan, bisa dianotasi). <strong>Tanpa konversi.</strong></p>
+      </div>
+      <div class="card">
+        <h4>Untuk dibaca agen</h4>
+        <p>PDF itu biner — agen tak bisa membaca isinya atau menautkannya. Isinya perlu jadi <strong>teks/Markdown</strong>.</p>
+      </div>
+    </div>
+    <p><strong>Jawaban: dua-duanya.</strong> PDF untuk arsip; catatan Markdown untuk graph &amp; tautan. Agen mengekstrak dengan <code>markitdown</code>, <code>docling</code>, <code>pymupdf4llm</code>, atau <code>pdftotext</code>.</p>
+  </div>
+
+  <!-- 12. PRAKTIK 4: prompt #3 ringkas -->
+  <div class="slide practice">
+    <span class="tag-practice">▶ Praktik 4 — Prompt #3</span>
+    <h2>PDF → Catatan Bertaut → Graph</h2>
+    <pre><code>Baca PDF di literatur/pdf/Smith-2023.pdf. Buat catatan literatur
+sesuai template _templates/literatur.md, tautkan ke [[_index]] dan
+ke teori terkait, lalu beri tag yang sesuai.</code></pre>
+    <div class="expect"><strong>Hasil:</strong> catatan Markdown muncul di <code>literatur/catatan/</code>, bertaut, dan titik baru muncul di graph Obsidian.</div>
+  </div>
+
+  <!-- 13. IDE: konvensi penautan -->
+  <div class="slide">
+    <h2>Ide — Konvensi Penautan &amp; Graph</h2>
+    <div class="card card-accent">
+      <p><strong>Agen:</strong> ekstrak → ringkas → isi frontmatter → simpan catatan MD → tambahkan <code>[[wikilink]]</code> → beri tag.</p>
+    </div>
+    <pre><code>[[_index]]            ← MOC: peta literatur
+[[Teori-Agency]]      ← tautan ke teori terkait
+#metode/kuantitatif   ← tag metode
+#topik/audit          ← tag topik</code></pre>
+    <p><strong>Hasil:</strong> graph tumbuh sendiri — klaster tema &amp; teori terlihat. Peserta <strong>tidak mengetik Markdown</strong>.</p>
+  </div>
+
+  <!-- 14. IDE: kuantitatif dua lapis -->
+  <div class="slide">
+    <h2>Ide — Analisis Kuantitatif: Dua Lapis</h2>
+    <div class="two-col">
+      <div class="card card-green">
+        <h4><span class="badge badge-green">Aman</span> Lapis 1 — Sintaks</h4>
+        <p>Agen menulis <strong>sintaks Stata/SPSS</strong> dari deskripsi struktur data &amp; hipotesis — <strong>bukan datanya</strong>.</p>
+        <p>Peneliti menjalankan sendiri. <strong>Model tidak menyentuh data mentah.</strong></p>
+      </div>
+      <div class="card">
+        <h4><span class="badge badge-amber">Data publik</span> Lapis 2 — Python</h4>
+        <p>Agen menulis <strong>dan</strong> menjalankan kode (pandas, statsmodels, linearmodels).</p>
+        <p>Output masuk ke percakapan → hanya untuk <strong>data non-sensitif</strong>.</p>
+      </div>
+    </div>
+    <div class="quote"><p>"Biarkan data tinggal di tempatnya. Yang masuk ke agen hanya instruksi dan kode."</p></div>
+  </div>
+
+  <!-- 15. PRAKTIK 5: prompt #4 sintaks -->
+  <div class="slide practice">
+    <span class="tag-practice">▶ Praktik 5 — Prompt #4</span>
+    <h2>Agen Menulis Sintaks (Data Tidak Dikirim)</h2>
+    <pre><code>Struktur data saya: kolom invest, value, capital; unit = firma;
+waktu = tahun. Tulis sintaks Stata untuk regresi fixed effects
+invest pada value dan capital, dengan efek tetap firma dan tahun.
+Jangan minta datanya.</code></pre>
+    <div class="expect"><strong>Hasil:</strong> sintaks Stata siap tempel — <strong>tanpa</strong> satu baris pun data Anda keluar dari laptop.</div>
+  </div>
+
+  <!-- 16. IDE: studi kasus Grunfeld -->
+  <div class="slide">
+    <h2>Ide — Studi Kasus Kuantitatif: Grunfeld</h2>
+    <ul>
+      <li><strong>Data panel</strong> firma × tahun — publik &amp; klasik</li>
+      <li>Cocok untuk <strong>regresi fixed / random effects</strong></li>
+      <li>Alur: sintaks Stata dulu → lanjut Python dijalankan agen</li>
+    </ul>
+    <pre><code>invest ~ value + capital      (unit = firma, waktu = tahun)</code></pre>
+  </div>
+
+  <!-- 17. PRAKTIK 6: prompt #5 python -->
+  <div class="slide practice">
+    <span class="tag-practice">▶ Praktik 6 — Prompt #5</span>
+    <h2>Agen Menjalankan Python (Data Publik)</h2>
+    <pre><code>Gunakan dataset Grunfeld. Jalankan regresi panel fixed effects
+invest pada value dan capital; tampilkan hasil dan interpretasi
+singkat.</code></pre>
+    <div class="expect"><strong>Hasil:</strong> tabel regresi + interpretasi, dijalankan agen atas data publik.</div>
+  </div>
+
+  <!-- 18. IDE: kualitatif -->
+  <div class="slide">
+    <h2>Ide — Analisis Kualitatif: Transkrip Sintetis</h2>
+    <ul>
+      <li>Transkrip wawancara asli <strong>rahasia</strong> → praktik memakai <strong>transkrip sintetis</strong></li>
+      <li>Agen memberi <strong>first-pass coding</strong> tematik + menyusun <strong>codebook</strong> sebagai catatan</li>
+      <li>Kutipan pendukung ditandai; agen <strong>tidak</strong> menarik kesimpulan</li>
+    </ul>
+    <div class="card card-danger">
+      <p><strong>Rigor tetap milik peneliti:</strong> reliabilitas, transparansi, audit trail, intercoder agreement. Agen = <strong>asisten</strong>.</p>
+    </div>
+  </div>
+
+  <!-- 19. PRAKTIK 7: prompt #6 coding -->
+  <div class="slide practice">
+    <span class="tag-practice">▶ Praktik 7 — Prompt #6</span>
+    <h2>First-Pass Coding</h2>
+    <pre><code>Lakukan first-pass coding tematik pada data/transkrip-sintetis.md.
+Buat codebook di literatur/catatan/codebook.md, tandai kutipan
+pendukung, dan jangan menarik kesimpulan.</code></pre>
+    <div class="expect"><strong>Hasil:</strong> codebook awal + kutipan bertanda — bahan untuk Anda validasi.</div>
+  </div>
+
+  <!-- 20. IDE: cari jurnal -->
+  <div class="slide">
+    <h2>Ide — Menulis Paper: Mulai dari Jurnal</h2>
+    <ul>
+      <li>Agen menelusuri kesesuaian naskah dengan <strong>scope/aims</strong> jurnal</li>
+      <li><strong>Verifikasi wajib:</strong> ISSN, indexing (Scopus/SINTA), kuartil, APC — ke <strong>Scimago / laman jurnal / SINTA</strong></li>
+      <li><strong>Jangan percaya</strong> impact factor/kuartil yang diketik model</li>
+    </ul>
+    <div class="flow">
+      <span class="node">Cari jurnal</span><span class="arrow">→</span>
+      <span class="node">Template LaTeX</span><span class="arrow">→</span>
+      <span class="node">Draf</span><span class="arrow">→</span>
+      <span class="node">Overleaf</span>
+    </div>
+  </div>
+
+  <!-- 21. PRAKTIK 8: prompt #7 jurnal -->
+  <div class="slide practice">
+    <span class="tag-practice">▶ Praktik 8 — Prompt #7</span>
+    <h2>Cari Jurnal &amp; Siapkan Template</h2>
+    <pre><code>Berdasarkan draf/kerangka.md, carikan 3 jurnal akuntansi yang cocok
+(sebutkan scope &amp; alasan, jangan mengarang impact factor).
+Lalu siapkan template LaTeX jurnal pilihan di draf/paper/ dan
+susun struktur .tex.</code></pre>
+    <div class="expect"><strong>Hasil:</strong> rekomendasi jurnal + kerangka <code>.tex</code> siap diunggah ke Overleaf.</div>
+  </div>
+
+  <!-- 22. IDE: draf & sitasi -->
+  <div class="slide">
+    <h2>Ide — Draf &amp; Sitasi yang Bisa Dipercaya</h2>
+    <ul>
+      <li>Agen menyusun kerangka: Pendahuluan, Literatur, Metode, Hasil, Diskusi — dari catatan vault</li>
+      <li>Sitasi: <code>refs.bib</code> diambil dari <strong>DOI/Crossref</strong>, bukan dari ingatan model</li>
+      <li>Setiap klaim yang perlu diperiksa <strong>ditandai</strong></li>
+    </ul>
+    <div class="quote"><p>AI <strong>bukan penulis</strong>. Manusia pemilik isi &amp; penanggung jawab setiap klaim.</p></div>
+  </div>
+
+  <!-- 23. PRAKTIK 9: prompt #8 draf -->
+  <div class="slide practice">
+    <span class="tag-practice">▶ Praktik 9 — Prompt #8</span>
+    <h2>Draf Paper → Overleaf</h2>
+    <pre><code>Susun draf bagian Pendahuluan &amp; Metode dari catatan di
+literatur/catatan/. Buat draf/paper/refs.bib dari DOI catatan
+(ambil entri BibTeX dari Crossref, jangan menulis dari ingatan).
+Tandai semua klaim yang perlu saya verifikasi.</code></pre>
+    <div class="expect"><strong>Hasil:</strong> unggah <code>draf/paper/</code> ke Overleaf → kompilasi → <strong>PDF paper terbentuk</strong>.</div>
+  </div>
+
+  <!-- 24. IDE: etika -->
+  <div class="slide">
+    <h2>Ide — Etika Penulisan &amp; Data</h2>
+    <div class="card card-danger">
+      <ul>
+        <li><strong>AI bukan penulis.</strong> Banyak jurnal melarang AI sebagai author dan mewajibkan <strong>disclosure</strong>.</li>
+        <li><strong>Hanya open access.</strong> Jangan membajak artikel berbayar; akses lewat langganan perpustakaan.</li>
+        <li><strong>Data tinggal di tempatnya.</strong> Data sensitif tidak masuk ke agen / model gratis.</li>
+        <li><strong>Verifikasi sitasi &amp; metrik</strong> dari sumber resmi; hak cipta: kutipan secukupnya.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 25. Checkpoint -->
+  <div class="slide">
+    <h2>Kalau Tertinggal — Ada Checkpoint</h2>
+    <ul>
+      <li><strong>Vault cadangan</strong> yang sudah selesai: catatan, data, dan draf — bisa ditimpa/diunduh</li>
+      <li><strong>Folder <code>draf/paper/</code> lengkap</strong> (<code>.tex</code> + <code>refs.bib</code>) sebagai hasil akhir rujukan</li>
+      <li><strong>PDF contoh lokal</strong> bila jaringan/API melambat</li>
+    </ul>
+    <div class="quote"><p>Tujuannya: tidak ada peserta yang tertinggal karena satu langkah gagal.</p></div>
+  </div>
+
+  <!-- 26. Ringkasan -->
+  <div class="slide">
+    <h2>Ringkasan</h2>
+    <ul class="summary-list">
+      <li><strong>Agentic AI</strong> = AI yang mengerjakan tugas di folder Anda, bukan sekadar menjawab di chat</li>
+      <li><strong>OpenCode + Obsidian</strong> = agen + memori berbasis file Markdown</li>
+      <li><strong>Literatur:</strong> manual untuk kualitas, agen untuk cari &amp; unduh PDF open access</li>
+      <li><strong>Ringkas &amp; penautan:</strong> catatan bertaut otomatis → graph tumbuh sendiri</li>
+      <li><strong>Analisis:</strong> sintaks untuk data asli, Python untuk data publik</li>
+      <li><strong>Paper:</strong> cari jurnal → template LaTeX → draf → Overleaf</li>
+      <li><strong>Prinsip:</strong> data tinggal di tempatnya; AI bukan penulis; verifikasi selalu</li>
+    </ul>
+  </div>
+
+  <!-- 27. Penutup -->
+  <div class="slide title-slide">
+    <h2 style="font-size:clamp(1.8rem,4vw,3.4rem);">Mulai dari Satu Topik</h2>
+    <p class="subtitle">Tidak perlu langsung seluruh alur. Mulai dari satu topik, lima PDF, lima catatan — lalu graph tumbuh sendiri.</p>
+    <p class="meta">Muhammad Fadhil Al Amal · MFA Labs<br>AI for Language &amp; Society</p>
+  </div>
+
+</div>
+
+<div class="nav-arrows">
+  <button id="prevBtn" disabled>←</button>
+  <button id="nextBtn">→</button>
+</div>
+
+<div class="slide-number" id="slideNumber">1 / 27</div>
+
+<script>
+  (function() {
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideNum = document.getElementById('slideNumber');
+    const progressBar = document.getElementById('progressBar');
+    let current = 0;
+    const total = slides.length;
+
+    function goTo(index) {
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      updateUI();
+    }
+
+    function updateUI() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      slideNum.textContent = (current + 1) + ' / ' + total;
+      progressBar.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { if (current < total - 1) goTo(current + 1); }
+    function prev() { if (current > 0) goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault(); next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault(); prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault(); goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault(); goTo(total - 1);
+      }
+    });
+
+    let touchStartX = 0;
+    document.addEventListener('touchstart', function(e) {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    document.addEventListener('touchend', function(e) {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) { if (diff > 0) next(); else prev(); }
+    });
+
+    updateUI();
+  })();
+</script>
+
+</body>
+</html>

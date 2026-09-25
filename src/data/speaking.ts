@@ -18,6 +18,58 @@ export interface Talk {
 
 export const talks: Talk[] = [
   {
+    date: '2026-09-26',
+    dateLabel: { en: 'Sat, 26 September 2026', id: 'Sabtu, 26 September 2026' },
+    title: {
+      en: 'Workshop on Using AI in Accounting Research',
+      id: 'Pelatihan Penggunaan AI dalam Research Akuntansi',
+    },
+    role: {
+      en: 'Agentic AI for Research — From Literature Search to Writing a Paper with OpenCode + Obsidian',
+      id: 'Agentic AI untuk Riset — Dari Pencarian Literatur sampai Menulis Paper dengan OpenCode + Obsidian',
+    },
+    desc: {
+      en: 'Hands-on workshop for the Doctoral Programme in Accounting, Faculty of Economics and Business, Syiah Kuala University. Participants follow along step by step with an agentic AI (OpenCode) and an Obsidian vault as research memory — from finding and downloading open-access literature and turning it into linked notes, through quantitative and qualitative analysis, to a LaTeX paper draft compiled on Overleaf.',
+      id: 'Workshop praktik bagi Program Studi Doktor Ilmu Akuntansi, Fakultas Ekonomi dan Bisnis, Universitas Syiah Kuala. Peserta mengikuti langkah demi langkah dengan AI agentic (OpenCode) dan vault Obsidian sebagai memori riset — dari mencari & mengunduh literatur open access dan mengubahnya menjadi catatan bertaut, analisis kuantitatif & kualitatif, hingga draf paper LaTeX yang dikompilasi di Overleaf.',
+    },
+    highlights: {
+      en: [
+        'Agentic AI vs plain chat: the agent writes real files into your Obsidian vault, runs code, and reads conventions from AGENTS.md',
+        'Literature workflow: manual search for quality, then the agent finds and downloads open-access PDFs via OpenAlex/Crossref/Unpaywall and writes linked literature notes',
+        'The Obsidian graph grows on its own from [[wikilinks]] and tags — participants never type Markdown by hand',
+        'Quantitative analysis in two layers: the agent writes Stata syntax (data never leaves the researcher machine), then runs Python on the public Grunfeld panel dataset',
+        'Qualitative first-pass thematic coding on a synthetic transcript, producing a codebook for human validation',
+        'Closing the loop: choosing a journal, preparing a LaTeX template, and drafting the paper with a refs.bib built from DOIs — compiled on Overleaf',
+        'Ethics & privacy: some free models train on your data, so sensitive data never enters the agent, and AI is not an author',
+      ],
+      id: [
+        'Agentic AI vs chat biasa: agen menulis file nyata ke vault Obsidian Anda, menjalankan kode, dan membaca konvensi dari AGENTS.md',
+        'Alur literatur: pencarian manual untuk kualitas, lalu agen mencari & mengunduh PDF open access via OpenAlex/Crossref/Unpaywall dan menulis catatan literatur bertaut',
+        'Graph Obsidian tumbuh sendiri dari [[wikilink]] dan tag — peserta tidak mengetik Markdown secara manual',
+        'Analisis kuantitatif dua lapis: agen menulis sintaks Stata (data tidak pernah keluar dari mesin peneliti), lalu menjalankan Python atas dataset panel publik Grunfeld',
+        'First-pass coding tematik kualitatif pada transkrip sintetis, menghasilkan codebook untuk divalidasi manusia',
+        'Menutup alur: memilih jurnal, menyiapkan template LaTeX, dan menyusun draf paper dengan refs.bib dari DOI — dikompilasi di Overleaf',
+        'Etika & privasi: sebagian model gratis memakai data untuk training, sehingga data sensitif tidak pernah masuk ke agen, dan AI bukan penulis',
+      ],
+    },
+    links: [
+      {
+        label: { en: 'Slide', id: 'Slide' },
+        href: '/materi/workshop-ai-research-akuntansi.html',
+        newTab: true,
+      },
+    ],
+    tags: ['Agentic AI', 'OpenCode', 'Obsidian', 'OpenAlex', 'LaTeX / Overleaf', 'Human in the Loop'],
+    locationName: {
+      en: 'Rapim 1 Meeting Room, 2nd Floor, Faculty of Economics and Business, Syiah Kuala University',
+      id: 'Ruang Rapim 1, Lantai 2, Fakultas Ekonomi dan Bisnis, Universitas Syiah Kuala',
+    },
+    organizer: {
+      en: 'Doctoral Programme in Accounting, Faculty of Economics and Business, Syiah Kuala University',
+      id: 'Program Studi Doktor Ilmu Akuntansi, Fakultas Ekonomi dan Bisnis, Universitas Syiah Kuala',
+    },
+  },
+  {
     date: '2026-09-16',
     dateLabel: { en: 'Wed, 16 September 2026', id: 'Rabu, 16 September 2026' },
     title: {
