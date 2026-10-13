@@ -47,30 +47,50 @@ terms:
         topic: 'Ujian Tengah Semester (UTS)'
         note: 'rangkuman-uts'
         file: '/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/08-rangkuman-uts.html'
+        exam: '/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/soal-uts.html'
+        examLabel: 'Soal UTS'
       - week: 9
         date: 2026-11-09
         topic: 'Seleksi'
+        note: 'seleksi'
+        file: '/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/09-seleksi.html'
       - week: 10
         date: 2026-11-16
         topic: 'Iterasi'
+        note: 'iterasi'
+        file: '/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/10-iterasi.html'
       - week: 11
         date: 2026-11-23
         topic: 'Studi kasus transaksi'
+        note: 'studi-kasus-transaksi'
+        file: '/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/11-studi-kasus-transaksi.html'
       - week: 12
         date: 2026-11-30
         topic: 'Pemecahan masalah'
+        note: 'pemecahan-masalah'
+        file: '/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/12-pemecahan-masalah.html'
       - week: 13
         date: 2026-12-07
         topic: 'Kasus data akademik'
+        note: 'kasus-data-akademik'
+        file: '/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/13-kasus-data-akademik.html'
       - week: 14
         date: 2026-12-14
         topic: 'Mini project desain algoritma'
+        note: 'mini-project-desain-algoritma'
+        file: '/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/14-mini-project-desain-algoritma.html'
       - week: 15
         date: 2026-12-21
         topic: 'Seminar kelas'
+        note: 'seminar-kelas'
+        file: '/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/15-seminar-kelas.html'
       - week: 16
         date: 2026-12-28
         topic: 'Ujian Akhir Semester (UAS)'
+        note: 'rangkuman-uas'
+        file: '/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/16-rangkuman-uas.html'
+        exam: '/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/soal-uas.html'
+        examLabel: 'Soal UAS'
 order: 1
 draft: false
 ---

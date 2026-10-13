@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 620" width="720" height="620" role="img" aria-label="Flowchart percabangan IF-THEN-ELSE: periksa kondisi, jalankan satu cabang bila benar, cabang lain bila salah">
+  <defs>
+    <marker id="ar-if" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2b3034"/>
+    </marker>
+  </defs>
+  <style>
+    .box { fill: #ffffff; stroke: #2b3034; stroke-width: 2; }
+    .start { fill: #e8f4ef; stroke: #006c4a; stroke-width: 2; }
+    .io { fill: #eef3f8; stroke: #2b3034; stroke-width: 2; }
+    .dec { fill: #fdf6e6; stroke: #2b3034; stroke-width: 2; }
+    .t { font-family: Inter, system-ui, sans-serif; font-size: 18px; fill: #14181b; text-anchor: middle; dominant-baseline: middle; }
+    .br { font-family: Inter, system-ui, sans-serif; font-size: 15px; font-weight: 600; fill: #006c4a; text-anchor: middle; dominant-baseline: middle; }
+    .line { stroke: #2b3034; stroke-width: 2; fill: none; }
+  </style>
+
+  <rect class="start" x="185" y="30" width="350" height="54" rx="27"/>
+  <text class="t" x="360" y="57">Mulai</text>
+
+  <line class="line" x1="360" y1="84" x2="360" y2="118" marker-end="url(#ar-if)"/>
+
+  <polygon class="io" points="203,124 517,124 499,186 185,186"/>
+  <text class="t" x="360" y="156">Baca nilai</text>
+
+  <line class="line" x1="360" y1="186" x2="360" y2="222" marker-end="url(#ar-if)"/>
+
+  <polygon class="dec" points="360,226 490,276 360,326 230,276"/>
+  <text class="t" x="360" y="276">nilai &#8805; 60?</text>
+
+  <!-- Cabang ya (kiri) -->
+  <polyline class="line" points="230,276 180,276 180,376" marker-end="url(#ar-if)"/>
+  <text class="br" x="212" y="260">ya</text>
+
+  <polygon class="io" points="78,380 300,380 282,442 60,442"/>
+  <text class="t" x="180" y="411">Tulis &#8220;lulus&#8221;</text>
+
+  <!-- Cabang tidak (kanan) -->
+  <polyline class="line" points="490,276 540,276 540,376" marker-end="url(#ar-if)"/>
+  <text class="br" x="516" y="260">tidak</text>
+
+  <polygon class="io" points="438,380 660,380 642,442 420,442"/>
+  <text class="t" x="540" y="411">Tulis &#8220;tidak lulus&#8221;</text>
+
+  <!-- Kedua cabang bertemu kembali -->
+  <polyline class="line" points="180,442 180,500 350,500"/>
+  <polyline class="line" points="540,442 540,500 370,500"/>
+  <line class="line" x1="350" y1="500" x2="370" y2="500"/>
+  <line class="line" x1="360" y1="500" x2="360" y2="536" marker-end="url(#ar-if)"/>
+
+  <rect class="start" x="185" y="540" width="350" height="54" rx="27"/>
+  <text class="t" x="360" y="567">Selesai</text>
+</svg>

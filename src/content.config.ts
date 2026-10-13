@@ -18,6 +18,9 @@ const meeting = z.object({
   topic: z.string(),
   note: z.string().optional(),
   file: z.string().optional(),
+  // Soal ujian: halaman terkunci (PIN), dibuka di tab baru.
+  exam: z.string().optional(),
+  examLabel: z.string().optional(),
 });
 
 const kuliah = defineCollection({

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kasus Data Akademik — Algoritma dan Pemrograman I</title>
+<meta name="description" content="Slide kuliah pekan 13 Algoritma dan Pemrograman I: merekap nilai satu kelas dengan akumulator — rata-rata, nilai tertinggi dan terendah, banyak lulus, dan sebaran nilai huruf.">
+<link rel="canonical" href="https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/13-kasus-data-akademik.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #14181b;
+    --ink-soft: #3f4549;
+    --ink-faint: #6b7277;
+    --accent: #006c4a;
+    --accent-soft: #e8f4ef;
+    --line: #d3d7db;
+    --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* Ukuran akar mengikuti resolusi proyektor: proporsional terhadap
+     sisi yang lebih kecil antara lebar layar dan tinggi 16:9. */
+  html {
+    font-size: clamp(16px, min(1.4vw, 2.49vh), 30px);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4.5rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ===== Tipografi ===== */
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .statement {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .sub {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .note {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  strong { font-weight: 700; color: var(--ink); }
+  .accent { color: var(--accent); }
+
+  /* ===== Daftar ===== */
+
+  ul, ol { list-style: none; }
+
+  .list li {
+    font-size: 1.35rem;
+    line-height: 1.55;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .list li:last-child { border-bottom: none; }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 1.35rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .list.numbered { counter-reset: item; }
+
+  .list.numbered li { padding-left: 3rem; }
+
+  .list.numbered li::before {
+    counter-increment: item;
+    content: counter(item);
+    top: 0.75rem;
+    left: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .list li strong { color: var(--ink); }
+
+  /* ===== Kartu & dua kolom ===== */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .cols.tight { gap: 1.5rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .card.bad { border-color: #e6c2c2; background: #fdf4f4; }
+
+  .card.good { border-color: #b9dccd; background: var(--accent-soft); }
+
+  .card .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .card blockquote {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card ul li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Blok pseudocode ===== */
+
+  .code {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+    padding: 1.3rem 1.6rem;
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+  }
+
+  .code.sm { font-size: 0.92rem; line-height: 1.7; }
+
+  .code .kw { color: var(--accent); font-weight: 700; }
+  .code .cm { color: var(--ink-faint); font-style: italic; }
+
+  /* ===== Tabel ===== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.code-cell {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ===== Slide judul & pembatas ===== */
+
+  .title-slide { justify-content: center; }
+
+  .title-slide h1 { font-size: 3.6rem; max-width: 22ch; }
+
+  .title-slide .meta {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .divider { justify-content: center; }
+
+  .divider .num {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .divider h1 { font-size: 3.4rem; margin-bottom: 1.4rem; }
+
+  /* ===== Kelompok bernomor ===== */
+
+  .blocks { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .block {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .block .idx {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 2rem;
+  }
+
+  .block .body { font-size: 1.2rem; line-height: 1.5; color: var(--ink-soft); }
+  .block .body strong { display: block; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.15rem; }
+
+  /* ===== Kendali ===== */
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0.22rem;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.25s ease;
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 1.6rem;
+    right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+
+  .hint {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2.5rem 2rem; }
+    .cols { grid-template-columns: 1fr; gap: 1.2rem; }
+    .hint { display: none; }
+  }
+
+  /* ===== Cetak / ekspor PDF ===== */
+
+  @media print {
+    html { font-size: 13pt; }
+    body { height: auto; overflow: visible; }
+    .slide {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      page-break-after: always;
+      height: 100vh;
+      padding: 2.5rem 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .progress, .counter, .nav, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progressBar"></div>
+
+<!-- 1. Judul -->
+<div class="slide title-slide active">
+  <p class="kicker">Universitas Ahmad Dahlan Aceh · Fakultas Sains dan Teknologi</p>
+  <h1>Kasus Data Akademik</h1>
+  <p class="sub">Algoritma dan Pemrograman I · INFUAD-003 · 2 SKS · Program Studi Informatika (S1)</p>
+  <div class="meta">
+    Pekan 13 · 7 Desember 2026<br>
+    Muhammad Fadhil Al Amal, S.Kom., M.Kom
+  </div>
+</div>
+
+<!-- 2. Agenda -->
+<div class="slide">
+  <p class="kicker">Pekan 13</p>
+  <h2>Yang akan kita bahas</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Kasusnya</strong>Merekap nilai satu kelas</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Membaca aliran data</strong>Tiga hal yang bisa dilakukan pada tiap nilai</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Empat wadah</strong>Total, tertinggi, terendah, pencacah</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Pseudocode lengkap</strong>Semuanya dalam satu kali pembacaan</span></div>
+    <div class="block"><span class="idx">05</span><span class="body"><strong>Menelusuri</strong>Termasuk pemeriksaan silang</span></div>
+  </div>
+</div>
+
+<!-- 3. Pembatas 01 -->
+<div class="slide divider">
+  <p class="num">Bagian 01</p>
+  <h1>Kasusnya</h1>
+  <p class="lead">Pekerjaan seorang dosen setiap akhir semester.</p>
+</div>
+
+<!-- 4. Kasusnya -->
+<div class="slide">
+  <p class="kicker">Misi</p>
+  <h2>Rekap nilai satu kelas</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Dari satu daftar nilai, kita ingin tahu rata-ratanya, nilai tertinggi dan terendahnya, berapa yang lulus, dan sebaran nilai hurufnya.</p>
+  <div class="card bad">
+    <p class="label">Keterbatasan yang disengaja</p>
+    <blockquote>Nilai <strong>tidak disimpan</strong> &mdash; dibaca satu per satu lalu langsung diolah. Setiap pertanyaan dijawab sambil data mengalir.</blockquote>
+  </div>
+</div>
+
+<!-- 5. Pembatas 02 -->
+<div class="slide divider">
+  <p class="num">Bagian 02</p>
+  <h1>Membaca aliran data</h1>
+  <p class="lead">Nilai mengalir seperti barang di ban berjalan.</p>
+</div>
+
+<!-- 6. Tiga hal -->
+<div class="slide">
+  <p class="kicker">Pada setiap nilai yang lewat</p>
+  <h2>Tiga hal yang bisa dilakukan</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Menambahkannya ke akumulator</strong>Misalnya ke total</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Membandingkannya dengan yang dipegang</strong>Untuk mencari tertinggi atau terendah</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Memeriksa syaratnya, lalu menambah pencacah</strong>Menghitung kejadian</span></div>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Wadah yang dipegang selalu sedikit dan tetap jumlahnya.</p>
+</div>
+
+<!-- 7. Pembatas 03 -->
+<div class="slide divider">
+  <p class="num">Bagian 03</p>
+  <h1>Empat wadah</h1>
+  <p class="lead">Satu pertanyaan rekap, satu pola pengolahan.</p>
+</div>
+
+<!-- 8. Tabel wadah -->
+<div class="slide">
+  <p class="kicker">Pertanyaan dan polanya</p>
+  <h2>Empat pertanyaan, empat wadah</h2>
+  <table>
+    <thead>
+      <tr><th>Pertanyaan</th><th>Wadah</th><th>Pola</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Berapa rata-ratanya?</td><td class="code-cell">total, n</td><td>akumulator penjumlahan</td></tr>
+      <tr><td>Berapa nilai tertinggi?</td><td class="code-cell">tertinggi</td><td>terbesar sementara</td></tr>
+      <tr><td>Berapa nilai terendah?</td><td class="code-cell">terendah</td><td>terkecil sementara</td></tr>
+      <tr><td>Berapa yang lulus?</td><td class="code-cell">lulus</td><td>pencacah kejadian</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 9. Tertinggi terendah sementara -->
+<div class="slide">
+  <p class="kicker">Teknik baru</p>
+  <h2>Tertinggi sementara</h2>
+  <p class="code"><span class="kw">IF</span> nilai &gt; tertinggi <span class="kw">THEN</span>
+  tertinggi &larr; nilai
+<span class="kw">ENDIF</span></p>
+  <p class="lead">Cukup menyimpan <strong>yang terbesar sejauh ini</strong>. Kalau nilai baru lebih besar, ganti; kalau tidak, biarkan.</p>
+</div>
+
+<!-- 10. Masalah nilai awal -->
+<div class="slide">
+  <p class="kicker">Nilai awal diisi apa?</p>
+  <h2>Jebakan di titik awal</h2>
+  <div class="cols">
+    <div class="card bad">
+      <p class="label">Diisi 0 (rapuh)</p>
+      <blockquote>Aman untuk nilai ujian, tetapi salah bila seluruh data bertanda negatif.</blockquote>
+    </div>
+    <div class="card good">
+      <p class="label">Dari data nyata</p>
+      <blockquote>Ambil nilai pertama sebagai titik awal &mdash; selalu berasal dari keadaan sebenarnya.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 11. Titik awal -->
+<div class="slide">
+  <p class="kicker">Putaran pertama</p>
+  <h2>Ambil nilai pertama</h2>
+  <p class="code"><span class="kw">IF</span> i = 1 <span class="kw">THEN</span>
+  tertinggi &larr; nilai
+  terendah &larr; nilai
+<span class="kw">ENDIF</span></p>
+  <p class="lead">Pada putaran pertama, kedua wadah langsung diisi nilai pertama. Setelah itu, nilai-nilainya saling dibandingkan.</p>
+</div>
+
+<!-- 12. Pembatas 04 -->
+<div class="slide divider">
+  <p class="num">Bagian 04</p>
+  <h1>Pseudocode lengkap</h1>
+  <p class="lead">Semuanya dalam satu kali pembacaan data.</p>
+</div>
+
+<!-- 13. Pseudocode -->
+<div class="slide">
+  <p class="kicker">Algoritmanya</p>
+  <h2>Rekap nilai kelas</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  n, i, nilai : integer
+  total, tertinggi, terendah, lulus : integer
+  cacah_A, cacah_B, cacah_C, cacah_D : integer
+  rata_rata : real
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> n
+  total &larr; 0
+  lulus &larr; 0
+  cacah_A &larr; 0
+  cacah_B &larr; 0
+  cacah_C &larr; 0
+  cacah_D &larr; 0
+  <span class="kw">IF</span> n &gt; 0 <span class="kw">THEN</span>
+    <span class="kw">FOR</span> i &larr; 1 <span class="kw">TO</span> n <span class="kw">DO</span>
+      <span class="kw">READ</span> nilai
+      total &larr; total + nilai
+      <span class="kw">IF</span> i = 1 <span class="kw">THEN</span>
+        tertinggi &larr; nilai
+        terendah &larr; nilai
+      <span class="kw">ENDIF</span>
+      <span class="kw">IF</span> nilai &gt; tertinggi <span class="kw">THEN</span>
+        tertinggi &larr; nilai
+      <span class="kw">ENDIF</span>
+      <span class="kw">IF</span> nilai &lt; terendah <span class="kw">THEN</span>
+        terendah &larr; nilai
+      <span class="kw">ENDIF</span>
+      <span class="kw">IF</span> nilai &ge; 60 <span class="kw">THEN</span>
+        lulus &larr; lulus + 1
+      <span class="kw">ENDIF</span>
+      <span class="kw">IF</span> nilai &ge; 85 <span class="kw">THEN</span>
+        cacah_A &larr; cacah_A + 1
+      <span class="kw">ELSE IF</span> nilai &ge; 70 <span class="kw">THEN</span>
+        cacah_B &larr; cacah_B + 1
+      <span class="kw">ELSE IF</span> nilai &ge; 60 <span class="kw">THEN</span>
+        cacah_C &larr; cacah_C + 1
+      <span class="kw">ELSE</span>
+        cacah_D &larr; cacah_D + 1
+      <span class="kw">ENDIF</span>
+    <span class="kw">ENDFOR</span>
+    rata_rata &larr; total &divide; n
+    <span class="kw">WRITE</span> rata_rata, tertinggi, terendah, lulus
+    <span class="kw">WRITE</span> cacah_A, cacah_B, cacah_C, cacah_D
+  <span class="kw">ELSE</span>
+    <span class="kw">WRITE</span> "tidak ada data"
+  <span class="kw">ENDIF</span>
+<span class="kw">END</span></p>
+</div>
+
+<!-- 14. Tiga hal penting -->
+<div class="slide">
+  <p class="kicker">Perhatikan</p>
+  <h2>Tiga hal penting</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Semua wadah disiapkan di luar</strong>Delapan variabel diberi nilai awal sebelum FOR dimulai</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Satu READ melayani banyak perhitungan</strong>Nilai yang sama dipakai untuk total, tertinggi, terendah, dan pencacah</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Pemeriksaan n &gt; 0 menjaga pembagian</strong>Kelas kosong berujung pembagian dengan nol</span></div>
+  </div>
+</div>
+
+<!-- 15. Pembatas 05 -->
+<div class="slide">
+  <p class="num">Bagian 05</p>
+  <h1>Menelusuri</h1>
+  <p class="lead">Lima nilai: 90, 55, 72, 88, 60.</p>
+</div>
+
+<!-- 16. Tabel penelusuran -->
+<div class="slide">
+  <p class="kicker">Keadaan tiap putaran</p>
+  <h2>Telusuri sebelum percaya</h2>
+  <table>
+    <thead>
+      <tr><th>Putaran</th><th>nilai</th><th>total</th><th>tertinggi</th><th>terendah</th><th>lulus</th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">1</td><td class="code-cell">90</td><td class="code-cell">90</td><td class="code-cell">90</td><td class="code-cell">90</td><td class="code-cell">1</td><td class="code-cell">1</td><td class="code-cell">0</td><td class="code-cell">0</td><td class="code-cell">0</td></tr>
+      <tr><td class="code-cell">2</td><td class="code-cell">55</td><td class="code-cell">145</td><td class="code-cell">90</td><td class="code-cell">55</td><td class="code-cell">1</td><td class="code-cell">1</td><td class="code-cell">0</td><td class="code-cell">0</td><td class="code-cell">1</td></tr>
+      <tr><td class="code-cell">3</td><td class="code-cell">72</td><td class="code-cell">217</td><td class="code-cell">90</td><td class="code-cell">55</td><td class="code-cell">2</td><td class="code-cell">1</td><td class="code-cell">1</td><td class="code-cell">0</td><td class="code-cell">1</td></tr>
+      <tr><td class="code-cell">4</td><td class="code-cell">88</td><td class="code-cell">305</td><td class="code-cell">90</td><td class="code-cell">55</td><td class="code-cell">3</td><td class="code-cell">2</td><td class="code-cell">1</td><td class="code-cell">0</td><td class="code-cell">1</td></tr>
+      <tr><td class="code-cell">5</td><td class="code-cell">60</td><td class="code-cell">365</td><td class="code-cell">90</td><td class="code-cell">55</td><td class="code-cell">4</td><td class="code-cell">2</td><td class="code-cell">1</td><td class="code-cell">1</td><td class="code-cell">1</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:1rem;">Rata-rata 73, tertinggi 90, terendah 55, lulus 4 dari 5.</p>
+</div>
+
+<!-- 17. Pemeriksaan silang -->
+<div class="slide">
+  <p class="kicker">Memeriksa kebenaran</p>
+  <p class="statement">Jumlah pencacah <span class="accent">harus</span> sama dengan banyak data.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:56ch;">2 + 1 + 1 + 1 = 5, cocok dengan n. Dan banyak yang lulus (4) sama dengan jumlah pencacah A, B, dan C. Pemeriksaan semacam ini menangkap nilai yang luput atau terhitung dua kali.</p>
+</div>
+
+<!-- 18. Kesalahan umum -->
+<div class="slide">
+  <p class="kicker">Hindari</p>
+  <h2>Kesalahan yang sering muncul</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Memberi nilai awal <span style="font-family:var(--mono)">tertinggi</span> dengan angka yang salah</li>
+      <li>Menaruh akumulator di dalam pengulangan</li>
+      <li>Lupa pemeriksaan <span style="font-family:var(--mono)">n &gt; 0</span></li>
+      <li>Urutan cabang nilai huruf terbalik</li>
+      <li>Memakai <span style="font-family:var(--mono)">&gt;</span> padahal <span style="font-family:var(--mono)">&ge;</span> &mdash; nilai 60 salah dianggap tidak lulus</li>
+      <li>Menghitung rata-rata sebelum pengulangan selesai</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 19. Selanjutnya -->
+<div class="slide">
+  <p class="kicker">Selanjutnya</p>
+  <h2>Menuju mini project</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">P14</span><span class="body"><strong>Mini project desain algoritma</strong>Merancang algoritma lengkap dari nol: pseudocode, flowchart, dokumentasi</span></div>
+    <div class="block"><span class="idx">P15</span><span class="body"><strong>Seminar kelas</strong>Mempresentasikan dan saling menilai rancangan</span></div>
+  </div>
+</div>
+
+<!-- 20. Soal refleksi -->
+<div class="slide">
+  <p class="kicker">Tanpa jawaban benar atau salah</p>
+  <h2>Soal refleksi</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Kenapa mencari nilai tertinggi cukup dengan satu variabel sementara?</li>
+      <li>Apa akibatnya memberi nilai awal 0 pada <span style="font-family:var(--mono)">tertinggi</span> bila semua data negatif?</li>
+      <li>Periksa silang: apakah jumlah semua pencacah huruf sama dengan banyak data?</li>
+      <li>Bagaimana cara menghitung banyak nilai yang di atas rata-rata kelas?</li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Dua soal lagi tersedia di catatan kuliah.</p>
+</div>
+
+<!-- 21. Penutup -->
+<div class="slide title-slide">
+  <p class="kicker">Terima kasih</p>
+  <h1>Satu kali baca, banyak jawaban</h1>
+  <p class="sub">Setiap pertanyaan rekap punya wadahnya sendiri, dan semuanya diisi sambil data mengalir.</p>
+  <div class="meta">
+    Catatan lengkap pekan ini: <strong>mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/</strong>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<div class="counter" id="slideNumber">1 / 21</div>
+<div class="hint">&larr; &rarr; navigasi &nbsp;·&nbsp; <kbd>F</kbd> layar penuh</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var current = 0;
+
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var counter = document.getElementById('slideNumber');
+    var progress = document.getElementById('progressBar');
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      update();
+    }
+
+    function update() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) { if (diff > 0) next(); else prev(); }
+    });
+
+    update();
+  })();
+</script>
+</body>
+</html>

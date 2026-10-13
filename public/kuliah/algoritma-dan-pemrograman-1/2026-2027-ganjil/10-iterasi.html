@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iterasi — Algoritma dan Pemrograman I</title>
+<meta name="description" content="Slide kuliah pekan 10 Algoritma dan Pemrograman I: pengulangan dengan WHILE, FOR, dan REPEAT, pola pencacah dan akumulator, serta bahaya pengulangan tak berujung.">
+<link rel="canonical" href="https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/10-iterasi.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #14181b;
+    --ink-soft: #3f4549;
+    --ink-faint: #6b7277;
+    --accent: #006c4a;
+    --accent-soft: #e8f4ef;
+    --line: #d3d7db;
+    --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* Ukuran akar mengikuti resolusi proyektor: proporsional terhadap
+     sisi yang lebih kecil antara lebar layar dan tinggi 16:9. */
+  html {
+    font-size: clamp(16px, min(1.4vw, 2.49vh), 30px);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4.5rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ===== Tipografi ===== */
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .statement {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .sub {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .note {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  strong { font-weight: 700; color: var(--ink); }
+  .accent { color: var(--accent); }
+
+  /* ===== Daftar ===== */
+
+  ul, ol { list-style: none; }
+
+  .list li {
+    font-size: 1.35rem;
+    line-height: 1.55;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .list li:last-child { border-bottom: none; }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 1.35rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .list.numbered { counter-reset: item; }
+
+  .list.numbered li { padding-left: 3rem; }
+
+  .list.numbered li::before {
+    counter-increment: item;
+    content: counter(item);
+    top: 0.75rem;
+    left: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .list li strong { color: var(--ink); }
+
+  /* ===== Kartu & dua kolom ===== */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .cols.tight { gap: 1.5rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .card.bad { border-color: #e6c2c2; background: #fdf4f4; }
+
+  .card.good { border-color: #b9dccd; background: var(--accent-soft); }
+
+  .card .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .card blockquote {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card ul li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Gambar ===== */
+
+  .figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    min-height: 0;
+  }
+
+  .figure img {
+    max-height: 60vh;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .figure figcaption {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  /* ===== Blok pseudocode ===== */
+
+  .code {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+    padding: 1.3rem 1.6rem;
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+  }
+
+  .code.sm { font-size: 1rem; line-height: 1.7; }
+
+  .code .kw { color: var(--accent); font-weight: 700; }
+  .code .cm { color: var(--ink-faint); font-style: italic; }
+
+  /* ===== Tabel ===== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.code-cell {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ===== Slide judul & pembatas ===== */
+
+  .title-slide { justify-content: center; }
+
+  .title-slide h1 { font-size: 3.6rem; max-width: 22ch; }
+
+  .title-slide .meta {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .divider { justify-content: center; }
+
+  .divider .num {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .divider h1 { font-size: 3.4rem; margin-bottom: 1.4rem; }
+
+  /* ===== Kelompok bernomor ===== */
+
+  .blocks { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .block {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .block .idx {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 2rem;
+  }
+
+  .block .body { font-size: 1.2rem; line-height: 1.5; color: var(--ink-soft); }
+  .block .body strong { display: block; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.15rem; }
+
+  /* ===== Kendali ===== */
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0.22rem;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.25s ease;
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 1.6rem;
+    right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+
+  .hint {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2.5rem 2rem; }
+    .cols { grid-template-columns: 1fr; gap: 1.2rem; }
+    .figure img { max-height: 48vh; }
+    .hint { display: none; }
+  }
+
+  /* ===== Cetak / ekspor PDF ===== */
+
+  @media print {
+    html { font-size: 13pt; }
+    body { height: auto; overflow: visible; }
+    .slide {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      page-break-after: always;
+      height: 100vh;
+      padding: 2.5rem 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .progress, .counter, .nav, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progressBar"></div>
+
+<!-- 1. Judul -->
+<div class="slide title-slide active">
+  <p class="kicker">Universitas Ahmad Dahlan Aceh · Fakultas Sains dan Teknologi</p>
+  <h1>Iterasi</h1>
+  <p class="sub">Algoritma dan Pemrograman I · INFUAD-003 · 2 SKS · Program Studi Informatika (S1)</p>
+  <div class="meta">
+    Pekan 10 · 16 November 2026<br>
+    Muhammad Fadhil Al Amal, S.Kom., M.Kom
+  </div>
+</div>
+
+<!-- 2. Agenda -->
+<div class="slide">
+  <p class="kicker">Pekan 10</p>
+  <h2>Yang akan kita bahas</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Kenapa perlu pengulangan</strong>Empat bagian yang selalu ada</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>WHILE</strong>Selama kondisi terpenuhi</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>FOR dan REPEAT</strong>Jumlah pasti, dan kondisi di akhir</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Pola akumulator</strong>Menjumlahkan banyak nilai sekaligus</span></div>
+    <div class="block"><span class="idx">05</span><span class="body"><strong>Empat contoh</strong>Dari pencacah sampai faktorial</span></div>
+  </div>
+</div>
+
+<!-- 3. Pembatas 01 -->
+<div class="slide divider">
+  <p class="num">Bagian 01</p>
+  <h1>Kenapa perlu pengulangan</h1>
+  <p class="lead">Satu instruksi yang dikerjakan seratus kali, bukan seratus instruksi.</p>
+</div>
+
+<!-- 4. Empat bagian -->
+<div class="slide">
+  <p class="kicker">Menghitung 1 sampai 100</p>
+  <h2>Empat bagian setiap pengulangan</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Nilai awal</strong>Keadaan sebelum pengulangan dimulai</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Kondisi</strong>Apakah pengulangan masih berlanjut?</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Badan pengulangan</strong>Instruksi yang dikerjakan setiap putaran</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Perubahan</strong>Sesuatu yang berubah, agar akhirnya berhenti</span></div>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Bagian keempat paling sering terlupakan &mdash; akibatnya pengulangan tidak pernah berhenti.</p>
+</div>
+
+<!-- 5. Pembatas 02 -->
+<div class="slide divider">
+  <p class="num">Bagian 02</p>
+  <h1>WHILE</h1>
+  <p class="lead">Kondisi diperiksa di awal, sebelum badan pengulangan.</p>
+</div>
+
+<!-- 6. WHILE bentuk -->
+<div class="slide">
+  <p class="kicker">Bentuknya</p>
+  <h2>Selama kondisi terpenuhi</h2>
+  <p class="code"><span class="kw">WHILE</span> kondisi <span class="kw">DO</span>
+  aksi
+<span class="kw">ENDWHILE</span></p>
+  <p class="lead">Kondisi diperiksa &rarr; kalau benar, aksi dikerjakan &rarr; kembali memeriksa kondisi. Kalau salah, pengulangan berakhir.</p>
+</div>
+
+<!-- 7. Bisa nol kali -->
+<div class="slide">
+  <p class="kicker">Sifat penting</p>
+  <p class="statement">Badan <span class="accent">WHILE</span> bisa tidak pernah dijalankan.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:52ch;">Karena kondisi diperiksa lebih dulu, jika kondisinya sudah salah sejak awal, seluruh badan pengulangan langsung dilewati.</p>
+</div>
+
+<!-- 8. Pola pencacah -->
+<div class="slide">
+  <p class="kicker">Pola paling sering</p>
+  <h2>Pencacah</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  i : integer
+
+<span class="kw">BEGIN</span>
+  i &larr; 1
+  <span class="kw">WHILE</span> i &le; 5 <span class="kw">DO</span>
+    <span class="kw">WRITE</span> i
+    i &larr; i + 1
+  <span class="kw">ENDWHILE</span>
+<span class="kw">END</span></p>
+  <p class="note">Nilai awal di luar, perubahan di dalam. <span style="font-family:var(--mono)">i &larr; i + 1</span> berarti: ambil isi i, tambah satu, simpan kembali.</p>
+</div>
+
+<!-- Flowchart -->
+<div class="slide">
+  <p class="kicker">Bentuknya dalam diagram</p>
+  <h2>Flowchart pengulangan WHILE</h2>
+  <figure class="figure">
+    <img src="img/07-flowchart-while.svg" alt="Flowchart pengulangan WHILE: kondisi diuji di awal, badan dikerjakan, lalu alur kembali memeriksa kondisi">
+    <figcaption>Garis yang kembali ke atas itulah pengulangannya &mdash; alur kembali memeriksa kondisi setiap selesai satu putaran.</figcaption>
+  </figure>
+</div>
+
+<!-- 9. Infinite loop -->
+<div class="slide">
+  <p class="kicker">Kalau perubahan hilang</p>
+  <p class="statement">Pengulangan tak berujung.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:54ch;">Tanpa <span style="font-family:var(--mono)">i &larr; i + 1</span>, <span style="font-family:var(--mono)">i</span> selalu 1, kondisinya selalu benar, dan program mencetak angka yang sama tanpa henti. Ini kesalahan yang harus selalu diantisipasi.</p>
+</div>
+
+<!-- 10. Pembatas 03 -->
+<div class="slide divider">
+  <p class="num">Bagian 03</p>
+  <h1>FOR dan REPEAT</h1>
+  <p class="lead">Ketika jumlah putarannya sudah pasti &mdash; dan ketika kondisi diperiksa di akhir.</p>
+</div>
+
+<!-- 11. FOR bentuk -->
+<div class="slide">
+  <p class="kicker">Jumlah pasti</p>
+  <h2>FOR</h2>
+  <p class="code"><span class="kw">FOR</span> i &larr; 1 <span class="kw">TO</span> n <span class="kw">DO</span>
+  aksi
+<span class="kw">ENDFOR</span></p>
+  <p class="lead">Nilai awal, kondisi, dan perubahan sudah tersusun otomatis. <span style="font-family:var(--mono)">i</span> naik dari 1 sampai n, lalu berhenti sendiri.</p>
+</div>
+
+<!-- 12. WHILE vs FOR -->
+<div class="slide">
+  <p class="kicker">Memilih yang tepat</p>
+  <h2>WHILE atau FOR?</h2>
+  <table>
+    <thead>
+      <tr><th></th><th>WHILE</th><th>FOR</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">Jumlah putaran</td><td>belum tentu diketahui</td><td>sudah pasti</td></tr>
+      <tr><td class="code-cell">Perubahan pencacah</td><td>ditulis sendiri</td><td>otomatis</td></tr>
+      <tr><td class="code-cell">Kondisi</td><td>ditulis sendiri</td><td>tersirat dari batas</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:1.2rem;">Memakai <span style="font-family:var(--mono)">WHILE</span> untuk &ldquo;selama pengguna belum selesai&rdquo;; memakai <span style="font-family:var(--mono)">FOR</span> untuk &ldquo;12 bulan&rdquo;.</p>
+</div>
+
+<!-- 13. REPEAT -->
+<div class="slide">
+  <p class="kicker">Kondisi di akhir</p>
+  <h2>REPEAT</h2>
+  <p class="code"><span class="kw">REPEAT</span>
+  aksi
+<span class="kw">UNTIL</span> kondisi</p>
+  <p class="lead">Karena kondisi diperiksa paling akhir, badan <span style="font-family:var(--mono)">REPEAT</span> <strong>pasti dijalankan minimal satu kali</strong>. Cocok untuk meminta masukan sampai nilainya benar.</p>
+</div>
+
+<!-- 14. Pembatas 04 -->
+<div class="slide divider">
+  <p class="num">Bagian 04</p>
+  <h1>Pola akumulator</h1>
+  <p class="lead">Menjumlahkan dan menghitung banyak nilai sekaligus.</p>
+</div>
+
+<!-- 15. Akumulator -->
+<div class="slide">
+  <p class="kicker">Polanya</p>
+  <h2>Wadah kosong yang terus diisi</h2>
+  <p class="code">total &larr; 0
+<span class="kw">WHILE</span> belum_selesai <span class="kw">DO</span>
+  tambahkan sesuatu ke total
+<span class="kw">ENDWHILE</span></p>
+  <p class="note">Siapkan wadah <strong>sebelum</strong> pengulangan, lalu tambahkan sesuatu ke dalamnya pada <strong>setiap</strong> putaran.</p>
+</div>
+
+<!-- 16. Dua perhatian -->
+<div class="slide">
+  <p class="kicker">Yang mudah keliru</p>
+  <h2>Dua hal yang menentukan</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Nilai awal harus tepat</strong>Penjumlahan mulai dari 0; perkalian mulai dari 1. Perkalian dari 0 akan selalu menghasilkan 0.</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Pembaruan di dalam pengulangan</strong>Kalau diletakkan di luar, akumulator hanya menampung satu nilai.</span></div>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Pola yang sama juga bekerja untuk <strong>pencacah kejadian</strong>: mulai dari 0, tambah satu setiap kali syarat terpenuhi.</p>
+</div>
+
+<!-- 17. Pembatas 05 -->
+<div class="slide divider">
+  <p class="num">Bagian 05</p>
+  <h1>Empat contoh</h1>
+  <p class="lead">Dari pencacah sampai faktorial.</p>
+</div>
+
+<!-- 18. Contoh 1 -->
+<div class="slide">
+  <p class="kicker">Contoh 1</p>
+  <h2>Menjumlahkan 1 sampai N</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  n, i : integer
+  total : integer
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> n
+  total &larr; 0
+  i &larr; 1
+  <span class="kw">WHILE</span> i &le; n <span class="kw">DO</span>
+    total &larr; total + i
+    i &larr; i + 1
+  <span class="kw">ENDWHILE</span>
+  <span class="kw">WRITE</span> total
+<span class="kw">END</span></p>
+  <p class="note">Masukan n = 5 menghasilkan total = 15.</p>
+</div>
+
+<!-- 19. Contoh 2 -->
+<div class="slide">
+  <p class="kicker">Contoh 2 &mdash; versi FOR</p>
+  <h2>Mencetak 1 sampai N</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  n, i : integer
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> n
+  <span class="kw">FOR</span> i &larr; 1 <span class="kw">TO</span> n <span class="kw">DO</span>
+    <span class="kw">WRITE</span> i
+  <span class="kw">ENDFOR</span>
+<span class="kw">END</span></p>
+  <p class="note">Bandingkan dengan versi <span style="font-family:var(--mono)">WHILE</span>: di sini tidak ada nilai awal maupun perubahan yang ditulis manual.</p>
+</div>
+
+<!-- 20. Contoh 3 -->
+<div class="slide">
+  <p class="kicker">Contoh 3</p>
+  <h2>Rata-rata N nilai</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  n, i : integer
+  nilai : integer
+  total : integer
+  rata_rata : real
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> n
+  total &larr; 0
+  <span class="kw">FOR</span> i &larr; 1 <span class="kw">TO</span> n <span class="kw">DO</span>
+    <span class="kw">READ</span> nilai
+    total &larr; total + nilai
+  <span class="kw">ENDFOR</span>
+  rata_rata &larr; total &divide; n
+  <span class="kw">WRITE</span> rata_rata
+<span class="kw">END</span></p>
+  <p class="note"><span style="font-family:var(--mono)">READ nilai</span> berada <strong>di dalam</strong> pengulangan &mdash; nilai baru dibaca setiap putaran.</p>
+</div>
+
+<!-- 21. Contoh 4 -->
+<div class="slide">
+  <p class="kicker">Contoh 4 &mdash; akumulator perkalian</p>
+  <h2>Faktorial</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  n, i : integer
+  hasil : integer
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> n
+  hasil &larr; 1
+  <span class="kw">FOR</span> i &larr; 1 <span class="kw">TO</span> n <span class="kw">DO</span>
+    hasil &larr; hasil &times; i
+  <span class="kw">ENDFOR</span>
+  <span class="kw">WRITE</span> hasil
+<span class="kw">END</span></p>
+  <p class="note"><span style="font-family:var(--mono)">hasil</span> dimulai dari 1, bukan 0. Dengan n = 5, hasilnya 120.</p>
+</div>
+
+<!-- 22. Penelusuran -->
+<div class="slide">
+  <p class="kicker">Menelusuri pengulangan</p>
+  <h2>Catat keadaan setiap putaran</h2>
+  <table>
+    <thead>
+      <tr><th>Putaran</th><th>i sebelum cek</th><th>i &le; 5</th><th>total sesudah</th><th>i sesudah</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">1</td><td class="code-cell">1</td><td class="code-cell">benar</td><td class="code-cell">1</td><td class="code-cell">2</td></tr>
+      <tr><td class="code-cell">2</td><td class="code-cell">2</td><td class="code-cell">benar</td><td class="code-cell">3</td><td class="code-cell">3</td></tr>
+      <tr><td class="code-cell">3</td><td class="code-cell">3</td><td class="code-cell">benar</td><td class="code-cell">6</td><td class="code-cell">4</td></tr>
+      <tr><td class="code-cell">4</td><td class="code-cell">4</td><td class="code-cell">benar</td><td class="code-cell">10</td><td class="code-cell">5</td></tr>
+      <tr><td class="code-cell">5</td><td class="code-cell">5</td><td class="code-cell">benar</td><td class="code-cell">15</td><td class="code-cell">6</td></tr>
+      <tr><td class="code-cell">&mdash;</td><td class="code-cell">6</td><td class="code-cell">salah</td><td colspan="2">berhenti</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 23. Off by one -->
+<div class="slide">
+  <p class="kicker">Jebakan paling halus</p>
+  <p class="statement">Berjalan 5 kali atau 6 kali?</p>
+  <p class="note" style="margin-top:2.2rem;max-width:56ch;">Apakah nilai akhirnya 15 atau 21 hanya terlihat jelas pada tabel penelusuran. Perhatikan padanan batas: <span style="font-family:var(--mono)">i &lt; n</span> berjalan n&nbsp;&minus;&nbsp;1 kali, sedangkan <span style="font-family:var(--mono)">i &le; n</span> berjalan n kali.</p>
+</div>
+
+<!-- 24. Kesalahan umum -->
+<div class="slide">
+  <p class="kicker">Hindari</p>
+  <h2>Kesalahan yang sering muncul</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Lupa mengubah pencacah di dalam <span style="font-family:var(--mono)">WHILE</span> &mdash; pengulangan tak berujung</li>
+      <li>Menaruh inisialisasi di dalam pengulangan, sehingga nilainya ter-reset</li>
+      <li>Menaruh <span style="font-family:var(--mono)">READ</span> di luar pengulangan</li>
+      <li>Memulai akumulator perkalian dari 0</li>
+      <li>Salah batas: <span style="font-family:var(--mono)">&lt;</span> berpadanan dengan <span style="font-family:var(--mono)">&le;</span></li>
+      <li>Memakai <span style="font-family:var(--mono)">FOR</span> padahal jumlah putarannya baru diketahui di tengah program</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 25. Selanjutnya -->
+<div class="slide">
+  <p class="kicker">Selanjutnya</p>
+  <h2>Menuju studi kasus transaksi</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">P11</span><span class="body"><strong>Studi kasus transaksi</strong>Seleksi dan iterasi bertemu: total belanja, diskon, kembalian</span></div>
+    <div class="block"><span class="idx">P12</span><span class="body"><strong>Pemecahan masalah</strong>Memilih struktur kendali yang tepat untuk sebuah soal</span></div>
+  </div>
+</div>
+
+<!-- 26. Soal refleksi -->
+<div class="slide">
+  <p class="kicker">Tanpa jawaban benar atau salah</p>
+  <h2>Soal refleksi</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Jelaskan bedanya <span style="font-family:var(--mono)">WHILE</span> dan <span style="font-family:var(--mono)">FOR</span>. Kapan masing-masing lebih tepat?</li>
+      <li>Apa yang terjadi kalau baris <span style="font-family:var(--mono)">i &larr; i + 1</span> dihapus?</li>
+      <li>Tulis pseudocode menjumlahkan bilangan genap dari 1 sampai N</li>
+      <li>Kenapa akumulator perkalian dimulai dari 1, sedangkan penjumlahan dari 0?</li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Dua soal lagi tersedia di catatan kuliah.</p>
+</div>
+
+<!-- 27. Penutup -->
+<div class="slide title-slide">
+  <p class="kicker">Terima kasih</p>
+  <h1>Satu instruksi, seratus kali</h1>
+  <p class="sub">Kuasa pengulangan datang dari perubahan yang konsisten &mdash; tanpa itu, ia tidak pernah berhenti.</p>
+  <div class="meta">
+    Catatan lengkap pekan ini: <strong>mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/</strong>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<div class="counter" id="slideNumber">1 / 28</div>
+<div class="hint">&larr; &rarr; navigasi &nbsp;·&nbsp; <kbd>F</kbd> layar penuh</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var current = 0;
+
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var counter = document.getElementById('slideNumber');
+    var progress = document.getElementById('progressBar');
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      update();
+    }
+
+    function update() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) { if (diff > 0) next(); else prev(); }
+    });
+
+    update();
+  })();
+</script>
+</body>
+</html>

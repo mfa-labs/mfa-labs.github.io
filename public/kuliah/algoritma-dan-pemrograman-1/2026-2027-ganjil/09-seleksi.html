@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seleksi — Algoritma dan Pemrograman I</title>
+<meta name="description" content="Slide kuliah pekan 9 Algoritma dan Pemrograman I: operator perbandingan dan logika, struktur IF-THEN-ELSE, ELSE IF bersarang, dan CASE.">
+<link rel="canonical" href="https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/09-seleksi.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #14181b;
+    --ink-soft: #3f4549;
+    --ink-faint: #6b7277;
+    --accent: #006c4a;
+    --accent-soft: #e8f4ef;
+    --line: #d3d7db;
+    --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* Ukuran akar mengikuti resolusi proyektor: proporsional terhadap
+     sisi yang lebih kecil antara lebar layar dan tinggi 16:9. */
+  html {
+    font-size: clamp(16px, min(1.4vw, 2.49vh), 30px);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4.5rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ===== Tipografi ===== */
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .statement {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .sub {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .note {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  strong { font-weight: 700; color: var(--ink); }
+  .accent { color: var(--accent); }
+
+  /* ===== Daftar ===== */
+
+  ul, ol { list-style: none; }
+
+  .list li {
+    font-size: 1.35rem;
+    line-height: 1.55;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .list li:last-child { border-bottom: none; }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 1.35rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .list.numbered { counter-reset: item; }
+
+  .list.numbered li { padding-left: 3rem; }
+
+  .list.numbered li::before {
+    counter-increment: item;
+    content: counter(item);
+    top: 0.75rem;
+    left: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .list li strong { color: var(--ink); }
+
+  /* ===== Kartu & dua kolom ===== */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .cols.tight { gap: 1.5rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .card.bad { border-color: #e6c2c2; background: #fdf4f4; }
+
+  .card.good { border-color: #b9dccd; background: var(--accent-soft); }
+
+  .card .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .card blockquote {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card ul li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Gambar ===== */
+
+  .figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    min-height: 0;
+  }
+
+  .figure img {
+    max-height: 60vh;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .figure figcaption {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  /* ===== Blok pseudocode ===== */
+
+  .code {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+    padding: 1.3rem 1.6rem;
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+  }
+
+  .code.sm { font-size: 1rem; line-height: 1.7; }
+
+  .code .kw { color: var(--accent); font-weight: 700; }
+  .code .cm { color: var(--ink-faint); font-style: italic; }
+
+  /* ===== Tabel ===== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.code-cell {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ===== Slide judul & pembatas ===== */
+
+  .title-slide { justify-content: center; }
+
+  .title-slide h1 { font-size: 3.6rem; max-width: 22ch; }
+
+  .title-slide .meta {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .divider { justify-content: center; }
+
+  .divider .num {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .divider h1 { font-size: 3.4rem; margin-bottom: 1.4rem; }
+
+  /* ===== Kelompok bernomor ===== */
+
+  .blocks { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .block {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .block .idx {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 2rem;
+  }
+
+  .block .body { font-size: 1.2rem; line-height: 1.5; color: var(--ink-soft); }
+  .block .body strong { display: block; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.15rem; }
+
+  /* ===== Kendali ===== */
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0.22rem;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.25s ease;
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 1.6rem;
+    right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+
+  .hint {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2.5rem 2rem; }
+    .cols { grid-template-columns: 1fr; gap: 1.2rem; }
+    .figure img { max-height: 48vh; }
+    .hint { display: none; }
+  }
+
+  /* ===== Cetak / ekspor PDF ===== */
+
+  @media print {
+    html { font-size: 13pt; }
+    body { height: auto; overflow: visible; }
+    .slide {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      page-break-after: always;
+      height: 100vh;
+      padding: 2.5rem 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .progress, .counter, .nav, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progressBar"></div>
+
+<!-- 1. Judul -->
+<div class="slide title-slide active">
+  <p class="kicker">Universitas Ahmad Dahlan Aceh · Fakultas Sains dan Teknologi</p>
+  <h1>Seleksi</h1>
+  <p class="sub">Algoritma dan Pemrograman I · INFUAD-003 · 2 SKS · Program Studi Informatika (S1)</p>
+  <div class="meta">
+    Pekan 9 · 9 November 2026<br>
+    Muhammad Fadhil Al Amal, S.Kom., M.Kom
+  </div>
+</div>
+
+<!-- 2. Agenda -->
+<div class="slide">
+  <p class="kicker">Pekan 9</p>
+  <h2>Yang akan kita bahas</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Operator perbandingan</strong>Pertanyaan yang jawabannya benar atau salah</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Operator logika</strong>Menggabungkan beberapa pertanyaan: AND, OR, NOT</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Struktur IF</strong>IF-THEN dan IF-THEN-ELSE</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Banyak kemungkinan</strong>ELSE IF bersarang dan CASE</span></div>
+    <div class="block"><span class="idx">05</span><span class="body"><strong>Empat contoh</strong>Dari ganjil-genap sampai harga tiket</span></div>
+  </div>
+</div>
+
+<!-- 3. Pembatas 01 -->
+<div class="slide divider">
+  <p class="num">Bagian 01</p>
+  <h1>Dari runtunan ke keputusan</h1>
+  <p class="lead">Sampai pekan lalu program selalu berjalan lurus. Kini garis itu bercabang.</p>
+</div>
+
+<!-- 4. Kenapa runtunan belum cukup -->
+<div class="slide">
+  <p class="kicker">Masalahnya</p>
+  <h2>Tentukan bilangan ganjil atau genap</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Dengan runtunan murni, kita tidak punya cara mengerjakannya. Apa pun yang ditulis akan selalu dikerjakan &mdash; padahal yang dibutuhkan adalah <em>kadang ini, kadang itu</em>.</p>
+  <div class="cols tight">
+    <div class="card">
+      <p class="label">Setiap keputusan punya</p>
+      <ul>
+        <li>Sebuah <strong>pertanyaan</strong> yang jawabannya benar atau salah</li>
+        <li>Sebuah <strong>tindakan</strong> yang bergantung pada jawaban itu</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 5. Pembatas 02 -->
+<div class="slide divider">
+  <p class="num">Bagian 02</p>
+  <h1>Operator perbandingan</h1>
+  <p class="lead">Enam cara mengajukan pertanyaan yang hasilnya boolean.</p>
+</div>
+
+<!-- 6. Tabel perbandingan -->
+<div class="slide">
+  <p class="kicker">Daftarnya</p>
+  <h2>Enam operator perbandingan</h2>
+  <table>
+    <thead>
+      <tr><th>Operator</th><th>Arti</th><th>Contoh</th><th>Hasil</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">=</td><td>Sama dengan</td><td class="code-cell">7 = 7</td><td class="code-cell">true</td></tr>
+      <tr><td class="code-cell">&ne;</td><td>Tidak sama dengan</td><td class="code-cell">7 &ne; 3</td><td class="code-cell">true</td></tr>
+      <tr><td class="code-cell">&lt;</td><td>Lebih kecil dari</td><td class="code-cell">3 &lt; 7</td><td class="code-cell">true</td></tr>
+      <tr><td class="code-cell">&gt;</td><td>Lebih besar dari</td><td class="code-cell">3 &gt; 7</td><td class="code-cell">false</td></tr>
+      <tr><td class="code-cell">&le;</td><td>Lebih kecil atau sama</td><td class="code-cell">7 &le; 7</td><td class="code-cell">true</td></tr>
+      <tr><td class="code-cell">&ge;</td><td>Lebih besar atau sama</td><td class="code-cell">7 &ge; 8</td><td class="code-cell">false</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:1.2rem;">Hasilnya bukan angka, melainkan <span style="font-family:var(--mono)">true</span> atau <span style="font-family:var(--mono)">false</span>.</p>
+</div>
+
+<!-- 7. = bukan penugasan -->
+<div class="slide">
+  <p class="kicker">Perlu ditegaskan</p>
+  <h2>Dua tanda yang mirip, dua arti</h2>
+  <div class="cols">
+    <div class="card good">
+      <p class="label">Penugasan</p>
+      <blockquote><span style="font-family:var(--mono);font-size:1.3rem">x &larr; 5</span><br>Perintah: isi x dengan 5.</blockquote>
+    </div>
+    <div class="card">
+      <p class="label">Perbandingan</p>
+      <blockquote><span style="font-family:var(--mono);font-size:1.3rem">x = 5</span><br>Pertanyaan: apakah isi x sama dengan 5?</blockquote>
+    </div>
+  </div>
+  <p class="note" style="margin-top:1.6rem;">Yang pertama sebuah perintah; yang kedua sebuah pertanyaan yang menghasilkan benar atau salah.</p>
+</div>
+
+<!-- 8. Pembatas 03 -->
+<div class="slide divider">
+  <p class="num">Bagian 03</p>
+  <h1>Operator logika</h1>
+  <p class="lead">Menggabungkan beberapa pertanyaan menjadi satu.</p>
+</div>
+
+<!-- 9. Tiga operator logika -->
+<div class="slide">
+  <p class="kicker">Menyambung pertanyaan</p>
+  <h2>AND, OR, NOT</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">AND</span><span class="body"><strong>Bernilai benar bila kedua sisi benar</strong>Cukup satu sisi salah, seluruhnya menjadi salah</span></div>
+    <div class="block"><span class="idx">OR</span><span class="body"><strong>Bernilai benar bila salah satu sisi benar</strong>Baru salah kalau kedua sisinya salah</span></div>
+    <div class="block"><span class="idx">NOT</span><span class="body"><strong>Membalik sebuah pertanyaan</strong>Benar menjadi salah, salah menjadi benar</span></div>
+  </div>
+</div>
+
+<!-- 10. Tabel kebenaran -->
+<div class="slide">
+  <p class="kicker">Semua kemungkinan</p>
+  <h2>Tabel kebenaran</h2>
+  <table>
+    <thead>
+      <tr><th>p</th><th>q</th><th>p AND q</th><th>p OR q</th><th>NOT p</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">benar</td><td class="code-cell">benar</td><td class="code-cell">benar</td><td class="code-cell">benar</td><td class="code-cell">salah</td></tr>
+      <tr><td class="code-cell">benar</td><td class="code-cell">salah</td><td class="code-cell">salah</td><td class="code-cell">benar</td><td class="code-cell">salah</td></tr>
+      <tr><td class="code-cell">salah</td><td class="code-cell">benar</td><td class="code-cell">salah</td><td class="code-cell">benar</td><td class="code-cell">benar</td></tr>
+      <tr><td class="code-cell">salah</td><td class="code-cell">salah</td><td class="code-cell">salah</td><td class="code-cell">salah</td><td class="code-cell">benar</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 11. Di antara dua batas -->
+<div class="slide">
+  <p class="kicker">Jebakan yang sering muncul</p>
+  <h2>Menyatakan &ldquo;di antara dua batas&rdquo;</h2>
+  <div class="cols tight">
+    <div>
+      <p class="code-label" style="font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.6rem">Tidak berlaku di pseudocode</p>
+      <p class="code sm">70 &le; nilai &le; 85</p>
+    </div>
+    <div>
+      <p class="code-label" style="font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.6rem">Yang benar</p>
+      <p class="code sm">nilai &ge; 70 AND nilai &le; 85</p>
+    </div>
+  </div>
+  <p class="note">Pseudocode membandingkan <strong>dua nilai</strong> pada satu waktu, jadi kedua batas harus ditulis lengkap dan disambung dengan <span style="font-family:var(--mono)">AND</span>.</p>
+</div>
+
+<!-- 12. Pembatas 04 -->
+<div class="slide divider">
+  <p class="num">Bagian 04</p>
+  <h1>Struktur IF</h1>
+  <p class="lead">Merangkai pertanyaan menjadi keputusan.</p>
+</div>
+
+<!-- 13. IF satu cabang -->
+<div class="slide">
+  <p class="kicker">Bentuk dasar</p>
+  <h2>Satu cabang</h2>
+  <p class="code"><span class="kw">IF</span> kondisi <span class="kw">THEN</span>
+  aksi
+<span class="kw">ENDIF</span></p>
+  <p class="lead">Kalau kondisi benar, aksi dikerjakan. Kalau salah, aksi dilewati dan alur berlanjut ke <span style="font-family:var(--mono)">ENDIF</span>.</p>
+</div>
+
+<!-- 14. IF ELSE -->
+<div class="slide">
+  <p class="kicker">Ada tindakan untuk kedua kemungkinan</p>
+  <h2>Dua cabang</h2>
+  <p class="code"><span class="kw">IF</span> kondisi <span class="kw">THEN</span>
+  aksi_benar
+<span class="kw">ELSE</span>
+  aksi_salah
+<span class="kw">ENDIF</span></p>
+  <p class="lead">Hanya <strong>satu</strong> di antara keduanya yang dikerjakan. Tidak keduanya, dan tidak pernah tidak ada.</p>
+</div>
+
+<!-- Flowchart -->
+<div class="slide">
+  <p class="kicker">Bentuknya dalam diagram</p>
+  <h2>Flowchart percabangan</h2>
+  <figure class="figure">
+    <img src="img/06-flowchart-if-else.svg" alt="Flowchart percabangan IF-THEN-ELSE: kondisi diperiksa, lalu hanya salah satu cabang yang dikerjakan">
+    <figcaption>Keputusan adalah belah ketupat dengan dua cabang keluar, dan keduanya bertemu kembali sebelum alur berlanjut.</figcaption>
+  </figure>
+</div>
+
+<!-- 15. Pembatas 05 -->
+<div class="slide divider">
+  <p class="num">Bagian 05</p>
+  <h1>Banyak kemungkinan</h1>
+  <p class="lead">Ketika dua cabang tidak lagi cukup.</p>
+</div>
+
+<!-- 16. ELSE IF chain -->
+<div class="slide">
+  <p class="kicker">ELSE IF</p>
+  <h2>Memeriksa syarat berikutnya</h2>
+  <p class="code sm"><span class="kw">IF</span> nilai &ge; 85 <span class="kw">THEN</span>
+  huruf &larr; 'A'
+<span class="kw">ELSE IF</span> nilai &ge; 70 <span class="kw">THEN</span>
+  huruf &larr; 'B'
+<span class="kw">ELSE IF</span> nilai &ge; 60 <span class="kw">THEN</span>
+  huruf &larr; 'C'
+<span class="kw">ELSE</span>
+  huruf &larr; 'D'
+<span class="kw">ENDIF</span></p>
+</div>
+
+<!-- 17. Kenapa tak perlu batas atas -->
+<div class="slide">
+  <p class="kicker">Konsekuensi urutan</p>
+  <p class="statement">Cabang pertama yang benar <span class="accent">yang dipakai</span>.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:56ch;">Cabang <span style="font-family:var(--mono)">nilai &ge; 70</span> hanya diperiksa bila cabang sebelumnya salah &mdash; artinya kita sudah tahu <span style="font-family:var(--mono)">nilai &lt; 85</span>. Karena itu batas atasnya tidak perlu ditulis, dan urutan cabang menentukan hasil.</p>
+</div>
+
+<!-- 18. Tabel batas -->
+<div class="slide">
+  <p class="kicker">Perhatikan perbatasannya</p>
+  <h2>Nilai mana jatuh ke cabang mana</h2>
+  <table>
+    <thead>
+      <tr><th>Nilai</th><th>Cabang yang terpenuhi</th><th>Huruf</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">90</td><td class="code-cell">&ge; 85</td><td class="code-cell">'A'</td></tr>
+      <tr><td class="code-cell">84</td><td class="code-cell">&ge; 70</td><td class="code-cell">'B'</td></tr>
+      <tr><td class="code-cell">60</td><td class="code-cell">&ge; 60</td><td class="code-cell">'C'</td></tr>
+      <tr><td class="code-cell">45</td><td class="code-cell">tidak ada, jatuh ke ELSE</td><td class="code-cell">'D'</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:1.2rem;">Memakai <span style="font-family:var(--mono)">&ge;</span> dan bukan <span style="font-family:var(--mono)">&gt;</span> membuat nilai tepat 85 tetap masuk 'A'.</p>
+</div>
+
+<!-- 19. CASE -->
+<div class="slide">
+  <p class="kicker">Ketika pilihannya seragam</p>
+  <h2>CASE</h2>
+  <p class="code sm"><span class="kw">CASE</span> hari <span class="kw">OF</span>
+  1 : nama &larr; "Senin"
+  2 : nama &larr; "Selasa"
+  3 : nama &larr; "Rabu"
+  <span class="kw">OTHERWISE</span> : nama &larr; "Hari tidak dikenal"
+<span class="kw">ENDCASE</span></p>
+  <p class="note">Cocok untuk menu pilihan atau pemetaan kode ke nama. Untuk perbandingan bertingkat seperti nilai huruf, tetap pakai <span style="font-family:var(--mono)">IF &hellip; ELSE IF</span>.</p>
+</div>
+
+<!-- 20. Pembatas 06 -->
+<div class="slide divider">
+  <p class="num">Bagian 06</p>
+  <h1>Empat contoh</h1>
+  <p class="lead">Dari ganjil-genap sampai harga tiket.</p>
+</div>
+
+<!-- 21. Contoh 1 -->
+<div class="slide">
+  <p class="kicker">Contoh 1 &mdash; mod bekerja</p>
+  <h2>Ganjil atau genap</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  bilangan : integer
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> bilangan
+  <span class="kw">IF</span> bilangan mod 2 = 0 <span class="kw">THEN</span>
+    <span class="kw">WRITE</span> "genap"
+  <span class="kw">ELSE</span>
+    <span class="kw">WRITE</span> "ganjil"
+  <span class="kw">ENDIF</span>
+<span class="kw">END</span></p>
+  <p class="note"><span style="font-family:var(--mono)">bilangan mod 2</span> dihitung lebih dulu, hasilnya dibandingkan <span style="font-family:var(--mono)">= 0</span>.</p>
+</div>
+
+<!-- 22. Contoh 2 -->
+<div class="slide">
+  <p class="kicker">Contoh 2 &mdash; hasil pertanyaan disimpan</p>
+  <h2>Menentukan kelulusan</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  nilai : integer
+  kehadiran : integer
+  lulus : boolean
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> nilai, kehadiran
+  lulus &larr; nilai &ge; 60 AND kehadiran &ge; 75
+  <span class="kw">IF</span> lulus <span class="kw">THEN</span>
+    <span class="kw">WRITE</span> "lulus"
+  <span class="kw">ELSE</span>
+    <span class="kw">WRITE</span> "tidak lulus"
+  <span class="kw">ENDIF</span>
+<span class="kw">END</span></p>
+  <p class="note"><span style="font-family:var(--mono)">lulus</span> diisi hasil sebuah pertanyaan, bukan hitungan.</p>
+</div>
+
+<!-- 23. Contoh 3 -->
+<div class="slide">
+  <p class="kicker">Contoh 3</p>
+  <h2>Nilai huruf</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  nilai : integer
+  huruf : char
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> nilai
+  <span class="kw">IF</span> nilai &ge; 85 <span class="kw">THEN</span>
+    huruf &larr; 'A'
+  <span class="kw">ELSE IF</span> nilai &ge; 70 <span class="kw">THEN</span>
+    huruf &larr; 'B'
+  <span class="kw">ELSE IF</span> nilai &ge; 60 <span class="kw">THEN</span>
+    huruf &larr; 'C'
+  <span class="kw">ELSE</span>
+    huruf &larr; 'D'
+  <span class="kw">ENDIF</span>
+  <span class="kw">WRITE</span> huruf
+<span class="kw">END</span></p>
+</div>
+
+<!-- 24. Contoh 4 -->
+<div class="slide">
+  <p class="kicker">Contoh 4 &mdash; tiga jenis pemeriksaan</p>
+  <h2>Harga tiket berdasarkan umur</h2>
+  <p class="code sm"><span class="kw">DEKLARASI</span>
+  umur : integer
+  harga : integer
+
+<span class="kw">BEGIN</span>
+  <span class="kw">READ</span> umur
+  <span class="kw">IF</span> umur &lt; 5 <span class="kw">THEN</span>
+    harga &larr; 0
+  <span class="kw">ELSE IF</span> umur &le; 12 <span class="kw">THEN</span>
+    harga &larr; 25000
+  <span class="kw">ELSE IF</span> umur &ge; 60 <span class="kw">THEN</span>
+    harga &larr; 30000
+  <span class="kw">ELSE</span>
+    harga &larr; 50000
+  <span class="kw">ENDIF</span>
+  <span class="kw">WRITE</span> harga
+<span class="kw">END</span></p>
+</div>
+
+<!-- 25. Penelusuran -->
+<div class="slide">
+  <p class="kicker">Menelusuri seleksi</p>
+  <h2>Catat cabang yang diambil</h2>
+  <p class="lead" style="margin-bottom:1.4rem;">Nilai huruf, dengan <span style="font-family:var(--mono)">nilai</span> bernilai 72:</p>
+  <table>
+    <thead>
+      <tr><th>Langkah</th><th>Diperiksa</th><th>Hasil</th><th>Keterangan</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">1</td><td class="code-cell">nilai &ge; 85</td><td class="code-cell">salah</td><td>lanjut ke cabang berikutnya</td></tr>
+      <tr><td class="code-cell">2</td><td class="code-cell">nilai &ge; 70</td><td class="code-cell">benar</td><td class="code-cell">huruf &larr; 'B', keluar dari blok</td></tr>
+      <tr><td class="code-cell">3</td><td class="code-cell">WRITE huruf</td><td class="code-cell">&mdash;</td><td>menampilkan B</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:1.2rem;">Cabang ketiga tidak diperiksa &mdash; begitu satu cabang benar, sisanya dilewati.</p>
+</div>
+
+<!-- 26. Kesalahan umum -->
+<div class="slide">
+  <p class="kicker">Hindari</p>
+  <h2>Kesalahan yang sering muncul</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Memakai <span style="font-family:var(--mono)">=</span> untuk penugasan &mdash; di seleksi ia sebuah pertanyaan</li>
+      <li>Lupa menuliskan <span style="font-family:var(--mono)">ENDIF</span></li>
+      <li>Urutan cabang bertingkat terbalik, sehingga nilai tinggi salah masuk</li>
+      <li>Menulis <span style="font-family:var(--mono)">70 &le; nilai &le; 85</span> alih-alih menyambung dengan <span style="font-family:var(--mono)">AND</span></li>
+      <li>Memakai <span style="font-family:var(--mono)">AND</span> padahal maksudnya <span style="font-family:var(--mono)">OR</span></li>
+      <li>Lupa tanda kutip pada <span style="font-family:var(--mono)">char</span> dan <span style="font-family:var(--mono)">string</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- 27. Selanjutnya -->
+<div class="slide">
+  <p class="kicker">Selanjutnya</p>
+  <h2>Menuju iterasi</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">P10</span><span class="body"><strong>Iterasi</strong>Mengerjakan satu rangkaian instruksi berulang kali</span></div>
+    <div class="block"><span class="idx">P11</span><span class="body"><strong>Studi kasus transaksi</strong>Tempat seleksi dan pengulangan bertemu</span></div>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Di iterasi, pola &ldquo;periksa, lalu ulangi&rdquo; akan muncul di mana-mana.</p>
+</div>
+
+<!-- 28. Soal refleksi -->
+<div class="slide">
+  <p class="kicker">Tanpa jawaban benar atau salah</p>
+  <h2>Soal refleksi</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Jelaskan bedanya <span style="font-family:var(--mono)">x &larr; 5</span> dan <span style="font-family:var(--mono)">x = 5</span>. Kapan masing-masing dipakai?</li>
+      <li>Kenapa cabang <span style="font-family:var(--mono)">nilai &ge; 70</span> tidak perlu menuliskan batas atasnya?</li>
+      <li>Tulis pseudocode menentukan bilangan positif, negatif, atau nol</li>
+      <li>Sebutkan satu masalah yang lebih tepat memakai <span style="font-family:var(--mono)">CASE</span> daripada <span style="font-family:var(--mono)">IF &hellip; ELSE IF</span></li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Dua soal lagi tersedia di catatan kuliah.</p>
+</div>
+
+<!-- 29. Penutup -->
+<div class="slide title-slide">
+  <p class="kicker">Terima kasih</p>
+  <h1>Program kini bisa memilih</h1>
+  <p class="sub">Setiap keputusan adalah pertanyaan benar-salah, dan urutan pemeriksaannya ikut menentukan hasil.</p>
+  <div class="meta">
+    Catatan lengkap pekan ini: <strong>mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/</strong>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<div class="counter" id="slideNumber">1 / 30</div>
+<div class="hint">&larr; &rarr; navigasi &nbsp;·&nbsp; <kbd>F</kbd> layar penuh</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var current = 0;
+
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var counter = document.getElementById('slideNumber');
+    var progress = document.getElementById('progressBar');
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      update();
+    }
+
+    function update() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) { if (diff > 0) next(); else prev(); }
+    });
+
+    update();
+  })();
+</script>
+</body>
+</html>

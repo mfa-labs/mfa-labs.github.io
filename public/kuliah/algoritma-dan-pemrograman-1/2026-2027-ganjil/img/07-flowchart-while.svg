@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 830" width="720" height="830" role="img" aria-label="Flowchart pengulangan WHILE: kondisi diuji di awal, badan dijalankan lalu kembali ke pemeriksaan kondisi">
+  <defs>
+    <marker id="ar-while" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2b3034"/>
+    </marker>
+  </defs>
+  <style>
+    .box { fill: #ffffff; stroke: #2b3034; stroke-width: 2; }
+    .start { fill: #e8f4ef; stroke: #006c4a; stroke-width: 2; }
+    .io { fill: #eef3f8; stroke: #2b3034; stroke-width: 2; }
+    .dec { fill: #fdf6e6; stroke: #2b3034; stroke-width: 2; }
+    .t { font-family: Inter, system-ui, sans-serif; font-size: 18px; fill: #14181b; text-anchor: middle; dominant-baseline: middle; }
+    .br { font-family: Inter, system-ui, sans-serif; font-size: 15px; font-weight: 600; fill: #006c4a; text-anchor: middle; dominant-baseline: middle; }
+    .line { stroke: #2b3034; stroke-width: 2; fill: none; }
+  </style>
+
+  <rect class="start" x="225" y="30" width="350" height="54" rx="27"/>
+  <text class="t" x="400" y="57">Mulai</text>
+
+  <line class="line" x1="400" y1="84" x2="400" y2="118" marker-end="url(#ar-while)"/>
+
+  <rect class="box" x="225" y="124" width="350" height="76"/>
+  <text class="t" x="400" y="152">total &#8592; 0</text>
+  <text class="t" x="400" y="178">i &#8592; 1</text>
+
+  <line class="line" x1="400" y1="200" x2="400" y2="236" marker-end="url(#ar-while)"/>
+
+  <polygon class="dec" points="400,240 530,290 400,340 270,290"/>
+  <text class="t" x="400" y="290">i &#8804; n?</text>
+
+  <!-- Cabang ya: masuk ke badan pengulangan -->
+  <line class="line" x1="400" y1="340" x2="400" y2="376" marker-end="url(#ar-while)"/>
+  <text class="br" x="416" y="360">ya</text>
+
+  <rect class="box" x="225" y="380" width="350" height="62"/>
+  <text class="t" x="400" y="411">total &#8592; total + i</text>
+
+  <line class="line" x1="400" y1="442" x2="400" y2="478" marker-end="url(#ar-while)"/>
+
+  <rect class="box" x="225" y="482" width="350" height="62"/>
+  <text class="t" x="400" y="513">i &#8592; i + 1</text>
+
+  <!-- Kembali ke pemeriksaan kondisi -->
+  <polyline class="line" points="400,544 400,600 140,600 140,290 270,290" marker-end="url(#ar-while)"/>
+
+  <!-- Cabang tidak: keluar dari pengulangan -->
+  <polyline class="line" points="530,290 620,290 620,671 548,671" marker-end="url(#ar-while)"/>
+  <text class="br" x="548" y="276">tidak</text>
+
+  <polygon class="io" points="243,640 557,640 539,702 225,702"/>
+  <text class="t" x="400" y="671">Tulis total</text>
+
+  <line class="line" x1="400" y1="702" x2="400" y2="738" marker-end="url(#ar-while)"/>
+
+  <rect class="start" x="225" y="740" width="350" height="54" rx="27"/>
+  <text class="t" x="400" y="767">Selesai</text>
+</svg>

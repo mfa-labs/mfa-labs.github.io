@@ -21,11 +21,6 @@
 - Prefers bilingual website content with English as the primary language for hero, section titles, and technical terminology, and Indonesian as a secondary/subdued translation (subtitles, smaller text, lower opacity). Confidence: 0.85
 
 # design
-- Prefers visually distinguishing between real code blocks (with language tags like ```php, ```sql) and plain commit/log blocks (code fences without language tags) — real code gets more prominent styling, plain blocks get subdued treatment. Confidence: 0.8
-- Prefers deliberate, zero-double-margin spacing between adjacent content elements (headings, paragraphs, lists, code blocks, tables) in long-form articles — only the originating element contributes margin, avoiding accumulated gaps. Confidence: 0.85
-- Prefers metadata blocks (Proyek/Peran/Periode) separated by blank lines in Markdown source so they render as three distinct paragraphs rather than one merged paragraph. Confidence: 0.85
-- Prefers section headings (h2) in long-form articles to be fully bold (font-weight 700) with a bottom border as a visual separator between sections, and adequate top spacing — no zero-margin on the first heading so it doesn't stick to the preceding horizontal rule. Confidence: 0.8
-- Prefers presentation slides designed for projector readability: a light, high-contrast theme over a dark one (classrooms are bright and dark decks wash out), font sizes that scale with projector resolution so proportions hold from 1280×720 to 1080p, and one idea per slide with minimal on-screen text — no heavy animation. Confidence: 0.65
-
+See [design/taste.md](design/taste.md)
 # workflow
 See [workflow/taste.md](workflow/taste.md)

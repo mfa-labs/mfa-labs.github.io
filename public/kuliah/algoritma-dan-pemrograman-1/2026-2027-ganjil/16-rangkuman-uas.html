@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rangkuman dan Persiapan UAS — Algoritma dan Pemrograman I</title>
+<meta name="description" content="Slide review pekan 16 Algoritma dan Pemrograman I: rangkuman materi pekan 9 sampai 14, daftar istilah, kesalahan umum, dan panduan belajar menghadapi UAS.">
+<link rel="canonical" href="https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/16-rangkuman-uas.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #14181b;
+    --ink-soft: #3f4549;
+    --ink-faint: #6b7277;
+    --accent: #006c4a;
+    --accent-soft: #e8f4ef;
+    --line: #d3d7db;
+    --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* Ukuran akar mengikuti resolusi proyektor: proporsional terhadap
+     sisi yang lebih kecil antara lebar layar dan tinggi 16:9. */
+  html {
+    font-size: clamp(16px, min(1.4vw, 2.49vh), 30px);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4.5rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ===== Tipografi ===== */
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .statement {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .sub {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .note {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  strong { font-weight: 700; color: var(--ink); }
+  .accent { color: var(--accent); }
+
+  /* ===== Daftar ===== */
+
+  ul, ol { list-style: none; }
+
+  .list li {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    padding: 0.6rem 0 0.6rem 2.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .list li:last-child { border-bottom: none; }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 1.15rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .list.numbered { counter-reset: item; }
+
+  .list.numbered li { padding-left: 3rem; }
+
+  .list.numbered li::before {
+    counter-increment: item;
+    content: counter(item);
+    top: 0.6rem;
+    left: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .list li strong { color: var(--ink); }
+
+  /* ===== Kartu & dua kolom ===== */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .cols.tight { gap: 1.5rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .card.bad { border-color: #e6c2c2; background: #fdf4f4; }
+
+  .card.good { border-color: #b9dccd; background: var(--accent-soft); }
+
+  .card .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .card blockquote {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card ul li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Blok pseudocode ===== */
+
+  .code {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+    padding: 1.3rem 1.6rem;
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+  }
+
+  .code.sm { font-size: 1rem; line-height: 1.7; }
+
+  .code .kw { color: var(--accent); font-weight: 700; }
+  .code .cm { color: var(--ink-faint); font-style: italic; }
+
+  /* ===== Tabel ===== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.05rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.code-cell {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ===== Slide judul & pembatas ===== */
+
+  .title-slide { justify-content: center; }
+
+  .title-slide h1 { font-size: 3.6rem; max-width: 22ch; }
+
+  .title-slide .meta {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .divider { justify-content: center; }
+
+  .divider .num {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .divider h1 { font-size: 3.4rem; margin-bottom: 1.4rem; }
+
+  /* ===== Kelompok bernomor ===== */
+
+  .blocks { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .block {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .block .idx {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 2rem;
+  }
+
+  .block .body { font-size: 1.2rem; line-height: 1.5; color: var(--ink-soft); }
+  .block .body strong { display: block; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.15rem; }
+
+  /* ===== Kendali ===== */
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0.22rem;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.25s ease;
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 1.6rem;
+    right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+
+  .hint {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2.5rem 2rem; }
+    .cols { grid-template-columns: 1fr; gap: 1.2rem; }
+    .hint { display: none; }
+  }
+
+  /* ===== Cetak / ekspor PDF ===== */
+
+  @media print {
+    html { font-size: 13pt; }
+    body { height: auto; overflow: visible; }
+    .slide {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      page-break-after: always;
+      height: 100vh;
+      padding: 2.5rem 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .progress, .counter, .nav, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progressBar"></div>
+
+<!-- 1. Judul -->
+<div class="slide title-slide active">
+  <p class="kicker">Universitas Ahmad Dahlan Aceh · Fakultas Sains dan Teknologi</p>
+  <h1>Rangkuman dan Persiapan UAS</h1>
+  <p class="sub">Algoritma dan Pemrograman I · INFUAD-003 · 2 SKS · Program Studi Informatika (S1)</p>
+  <div class="meta">
+    Pekan 16 · 28 Desember 2026<br>
+    Muhammad Fadhil Al Amal, S.Kom., M.Kom
+  </div>
+</div>
+
+<!-- 2. Peta materi -->
+<div class="slide">
+  <p class="kicker">Yang diujikan</p>
+  <h2>Peta materi pekan 9 sampai 14</h2>
+  <table>
+    <thead>
+      <tr><th>Pekan</th><th>Topik</th><th>Yang perlu dikuasai</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">9</td><td>Seleksi</td><td>Operator, IF/ELSE/ELSE IF/CASE</td></tr>
+      <tr><td class="code-cell">10</td><td>Iterasi</td><td>WHILE, FOR, REPEAT, akumulator</td></tr>
+      <tr><td class="code-cell">11</td><td>Studi kasus transaksi</td><td>Seleksi + iterasi bersama</td></tr>
+      <tr><td class="code-cell">12</td><td>Pemecahan masalah</td><td>Memilih struktur, kasus batas</td></tr>
+      <tr><td class="code-cell">13</td><td>Kasus data akademik</td><td>Akumulator, pencacah, tertinggi/terendah</td></tr>
+      <tr><td class="code-cell">14</td><td>Mini project</td><td>Merancang dan mendokumentasikan</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 3. Bukan materi baru -->
+<div class="slide">
+  <p class="kicker">Perlu disadari</p>
+  <p class="statement">Pekan 11&ndash;14 hanyalah <span class="accent">penerapan</span>.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:54ch;">Ketiganya memakai seleksi dan iterasi pada masalah yang makin besar. Kalau pekan 9 dan 10 sudah dikuasai, sisanya lebih mudah.</p>
+</div>
+
+<!-- 4. Pembatas 01 -->
+<div class="slide divider">
+  <p class="num">Bagian 01</p>
+  <h1>Tujuh kemampuan</h1>
+  <p class="lead">Yang benar-benar diuji, bukan hafalan.</p>
+</div>
+
+<!-- 5. Tujuh kemampuan -->
+<div class="slide">
+  <p class="kicker">Yang perlu kamu miliki</p>
+  <h2>Tujuh kemampuan</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Membentuk pertanyaan benar-salah dengan operator <strong>perbandingan</strong> dan <strong>logika</strong></li>
+      <li>Menulis struktur <strong>seleksi</strong> yang benar, termasuk ELSE IF dan CASE</li>
+      <li>Memahami <strong>urutan pemeriksaan cabang</strong> dan akibatnya</li>
+      <li>Memilih struktur <strong>iterasi</strong> yang tepat</li>
+      <li>Memakai pola <strong>pencacah</strong> dan <strong>akumulator</strong> dengan benar</li>
+      <li><strong>Memecah soal cerita</strong> menjadi masukan, proses, keluaran</li>
+      <li><strong>Menelusuri</strong> dan memeriksa hasil, termasuk pemeriksaan silang</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 6. Pembatas 02 -->
+<div class="slide divider">
+  <p class="num">Bagian 02</p>
+  <h1>Daftar istilah</h1>
+  <p class="lead">Istilah tambahan sepanjang pekan 9 sampai 14.</p>
+</div>
+
+<!-- 7. Istilah 1 -->
+<div class="slide">
+  <p class="kicker">Kiri</p>
+  <h2>Daftar istilah (1)</h2>
+  <table>
+    <thead>
+      <tr><th>Istilah</th><th>Artinya</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">Kondisi</td><td>Pertanyaan yang hasilnya benar atau salah</td></tr>
+      <tr><td class="code-cell">Perbandingan</td><td>=, &ne;, &lt;, &gt;, &le;, &ge; &mdash; menghasilkan boolean</td></tr>
+      <tr><td class="code-cell">Logika</td><td>AND, OR, NOT &mdash; menggabungkan pertanyaan</td></tr>
+      <tr><td class="code-cell">Seleksi</td><td>Struktur yang memilih di antara beberapa jalur</td></tr>
+      <tr><td class="code-cell">CASE</td><td>Seleksi berdasarkan satu nilai terhadap daftar pilihan</td></tr>
+      <tr><td class="code-cell">Iterasi</td><td>Struktur yang mengerjakan satu blok berulang kali</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 8. Istilah 2 -->
+<div class="slide">
+  <p class="kicker">Lanjutan</p>
+  <h2>Daftar istilah (2)</h2>
+  <table>
+    <thead>
+      <tr><th>Istilah</th><th>Artinya</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">WHILE</td><td>Pengulangan dengan kondisi diperiksa di awal</td></tr>
+      <tr><td class="code-cell">FOR</td><td>Pengulangan dengan jumlah putaran sudah pasti</td></tr>
+      <tr><td class="code-cell">REPEAT</td><td>Pengulangan dengan kondisi diperiksa di akhir</td></tr>
+      <tr><td class="code-cell">Pencacah</td><td>Variabel yang dinaikkan untuk menghitung putaran atau kejadian</td></tr>
+      <tr><td class="code-cell">Akumulator</td><td>Variabel yang terus ditambahi, misalnya total</td></tr>
+      <tr><td class="code-cell">Sentinel</td><td>Nilai penanda berhenti, bukan data</td></tr>
+      <tr><td class="code-cell">Kasus batas</td><td>Masukan ekstrem: nol, negatif, satu, tepat di batas</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 9. Pembatas 03 -->
+<div class="slide divider">
+  <p class="num">Bagian 03</p>
+  <h1>Kesalahan yang sering muncul</h1>
+  <p class="lead">Sebagian besar nilai yang hilang berasal dari sini.</p>
+</div>
+
+<!-- 10. Kesalahan 1 -->
+<div class="slide">
+  <p class="kicker">Hindari</p>
+  <h2>Kesalahan (1)</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Memakai <span style="font-family:var(--mono)">=</span> untuk penugasan &mdash; di seleksi ia pertanyaan</li>
+      <li>Lupa <span style="font-family:var(--mono)">ENDIF</span> atau <span style="font-family:var(--mono)">ENDFOR</span></li>
+      <li>Membalik urutan cabang bertingkat</li>
+      <li>Menulis <span style="font-family:var(--mono)">70 &le; nilai &le; 85</span> tanpa <span style="font-family:var(--mono)">AND</span></li>
+      <li>Memakai <span style="font-family:var(--mono)">AND</span> padahal maksudnya <span style="font-family:var(--mono)">OR</span></li>
+      <li>Lupa mengubah pencacah di dalam <span style="font-family:var(--mono)">WHILE</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- 11. Kesalahan 2 -->
+<div class="slide">
+  <p class="kicker">Hindari</p>
+  <h2>Kesalahan (2)</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Menaruh inisialisasi akumulator di dalam pengulangan</li>
+      <li>Memulai akumulator perkalian dari 0</li>
+      <li>Salah padanan batas: <span style="font-family:var(--mono)">&lt;</span> dengan <span style="font-family:var(--mono)">&le;</span></li>
+      <li>Nilai awal <span style="font-family:var(--mono)">tertinggi</span>/<span style="font-family:var(--mono)">terendah</span> dari angka karangan</li>
+      <li>Pembagian dengan nol ketika data kosong</li>
+      <li>Tidak menelusuri sebelum menganggap selesai</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 12. Pembatas 04 -->
+<div class="slide divider">
+  <p class="num">Bagian 04</p>
+  <h1>Cara belajar</h1>
+  <p class="lead">Membaca saja tidak cukup.</p>
+</div>
+
+<!-- 13. Cara belajar -->
+<div class="slide">
+  <p class="kicker">Yang disarankan</p>
+  <h2>Cara belajar</h2>
+  <div class="list">
+    <ul class="list">
+      <li><strong>Kerjakan ulang</strong>, jangan hanya dibaca</li>
+      <li><strong>Telusuri</strong> setiap jawaban dengan angka</li>
+      <li>Bedakan runtunan, seleksi, dan iterasi pada tiap soal</li>
+      <li><strong>Periksa kasus batas</strong>: nol, negatif, satu, tepat di batas</li>
+      <li>Ubah satu soal menjadi beberapa bentuk</li>
+      <li>Kerjakan soal refleksi di tiap catatan pekan</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 14. Pembatas 05 -->
+<div class="slide divider">
+  <p class="num">Bagian 05</p>
+  <h1>Latihan mandiri</h1>
+  <p class="lead">Bahan belajar, bukan gambaran soal ujian.</p>
+</div>
+
+<!-- 15. Latihan 1 -->
+<div class="slide">
+  <p class="kicker">Latihan</p>
+  <h2>Latihan mandiri (1)</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Tentukan apakah sebuah tahun kabisat</li>
+      <li>Tentukan kategori nilai menjadi empat tingkat</li>
+      <li>Jumlahkan bilangan ganjil dari 1 sampai N</li>
+      <li>Balik susunan angka sebuah bilangan bulat</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 16. Latihan 2 -->
+<div class="slide">
+  <p class="kicker">Latihan</p>
+  <h2>Latihan mandiri (2)</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Baca nilai sampai penanda <span style="font-family:var(--mono)">0</span>, tampilkan yang terbesar</li>
+      <li>Rata-rata nilai mahasiswa yang di atas ambang tertentu</li>
+      <li>Tentukan bilangan sempurna</li>
+      <li>Rancang satu masalah sendiri mengikuti kerangka mini project</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 17. Yang tidak diujikan -->
+<div class="slide">
+  <p class="kicker">Di luar cakupan</p>
+  <h2>Yang tidak diujikan</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">15</span><span class="body"><strong>Seminar kelas</strong>Sesi presentasi, bukan materi baru</span></div>
+    <div class="block"><span class="idx">&mdash;</span><span class="body"><strong>Struktur data</strong>Larik dan senarai belum dibahas; semua soal memakai variabel tunggal</span></div>
+    <div class="block"><span class="idx">&mdash;</span><span class="body"><strong>Bahasa pemrograman sungguhan</strong>Menjadi cakupan mata kuliah lanjutan</span></div>
+  </div>
+</div>
+
+<!-- 18. Selanjutnya -->
+<div class="slide">
+  <p class="kicker">Setelah UAS</p>
+  <h2>Yang terbawa jauh melampaui kuliah ini</h2>
+  <p class="lead">Memecah masalah, memilih struktur kendali, menelusuri, dan menguji kasus batas &mdash; semuanya akan terpakai terus. Mata kuliah berikutnya mulai menerjemahkan pseudocode menjadi program yang benar-benar berjalan.</p>
+</div>
+
+<!-- 19. Penutup -->
+<div class="slide title-slide">
+  <p class="kicker">Terima kasih</p>
+  <h1>Materi bukan hafalan, tetapi cara berpikir</h1>
+  <p class="sub">Telusuri setiap jawaban &mdash; di sanalah kekeliruan paling cepat terlihat.</p>
+  <div class="meta">
+    Catatan lengkap seluruh pekan: <strong>mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/</strong>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<div class="counter" id="slideNumber">1 / 19</div>
+<div class="hint">&larr; &rarr; navigasi &nbsp;·&nbsp; <kbd>F</kbd> layar penuh</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var current = 0;
+
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var counter = document.getElementById('slideNumber');
+    var progress = document.getElementById('progressBar');
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      update();
+    }
+
+    function update() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) { if (diff > 0) next(); else prev(); }
+    });
+
+    update();
+  })();
+</script>
+</body>
+</html>

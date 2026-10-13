@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Project Desain Algoritma — Algoritma dan Pemrograman I</title>
+<meta name="description" content="Slide kuliah pekan 14 Algoritma dan Pemrograman I: panduan merancang satu algoritma lengkap dari nol — analisis, pseudocode, flowchart, penelusuran, dan dokumentasi.">
+<link rel="canonical" href="https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/14-mini-project-desain-algoritma.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #14181b;
+    --ink-soft: #3f4549;
+    --ink-faint: #6b7277;
+    --accent: #006c4a;
+    --accent-soft: #e8f4ef;
+    --line: #d3d7db;
+    --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* Ukuran akar mengikuti resolusi proyektor: proporsional terhadap
+     sisi yang lebih kecil antara lebar layar dan tinggi 16:9. */
+  html {
+    font-size: clamp(16px, min(1.4vw, 2.49vh), 30px);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4.5rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ===== Tipografi ===== */
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .statement {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .sub {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .note {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  strong { font-weight: 700; color: var(--ink); }
+  .accent { color: var(--accent); }
+
+  /* ===== Daftar ===== */
+
+  ul, ol { list-style: none; }
+
+  .list li {
+    font-size: 1.35rem;
+    line-height: 1.55;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .list li:last-child { border-bottom: none; }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 1.35rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .list.numbered { counter-reset: item; }
+
+  .list.numbered li { padding-left: 3rem; }
+
+  .list.numbered li::before {
+    counter-increment: item;
+    content: counter(item);
+    top: 0.75rem;
+    left: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .list li strong { color: var(--ink); }
+
+  /* ===== Kartu & dua kolom ===== */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .cols.tight { gap: 1.5rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .card.bad { border-color: #e6c2c2; background: #fdf4f4; }
+
+  .card.good { border-color: #b9dccd; background: var(--accent-soft); }
+
+  .card .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .card blockquote {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card ul li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Blok pseudocode ===== */
+
+  .code {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+    padding: 1.3rem 1.6rem;
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+  }
+
+  .code.sm { font-size: 1rem; line-height: 1.7; }
+
+  .code .kw { color: var(--accent); font-weight: 700; }
+  .code .cm { color: var(--ink-faint); font-style: italic; }
+
+  /* ===== Tabel ===== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.code-cell {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ===== Slide judul & pembatas ===== */
+
+  .title-slide { justify-content: center; }
+
+  .title-slide h1 { font-size: 3.6rem; max-width: 22ch; }
+
+  .title-slide .meta {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .divider { justify-content: center; }
+
+  .divider .num {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .divider h1 { font-size: 3.4rem; margin-bottom: 1.4rem; }
+
+  /* ===== Kelompok bernomor ===== */
+
+  .blocks { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .block {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .block .idx {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 2rem;
+  }
+
+  .block .body { font-size: 1.2rem; line-height: 1.5; color: var(--ink-soft); }
+  .block .body strong { display: block; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.15rem; }
+
+  /* ===== Kendali ===== */
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0.22rem;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.25s ease;
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 1.6rem;
+    right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+
+  .hint {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2.5rem 2rem; }
+    .cols { grid-template-columns: 1fr; gap: 1.2rem; }
+    .hint { display: none; }
+  }
+
+  /* ===== Cetak / ekspor PDF ===== */
+
+  @media print {
+    html { font-size: 13pt; }
+    body { height: auto; overflow: visible; }
+    .slide {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      page-break-after: always;
+      height: 100vh;
+      padding: 2.5rem 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .progress, .counter, .nav, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progressBar"></div>
+
+<!-- 1. Judul -->
+<div class="slide title-slide active">
+  <p class="kicker">Universitas Ahmad Dahlan Aceh · Fakultas Sains dan Teknologi</p>
+  <h1>Mini Project Desain Algoritma</h1>
+  <p class="sub">Algoritma dan Pemrograman I · INFUAD-003 · 2 SKS · Program Studi Informatika (S1)</p>
+  <div class="meta">
+    Pekan 14 · 14 Desember 2026<br>
+    Muhammad Fadhil Al Amal, S.Kom., M.Kom
+  </div>
+</div>
+
+<!-- 2. Agenda -->
+<div class="slide">
+  <p class="kicker">Pekan 14</p>
+  <h2>Yang akan kita bahas</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Tujuan</strong>Menyatukan seluruh materi pekan 1&ndash;13</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Enam bagian dokumen</strong>Apa yang perlu dihasilkan</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Langkah pengerjaan</strong>Dari memilih masalah sampai menelusuri</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Kriteria penilaian</strong>Yang diperhatikan dan yang tidak</span></div>
+    <div class="block"><span class="idx">05</span><span class="body"><strong>Memeriksa sendiri</strong>Daftar periksa sebelum dikumpulkan</span></div>
+  </div>
+</div>
+
+<!-- 3. Pembatas 01 -->
+<div class="slide divider">
+  <p class="num">Bagian 01</p>
+  <h1>Tujuan</h1>
+  <p class="lead">Merancang satu algoritma lengkap dari nol.</p>
+</div>
+
+<!-- 4. Tujuan -->
+<div class="slide">
+  <p class="kicker">Bukan ujian</p>
+  <h2>Menyatukan seluruh cara berpikir</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Sepanjang semester setiap soal punya topiknya sendiri. Kini semuanya dipakai sekaligus: memecah masalah, memilih struktur kendali, menulis pseudocode, menggambar flowchart, dan membuktikan lewat penelusuran.</p>
+  <div class="card good">
+    <p class="label">Yang dinilai</p>
+    <blockquote>Bukan panjangnya, melainkan kejelasan dan ketepatan proses berpikirnya.</blockquote>
+  </div>
+</div>
+
+<!-- 5. Pembatas 02 -->
+<div class="slide divider">
+  <p class="num">Bagian 02</p>
+  <h1>Enam bagian dokumen</h1>
+  <p class="lead">Urutannya mengikuti urutan berpikir yang sebenarnya.</p>
+</div>
+
+<!-- 6. Enam bagian -->
+<div class="slide">
+  <p class="kicker">Yang perlu dihasilkan</p>
+  <h2>Bagian-bagian dokumen rancangan</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Judul dan rumusan masalah</li>
+      <li>Analisis kebutuhan &mdash; masukan, proses, keluaran</li>
+      <li>Rancangan langkah dalam bahasa sehari-hari</li>
+      <li>Pseudocode lengkap</li>
+      <li>Flowchart yang setara</li>
+      <li>Penelusuran, termasuk satu kasus batas</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 7. Pembatas 03 -->
+<div class="slide">
+  <p class="num">Bagian 03</p>
+  <h1>Langkah pengerjaan</h1>
+  <p class="lead">Dari memilih masalah sampai menelusuri.</p>
+</div>
+
+<!-- 8. Enam langkah -->
+<div class="slide">
+  <p class="kicker">Urutannya</p>
+  <h2>Enam langkah</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Pilih masalah yang kecil dan jelas</li>
+      <li>Pahami masalahnya sebelum menulis</li>
+      <li>Rancang struktur kendalinya, sertakan alasan</li>
+      <li>Tulis pseudocode sesuai konvensi</li>
+      <li>Gambarkan flowchart yang setara</li>
+      <li>Telusuri, termasuk kasus batas</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 9. Pilih masalah -->
+<div class="slide">
+  <p class="kicker">Contoh masalah</p>
+  <h2>Kecil tetapi jelas</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Perhitungan nilai akhir dari beberapa komponen penilaian</li>
+      <li>Perhitungan gaji bersih: pokok, tunjangan, potongan</li>
+      <li>Mesin kasir sederhana dengan diskon dan kembalian</li>
+      <li>Konversi satuan atau penentuan kategori</li>
+      <li>Tagihan air atau listrik dengan tarif bertingkat</li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.2rem;">Masalah kecil yang selesai jauh lebih bernilai daripada masalah besar yang setengah jadi.</p>
+</div>
+
+<!-- 10. Pembatas 04 -->
+<div class="slide divider">
+  <p class="num">Bagian 04</p>
+  <h1>Kerangka dokumen</h1>
+  <p class="lead">Susunan yang disarankan.</p>
+</div>
+
+<!-- 11. Kerangka -->
+<div class="slide">
+  <p class="kicker">Susunannya</p>
+  <h2>Kerangka yang disarankan</h2>
+  <p class="code sm">1. Judul
+2. Rumusan masalah
+3. Analisis kebutuhan
+   3.1 Masukan
+   3.2 Proses
+   3.3 Keluaran
+4. Rancangan langkah (bahasa sehari-hari)
+5. Pseudocode
+6. Flowchart
+7. Penelusuran
+   7.1 Contoh biasa
+   7.2 Kasus batas
+8. Kesimpulan dan keterbatasan</p>
+</div>
+
+<!-- 12. Pembatas 05 -->
+<div class="slide divider">
+  <p class="num">Bagian 05</p>
+  <h1>Kriteria dan pemeriksaan</h1>
+  <p class="lead">Yang diperhatikan &mdash; dan yang tidak.</p>
+</div>
+
+<!-- 13. Kriteria penilaian -->
+<div class="slide">
+  <p class="kicker">Rambu-rambu umum</p>
+  <h2>Yang dinilai</h2>
+  <table>
+    <thead>
+      <tr><th>Aspek</th><th>Yang diperhatikan</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">Masalah</td><td>Jelas, batasnya tegas, asumsinya ditulis</td></tr>
+      <tr><td class="code-cell">Analisis</td><td>Masukan, proses, keluaran terpisah rapi</td></tr>
+      <tr><td class="code-cell">Struktur kendali</td><td>Pilihan runtunan/seleksi/iterasi beralasan</td></tr>
+      <tr><td class="code-cell">Pseudocode</td><td>Sesuai konvensi, lengkap, mudah dibaca</td></tr>
+      <tr><td class="code-cell">Flowchart</td><td>Setara pseudocode, simbol tepat</td></tr>
+      <tr><td class="code-cell">Penelusuran</td><td>Ada, benar, menyertakan kasus batas</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 14. Periksa sendiri -->
+<div class="slide">
+  <p class="kicker">Sebelum dikumpulkan</p>
+  <h2>Daftar periksa</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Setiap variabel muncul di blok <span style="font-family:var(--mono)">DEKLARASI</span> dan tipenya sesuai</li>
+      <li>Setiap struktur punya penanda akhir (<span style="font-family:var(--mono)">ENDIF</span>, <span style="font-family:var(--mono)">ENDFOR</span>)</li>
+      <li>Pengulangan pasti berhenti</li>
+      <li>Pembagian terhindar dari pembagi nol</li>
+      <li>Flowchart dan pseudocode menceritakan hal yang sama</li>
+      <li>Kasus batas sudah diuji, bukan hanya contoh mudah</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 15. Kesalahan umum -->
+<div class="slide">
+  <p class="kicker">Hindari</p>
+  <h2>Kesalahan yang sering muncul</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Memilih masalah yang terlalu besar, sehingga tidak selesai</li>
+      <li>Menulis pseudocode sebelum masalahnya dipahami</li>
+      <li>Flowchart tidak sesuai pseudocode</li>
+      <li>Tidak menyertakan penelusuran</li>
+      <li>Hanya menguji contoh yang mudah</li>
+      <li>Konvensi tidak konsisten, misalnya berganti <span style="font-family:var(--mono)">&larr;</span> dan <span style="font-family:var(--mono)">=</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- 16. Yang tidak dinilai -->
+<div class="slide">
+  <p class="kicker">Perlu ditegaskan</p>
+  <h2>Yang tidak termasuk penilaian</h2>
+  <div class="cols">
+    <div class="card">
+      <p class="label">Bukan ujian</p>
+      <blockquote>Tidak menggantikan UAS, dan tidak ada soal ujian di dalamnya.</blockquote>
+    </div>
+    <div class="card">
+      <p class="label">Tidak ada kunci jawaban</p>
+      <blockquote>Setiap kelompok memilih masalahnya sendiri, jadi tidak ada satu jawaban benar untuk semua.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 17. Selanjutnya -->
+<div class="slide">
+  <p class="kicker">Selanjutnya</p>
+  <h2>Menuju seminar kelas</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">P15</span><span class="body"><strong>Seminar kelas</strong>Mempresentasikan rancangan dan saling memberi umpan balik</span></div>
+    <div class="block"><span class="idx">P16</span><span class="body"><strong>UAS</strong>Materi pekan 9 sampai 14</span></div>
+  </div>
+</div>
+
+<!-- 18. Soal refleksi -->
+<div class="slide">
+  <p class="kicker">Tanpa jawaban benar atau salah</p>
+  <h2>Soal refleksi</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Kenapa masalah kecil lebih baik daripada masalah besar untuk latihan ini?</li>
+      <li>Kenapa asumsi yang diambil perlu dituliskan?</li>
+      <li>Kalau flowchart berbeda dari pseudocode, bagian mana yang biasanya keliru?</li>
+      <li>Sebutkan satu kasus batas yang paling mungkin luput pada masalahmu</li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Dua soal lagi tersedia di catatan kuliah.</p>
+</div>
+
+<!-- 19. Penutup -->
+<div class="slide title-slide">
+  <p class="kicker">Terima kasih</p>
+  <h1>Rancangan yang rapi mudah dipertahankan</h1>
+  <p class="sub">Yang penting selesai dan jelas &mdash; bukan selesai lebih dulu.</p>
+  <div class="meta">
+    Catatan lengkap pekan ini: <strong>mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/</strong>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<div class="counter" id="slideNumber">1 / 19</div>
+<div class="hint">&larr; &rarr; navigasi &nbsp;·&nbsp; <kbd>F</kbd> layar penuh</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var current = 0;
+
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var counter = document.getElementById('slideNumber');
+    var progress = document.getElementById('progressBar');
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      update();
+    }
+
+    function update() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) { if (diff > 0) next(); else prev(); }
+    });
+
+    update();
+  })();
+</script>
+</body>
+</html>

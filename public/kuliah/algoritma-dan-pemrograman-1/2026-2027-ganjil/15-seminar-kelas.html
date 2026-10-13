@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seminar Kelas — Algoritma dan Pemrograman I</title>
+<meta name="description" content="Slide kuliah pekan 15 Algoritma dan Pemrograman I: panduan mempresentasikan dan saling menilai rancangan algoritma mini project.">
+<link rel="canonical" href="https://mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/2026-2027-ganjil/15-seminar-kelas.html">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #14181b;
+    --ink-soft: #3f4549;
+    --ink-faint: #6b7277;
+    --accent: #006c4a;
+    --accent-soft: #e8f4ef;
+    --line: #d3d7db;
+    --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* Ukuran akar mengikuti resolusi proyektor: proporsional terhadap
+     sisi yang lebih kecil antara lebar layar dan tinggi 16:9. */
+  html {
+    font-size: clamp(16px, min(1.4vw, 2.49vh), 30px);
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4.5rem 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ===== Tipografi ===== */
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.8rem;
+  }
+
+  .statement {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .sub {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  .note {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-faint);
+  }
+
+  strong { font-weight: 700; color: var(--ink); }
+  .accent { color: var(--accent); }
+
+  /* ===== Daftar ===== */
+
+  ul, ol { list-style: none; }
+
+  .list li {
+    font-size: 1.35rem;
+    line-height: 1.55;
+    padding: 0.7rem 0 0.7rem 2.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  .list li:last-child { border-bottom: none; }
+
+  .list li::before {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 1.35rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .list.numbered { counter-reset: item; }
+
+  .list.numbered li { padding-left: 3rem; }
+
+  .list.numbered li::before {
+    counter-increment: item;
+    content: counter(item);
+    top: 0.75rem;
+    left: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .list li strong { color: var(--ink); }
+
+  /* ===== Kartu & dua kolom ===== */
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+
+  .cols.tight { gap: 1.5rem; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1.6rem 1.8rem;
+  }
+
+  .card.bad { border-color: #e6c2c2; background: #fdf4f4; }
+
+  .card.good { border-color: #b9dccd; background: var(--accent-soft); }
+
+  .card .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.8rem;
+  }
+
+  .card blockquote {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card ul li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+  }
+
+  /* ===== Blok pseudocode ===== */
+
+  .code {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.6rem;
+    padding: 1.3rem 1.6rem;
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+  }
+
+  .code.sm { font-size: 1rem; line-height: 1.7; }
+
+  .code .kw { color: var(--accent); font-weight: 700; }
+  .code .cm { color: var(--ink-faint); font-style: italic; }
+
+  /* ===== Tabel ===== */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+
+  thead th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.code-cell {
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ===== Slide judul & pembatas ===== */
+
+  .title-slide { justify-content: center; }
+
+  .title-slide h1 { font-size: 3.6rem; max-width: 22ch; }
+
+  .title-slide .meta {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+
+  .divider { justify-content: center; }
+
+  .divider .num {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .divider h1 { font-size: 3.4rem; margin-bottom: 1.4rem; }
+
+  /* ===== Kelompok bernomor ===== */
+
+  .blocks { display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .block {
+    display: flex;
+    gap: 1.4rem;
+    align-items: baseline;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .block:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .block .idx {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 2rem;
+  }
+
+  .block .body { font-size: 1.2rem; line-height: 1.5; color: var(--ink-soft); }
+  .block .body strong { display: block; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.15rem; }
+
+  /* ===== Kendali ===== */
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 0.22rem;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.25s ease;
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 1.6rem;
+    right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    z-index: 100;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 1.4rem;
+    left: 2rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 100;
+  }
+
+  .nav button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .nav button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: default; }
+
+  .hint {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    z-index: 100;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2.5rem 2rem; }
+    .cols { grid-template-columns: 1fr; gap: 1.2rem; }
+    .hint { display: none; }
+  }
+
+  /* ===== Cetak / ekspor PDF ===== */
+
+  @media print {
+    html { font-size: 13pt; }
+    body { height: auto; overflow: visible; }
+    .slide {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      page-break-after: always;
+      height: 100vh;
+      padding: 2.5rem 3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .progress, .counter, .nav, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progressBar"></div>
+
+<!-- 1. Judul -->
+<div class="slide title-slide active">
+  <p class="kicker">Universitas Ahmad Dahlan Aceh · Fakultas Sains dan Teknologi</p>
+  <h1>Seminar Kelas</h1>
+  <p class="sub">Algoritma dan Pemrograman I · INFUAD-003 · 2 SKS · Program Studi Informatika (S1)</p>
+  <div class="meta">
+    Pekan 15 · 21 Desember 2026<br>
+    Muhammad Fadhil Al Amal, S.Kom., M.Kom
+  </div>
+</div>
+
+<!-- 2. Agenda -->
+<div class="slide">
+  <p class="kicker">Pekan 15</p>
+  <h2>Yang akan kita lakukan</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Kenapa dipresentasikan</strong>Alat pemeriksaan, bukan formalitas</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Susunan sesi</strong>Pembukaan sampai penutup</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Format presentasi</strong>Tujuh bagian yang ditampilkan</span></div>
+    <div class="block"><span class="idx">04</span><span class="body"><strong>Umpan balik</strong>Cara memberi dan menerima</span></div>
+    <div class="block"><span class="idx">05</span><span class="body"><strong>Lembar umpan balik</strong>Yang diisi untuk tiap kelompok</span></div>
+  </div>
+</div>
+
+<!-- 3. Pembatas 01 -->
+<div class="slide divider">
+  <p class="num">Bagian 01</p>
+  <h1>Kenapa dipresentasikan</h1>
+  <p class="lead">Kalau tidak sanggup menjelaskan mengapa, biasanya bagian itu belum matang.</p>
+</div>
+
+<!-- 4. Kenapa -->
+<div class="slide">
+  <p class="kicker">Membaca sendiri tidak cukup</p>
+  <h2>Seminar sebagai alat pemeriksaan</h2>
+  <p class="lead" style="margin-bottom:1.6rem;">Ketika hanya dibaca sendiri, kekeliruan mudah luput &mdash; kita membaca apa yang <em>ingin</em> kita lihat. Menjelaskannya kepada orang lain memaksa kita memeriksa ulang setiap bagian.</p>
+  <div class="card good">
+    <p class="label">Bukan sekadar penilaian</p>
+    <blockquote>Presentasi adalah pemeriksaan rancangan bersama-sama.</blockquote>
+  </div>
+</div>
+
+<!-- 5. Pembatas 02 -->
+<div class="slide divider">
+  <p class="num">Bagian 02</p>
+  <h1>Susunan sesi</h1>
+  <p class="lead">Setiap kelompok mendapat porsi waktu yang sama.</p>
+</div>
+
+<!-- 6. Tabel sesi -->
+<div class="slide">
+  <p class="kicker">Alurnya</p>
+  <h2>Susunan sesi</h2>
+  <table>
+    <thead>
+      <tr><th>Bagian</th><th>Isi</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">Pembukaan</td><td>Alur dan kriteria umpan balik</td></tr>
+      <tr><td class="code-cell">Presentasi</td><td>Setiap kelompok tampil sesuai giliran</td></tr>
+      <tr><td class="code-cell">Tanya jawab</td><td>Pertanyaan dari kelompok lain dan pengampu</td></tr>
+      <tr><td class="code-cell">Umpan balik</td><td>Pengisian lembar umpan balik</td></tr>
+      <tr><td class="code-cell">Penutup</td><td>Rangkuman dan hal yang perlu diperbaiki</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 7. Pembatas 03 -->
+<div class="slide">
+  <p class="num">Bagian 03</p>
+  <h1>Format presentasi</h1>
+  <p class="lead">Mengikuti urutan dokumen rancangan.</p>
+</div>
+
+<!-- 8. Tujuh bagian -->
+<div class="slide">
+  <p class="kicker">Yang ditampilkan</p>
+  <h2>Tujuh bagian presentasi</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Masalah &mdash; apa, untuk siapa, batasnya</li>
+      <li>Analisis kebutuhan &mdash; masukan, proses, keluaran</li>
+      <li>Rancangan langkah dalam bahasa sehari-hari</li>
+      <li>Pseudocode lengkap</li>
+      <li>Flowchart yang setara</li>
+      <li>Penelusuran, termasuk kasus batas</li>
+      <li>Keterbatasan &mdash; apa yang belum ditangani</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 9. Keterbatasan -->
+<div class="slide">
+  <p class="kicker">Jangan dilewati</p>
+  <p class="statement">Menyebut <span class="accent">keterbatasan</span> bukan mengungkap kelemahan.</p>
+  <p class="note" style="margin-top:2.2rem;max-width:54ch;">Justru sebaliknya: ia menunjukkan bahwa rancanganmu dipahami sampai ke batasnya.</p>
+</div>
+
+<!-- 10. Pembatas 04 -->
+<div class="slide divider">
+  <p class="num">Bagian 04</p>
+  <h1>Menjelaskan rancangan</h1>
+  <p class="lead">Kebiasaan yang membuat presentasi lebih mudah diikuti.</p>
+</div>
+
+<!-- 11. Kebiasaan baik -->
+<div class="slide">
+  <p class="kicker">Kebiasaan baik</p>
+  <h2>Membuat presentasi diikuti</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Tunjukkan <strong>alur berpikirnya</strong>, bukan hanya hasilnya</li>
+      <li><strong>Telusuri di depan</strong> &mdash; lebih meyakinkan daripada klaim &ldquo;sudah saya cek&rdquo;</li>
+      <li>Sebutkan <strong>asumsi</strong> yang diambil</li>
+      <li>Jangan membaca slide kata per kata</li>
+      <li>Jujur soal keterbatasan</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 12. Pembatas 05 -->
+<div class="slide divider">
+  <p class="num">Bagian 05</p>
+  <h1>Umpan balik</h1>
+  <p class="lead">Tujuannya membuat rancangan lebih baik, bukan mencari siapa yang salah.</p>
+</div>
+
+<!-- 13. Menerima dan memberi -->
+<div class="slide">
+  <p class="kicker">Dua sisi</p>
+  <h2>Menerima dan memberi</h2>
+  <div class="cols">
+    <div class="card">
+      <p class="label">Saat menerima</p>
+      <blockquote>Dengarkan sampai selesai. Kalau tidak tahu jawabannya, jawab &ldquo;belum saya pikirkan&rdquo; &mdash; itu jujur dan berguna.</blockquote>
+    </div>
+    <div class="card">
+      <p class="label">Saat memberi</p>
+      <blockquote>Bicarakan rancangannya, bukan orangnya. Sebut yang sudah baik, lalu yang perlu diperbaiki.</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 14. Umpan balik spesifik -->
+<div class="slide">
+  <p class="kicker">Spesifik, bukan umum</p>
+  <h2>Umpan balik yang menolong</h2>
+  <div class="cols">
+    <div class="card bad">
+      <p class="label">Tidak menolong</p>
+      <blockquote>&ldquo;Flowchart-nya kurang jelas.&rdquo;</blockquote>
+    </div>
+    <div class="card good">
+      <p class="label">Menolong</p>
+      <blockquote>&ldquo;Simbol keputusan di halaman kedua tidak punya cabang untuk kasus salah.&rdquo;</blockquote>
+    </div>
+  </div>
+</div>
+
+<!-- 15. Lembar umpan balik -->
+<div class="slide">
+  <p class="kicker">Diisi untuk tiap kelompok</p>
+  <h2>Lembar umpan balik</h2>
+  <table>
+    <thead>
+      <tr><th>Aspek</th><th>Pertanyaan pemandu</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="code-cell">Masalah</td><td>Jelas dan batasnya tegas?</td></tr>
+      <tr><td class="code-cell">Analisis</td><td>Masukan, proses, keluaran terpisah rapi?</td></tr>
+      <tr><td class="code-cell">Struktur</td><td>Pilihan struktur kendali beralasan?</td></tr>
+      <tr><td class="code-cell">Pseudocode</td><td>Sesuai konvensi dan mudah dibaca?</td></tr>
+      <tr><td class="code-cell">Flowchart</td><td>Setara dengan pseudocode?</td></tr>
+      <tr><td class="code-cell">Penelusuran</td><td>Lengkap dan menyertakan kasus batas?</td></tr>
+      <tr><td class="code-cell">Kejelasan</td><td>Presentasinya mudah diikuti?</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 16. Perhatian -->
+<div class="slide">
+  <p class="kicker">Perlu ditegaskan</p>
+  <h2>Yang menjadi perhatian</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">01</span><span class="body"><strong>Bukan ujian</strong>Tidak menggantikan UAS, tidak ada soal ujian di dalamnya</span></div>
+    <div class="block"><span class="idx">02</span><span class="body"><strong>Tidak ada kunci jawaban</strong>Setiap kelompok memilih masalahnya sendiri</span></div>
+    <div class="block"><span class="idx">03</span><span class="body"><strong>Semua kelompok tampil</strong>Umpan balik adalah bagian belajar yang paling berharga</span></div>
+  </div>
+</div>
+
+<!-- 17. Kesalahan umum -->
+<div class="slide">
+  <p class="kicker">Hindari</p>
+  <h2>Kesalahan yang sering muncul</h2>
+  <div class="list">
+    <ul class="list">
+      <li>Membacakan slide kata per kata</li>
+      <li>Melompat ke pseudocode tanpa menjelaskan masalahnya</li>
+      <li>Menghindari penelusuran karena takut ditemukan kesalahan</li>
+      <li>Menyembunyikan keterbatasan</li>
+      <li>Umpan balik umum seperti &ldquo;sudah bagus&rdquo; tanpa alasan</li>
+      <li>Menanggapi pertanyaan dengan membela diri</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 18. Selanjutnya -->
+<div class="slide">
+  <p class="kicker">Selanjutnya</p>
+  <h2>Menuju UAS</h2>
+  <div class="blocks">
+    <div class="block"><span class="idx">P16</span><span class="body"><strong>Ujian Akhir Semester</strong>Materi pekan 9 sampai 14</span></div>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Rangkuman dan panduan belajar tersedia pada catatan pekan berikutnya.</p>
+</div>
+
+<!-- 19. Soal refleksi -->
+<div class="slide">
+  <p class="kicker">Tanpa jawaban benar atau salah</p>
+  <h2>Soal refleksi</h2>
+  <div class="list">
+    <ul class="list numbered">
+      <li>Kenapa menjelaskan rancangan menolong menemukan kekeliruannya sendiri?</li>
+      <li>Apa bedanya umpan balik spesifik dengan yang umum?</li>
+      <li>Kalau ada pertanyaan yang tak bisa dijawab, apa langkah terbaikmu?</li>
+      <li>Apa satu hal yang akan kamu lakukan berbeda bila merancang lagi?</li>
+    </ul>
+  </div>
+  <p class="note" style="margin-top:1.4rem;">Dua soal lagi tersedia di catatan kuliah.</p>
+</div>
+
+<!-- 20. Penutup -->
+<div class="slide title-slide">
+  <p class="kicker">Terima kasih</p>
+  <h1>Rancangan yang baik berani diperiksa</h1>
+  <p class="sub">Umpan balik bukan penilaian atas orangnya, melainkan bantuan untuk rancangannya.</p>
+  <div class="meta">
+    Catatan lengkap pekan ini: <strong>mfa-labs.github.io/kuliah/algoritma-dan-pemrograman-1/</strong>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" aria-label="Slide sebelumnya">&larr;</button>
+  <button id="nextBtn" aria-label="Slide berikutnya">&rarr;</button>
+</div>
+
+<div class="counter" id="slideNumber">1 / 20</div>
+<div class="hint">&larr; &rarr; navigasi &nbsp;·&nbsp; <kbd>F</kbd> layar penuh</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var current = 0;
+
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var counter = document.getElementById('slideNumber');
+    var progress = document.getElementById('progressBar');
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      update();
+    }
+
+    function update() {
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        prev();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goTo(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+      }
+    });
+
+    var touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) { if (diff > 0) next(); else prev(); }
+    });
+
+    update();
+  })();
+</script>
+</body>
+</html>

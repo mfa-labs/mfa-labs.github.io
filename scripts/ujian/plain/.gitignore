@@ -1,0 +1,4 @@
+# Soal asli (plaintext) — JANGAN pernah di-commit.
+# Hanya berkas .gitignore ini yang dilacak; sisanya diabaikan git.
+*
+!.gitignore

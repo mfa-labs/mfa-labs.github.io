@@ -138,6 +138,12 @@ if (courseInstances.length > 0) {
                           <span class="material-symbols-outlined text-base ml-1">{opensInTab ? 'open_in_new' : 'download'}</span>
                         </a>
                       )}
+                      {meeting.exam && (
+                        <a href={meeting.exam} target="_blank" rel="noopener" class="link-arrow text-xs">
+                          {meeting.examLabel ?? 'Soal ujian'}
+                          <span class="material-symbols-outlined text-base ml-1">lock</span>
+                        </a>
+                      )}
                     </div>
                   </li>
                 );
