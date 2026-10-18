@@ -277,6 +277,20 @@
     border: 1px solid var(--color-outline-variant);
     white-space: pre;
   }
+  #algodasar .adx-figure {
+    margin: 0.25rem 0;
+    padding: 0.75rem;
+    border: 1px solid var(--color-outline-variant);
+    border-radius: 0.6rem;
+    background: #ffffff;
+  }
+  #algodasar .adx-figure img {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 0 auto;
+  }
   #algodasar .adx-cta {
     align-self: flex-start;
     margin-top: 0.25rem;
@@ -499,6 +513,9 @@
 
   const normalize = (value) => String(value ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
 
+  const orderedLessonIds = course.flatMap((unit) => unit.lessons.map((lesson) => lesson.id));
+  const lessonIndex = new Map(orderedLessonIds.map((id, i) => [id, i]));
+
   if (root) {
     let progress = refillHearts(loadProgress());
     saveProgress(progress);
@@ -537,7 +554,7 @@
         .map((unit, ui) => {
           const lessonsHtml = unit.lessons
             .map((lesson, li) => {
-              const unlocked = isLessonUnlocked(li, unit.lessons, progress);
+              const unlocked = isLessonUnlocked(lessonIndex.get(lesson.id) ?? 0, orderedLessonIds, progress);
               const lp = progress.lessons[lesson.id];
               const done = Boolean(lp?.completed);
               const icon = !unlocked ? 'lock' : done ? 'check' : 'play_arrow';
@@ -600,11 +617,15 @@
 
     function theoryHtml(lesson) {
       const blocks = lesson.theory
-        .map((block) =>
-          block.kind === 'code'
-            ? `<pre class="adx-code"><code>${escapeHtml(block.content)}</code></pre>`
-            : `<p class="adx-para">${escapeHtml(block.content)}</p>`,
-        )
+        .map((block) => {
+          if (block.kind === 'code') {
+            return `<pre class="adx-code"><code>${escapeHtml(block.content)}</code></pre>`;
+          }
+          if (block.kind === 'image') {
+            return `<figure class="adx-figure"><img src="${block.src}" alt="${escapeHtml(block.alt)}" loading="lazy" /></figure>`;
+          }
+          return `<p class="adx-para">${escapeHtml(block.content)}</p>`;
+        })
         .join('');
       return `<div class="adx-theory adx-fade">
         <span class="adx-unit-kicker">Teori singkat</span>
@@ -627,13 +648,27 @@
       runtime.orderShuffle = indices;
     }
 
+    function ensureMcqShuffle(question) {
+      if (runtime.mcqOrder) return;
+      const indices = question.options.map((_, i) => i);
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+      if (indices.length > 1 && indices.every((value, i) => value === i)) {
+        [indices[0], indices[1]] = [indices[1], indices[0]];
+      }
+      runtime.mcqOrder = indices;
+    }
+
     function questionHtml(question) {
       const fb = runtime.feedback;
       const lock = fb ? 'disabled' : '';
 
       if (question.type === 'mcq') {
-        const options = question.options
-          .map((option, i) => {
+        ensureMcqShuffle(question);
+        const options = runtime.mcqOrder
+          .map((i) => {
             let cls = 'adx-option';
             if (fb) {
               if (i === question.answer) cls += ' is-correct';
@@ -641,7 +676,7 @@
             } else if (i === runtime.selected) {
               cls += ' is-selected';
             }
-            return `<button class="${cls}" ${lock} data-action="select" data-index="${i}">${escapeHtml(option)}</button>`;
+            return `<button class="${cls}" ${lock} data-action="select" data-index="${i}">${escapeHtml(question.options[i])}</button>`;
           })
           .join('');
         return `<div class="adx-options">${options}</div>`;
@@ -760,6 +795,7 @@
       runtime.selected = null;
       runtime.orderAnswer = [];
       runtime.orderShuffle = null;
+      runtime.mcqOrder = null;
       runtime.feedback = null;
     }
 
@@ -773,6 +809,7 @@
         selected: null,
         orderAnswer: [],
         orderShuffle: null,
+        mcqOrder: null,
         feedback: null,
         failed: false,
         result: null,

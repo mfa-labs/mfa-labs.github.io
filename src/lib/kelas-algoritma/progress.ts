@@ -1,4 +1,4 @@
-export const STORAGE_KEY = 'mfa.algodasar.v1';
+export const STORAGE_KEY = 'mfa.algodasar.v2';
 export const MAX_HEARTS = 5;
 export const HEART_REFILL_MS = 30 * 60 * 1000;
 
@@ -99,13 +99,13 @@ export function refillHearts(progress: Progress, now: number = Date.now()): Prog
 
 export function isLessonUnlocked(
   index: number,
-  lessons: { id: string }[],
+  orderedLessonIds: string[],
   progress: Progress,
 ): boolean {
   if (index <= 0) return true;
-  const previous = lessons[index - 1];
-  if (!previous) return false;
-  return Boolean(progress.lessons[previous.id]?.completed);
+  const previousId = orderedLessonIds[index - 1];
+  if (!previousId) return false;
+  return Boolean(progress.lessons[previousId]?.completed);
 }
 
 export function computeStars(accuracy: number): Stars {
