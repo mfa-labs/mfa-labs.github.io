@@ -118,7 +118,6 @@ export interface NavItem {
 
 export const navItems: NavItem[] = [
   { href: '/engineering/', en: 'Engineering', id: 'Engineering' },
-  { href: '/research/', en: 'Research', id: 'Riset' },
   { href: '/projects/', en: 'Projects', id: 'Proyek' },
   { href: '/experience/', en: 'Experience', id: 'Pengalaman' },
   { href: '/teaching/', en: 'Teaching', id: 'Pengajaran' },
