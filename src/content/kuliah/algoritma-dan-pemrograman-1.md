@@ -4,6 +4,8 @@ code: 'INFUAD-003'
 credits: 2
 program: 'Program Studi Informatika (S1), Fakultas Sains dan Teknologi'
 description: 'Pengantar algoritma dan pemrograman: computational thinking, pseudocode, flowchart, konsep data, seleksi, iterasi, sampai mini project desain algoritma.'
+practice: '/kuliah/algoritma-dan-pemrograman-1/latihan/'
+practiceLabel: 'Latihan Interaktif'
 terms:
   - label: 'Ganjil 2026/2027'
     meetings:

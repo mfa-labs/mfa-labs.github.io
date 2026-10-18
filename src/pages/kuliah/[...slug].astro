@@ -98,6 +98,26 @@ if (courseInstances.length > 0) {
         <p class="font-mono text-xs" style="color: var(--color-on-surface-variant); opacity: 0.6;">{data.program} · Universitas Ahmad Dahlan Aceh</p>
       </header>
 
+      {
+        data.practice && (
+          <section class="mb-16">
+            <div
+              class="border rounded-xl p-6 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              style="background: var(--color-surface-container-lowest); border-color: var(--color-outline-variant);"
+            >
+              <div>
+                <p class="font-mono text-xs uppercase tracking-widest mb-2" style="color: var(--color-secondary);">Latihan</p>
+                <h2 class="font-display text-xl mb-1" style="color: var(--color-primary);">Latihan Interaktif</h2>
+                <p class="font-body text-sm" style="color: var(--color-on-surface-variant);">
+                  Kuis bertahap bergaya gamifikasi — progres tersimpan otomatis di perangkatmu.
+                </p>
+              </div>
+              <a href={data.practice} class="btn-primary px-6 py-3 shrink-0">{data.practiceLabel ?? 'Mulai Latihan'}</a>
+            </div>
+          </section>
+        )
+      }
+
       <section class="mb-16">
         <h2 class="font-display text-xl mb-6" style="color: var(--color-primary);">Jadwal Pertemuan</h2>
         {

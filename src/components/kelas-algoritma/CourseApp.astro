@@ -1,0 +1,940 @@
+---
+---
+
+<div id="algodasar" class="algodasar">
+  <noscript>
+    <div class="adx-card">Aplikasi kuis ini membutuhkan JavaScript. Aktifkan JavaScript untuk mulai belajar.</div>
+  </noscript>
+</div>
+
+<style is:global>
+  #algodasar {
+    --ad-good: #16a34a;
+    --ad-bad: #dc2626;
+    --ad-star: #f59e0b;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  #algodasar .adx-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #algodasar .adx-stats,
+  #algodasar .adx-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  #algodasar .adx-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1;
+    padding: 0.4rem 0.65rem;
+    border-radius: 9999px;
+    background: var(--color-surface-container);
+    color: var(--color-on-surface-variant);
+    border: 1px solid var(--color-outline-variant);
+  }
+  #algodasar .adx-pill .material-symbols-outlined {
+    font-size: 1rem;
+  }
+
+  #algodasar .adx-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: opacity 0.2s, border-color 0.2s, background 0.2s;
+  }
+  #algodasar .adx-btn.is-primary {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+  #algodasar .adx-btn.is-ghost {
+    background: var(--color-surface-container-lowest);
+    color: var(--color-primary);
+    border-color: var(--color-outline-variant);
+  }
+  #algodasar .adx-btn:not(:disabled):hover {
+    opacity: 0.9;
+  }
+  #algodasar .adx-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  #algodasar .adx-progresswrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  #algodasar .adx-progress {
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--color-surface-container-high);
+    overflow: hidden;
+  }
+  #algodasar .adx-progress > span {
+    display: block;
+    height: 100%;
+    background: var(--color-secondary);
+    transition: width 0.3s ease;
+  }
+  #algodasar .adx-progress-inline {
+    flex: 1;
+  }
+  #algodasar .adx-progress-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-on-surface-variant);
+  }
+
+  #algodasar .adx-path {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  #algodasar .adx-unit {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  #algodasar .adx-unit-head {
+    border-bottom: 1px solid var(--color-outline-variant);
+    padding-bottom: 0.75rem;
+  }
+  #algodasar .adx-unit-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-secondary);
+  }
+  #algodasar .adx-unit-title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-top: 0.25rem;
+  }
+  #algodasar .adx-unit-sub {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-on-surface-variant);
+    margin-top: 0.25rem;
+  }
+
+  #algodasar .adx-lessons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  #algodasar .adx-lesson {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    text-align: left;
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    background: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-outline-variant);
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  }
+  #algodasar .adx-lesson:not(.is-locked):hover {
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    transform: translateY(-1px);
+    border-color: var(--color-secondary);
+  }
+  #algodasar .adx-lesson.is-locked {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  #algodasar .adx-node {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    flex: 0 0 auto;
+    background: var(--color-surface-container);
+    color: var(--color-on-surface-variant);
+  }
+  #algodasar .adx-lesson.is-done .adx-node {
+    background: var(--color-tag-green-bg);
+    color: var(--color-tag-green-text);
+  }
+  #algodasar .adx-lesson-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+  }
+  #algodasar .adx-lesson-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    color: var(--color-primary);
+  }
+  #algodasar .adx-lesson-meta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-on-surface-variant);
+  }
+
+  #algodasar .adx-stars {
+    display: inline-flex;
+    gap: 0.1rem;
+  }
+  #algodasar .adx-star {
+    font-size: 1.1rem;
+    color: var(--color-outline-variant);
+  }
+  #algodasar .adx-star.is-on {
+    color: var(--ad-star);
+    font-variation-settings: 'FILL' 1;
+  }
+  #algodasar .adx-stars.is-large .adx-star {
+    font-size: 2.2rem;
+  }
+
+  #algodasar .adx-lessonbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  #algodasar .adx-iconbtn {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    background: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-outline-variant);
+    color: var(--color-primary);
+  }
+  #algodasar .adx-iconbtn:hover {
+    border-color: var(--color-secondary);
+  }
+
+  #algodasar .adx-card {
+    background: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-outline-variant);
+    border-radius: 1rem;
+    padding: 1.5rem;
+  }
+
+  #algodasar .adx-intro,
+  #algodasar .adx-theory,
+  #algodasar .adx-quiz,
+  #algodasar .adx-result {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-outline-variant);
+    border-radius: 1rem;
+    padding: 1.75rem;
+  }
+  #algodasar .adx-title {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+  #algodasar .adx-para {
+    font-family: var(--font-body);
+    line-height: 1.6;
+    color: var(--color-on-surface-variant);
+  }
+  #algodasar .adx-code {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    padding: 1rem;
+    border-radius: 0.6rem;
+    overflow-x: auto;
+    background: var(--color-surface-container);
+    color: var(--color-on-surface);
+    border: 1px solid var(--color-outline-variant);
+    white-space: pre;
+  }
+  #algodasar .adx-cta {
+    align-self: flex-start;
+    margin-top: 0.25rem;
+  }
+  #algodasar .adx-notice {
+    padding: 0.75rem 1rem;
+    border-radius: 0.6rem;
+    background: var(--color-tag-green-bg);
+    color: var(--color-tag-green-text);
+    font-size: 0.85rem;
+  }
+
+  #algodasar .adx-question-count {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-secondary);
+  }
+  #algodasar .adx-question {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-primary);
+  }
+
+  #algodasar .adx-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  #algodasar .adx-options-row {
+    flex-direction: row;
+  }
+  #algodasar .adx-option {
+    text-align: left;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    background: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    border: 1px solid var(--color-outline-variant);
+    font-family: var(--font-body);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  #algodasar .adx-option:not(:disabled):hover {
+    border-color: var(--color-secondary);
+  }
+  #algodasar .adx-option.is-selected {
+    border-color: var(--color-secondary);
+    box-shadow: inset 0 0 0 1px var(--color-secondary);
+  }
+  #algodasar .adx-option.is-correct {
+    border-color: var(--ad-good);
+    background: color-mix(in srgb, var(--ad-good) 12%, var(--color-surface-container-lowest));
+  }
+  #algodasar .adx-option.is-wrong {
+    border-color: var(--ad-bad);
+    background: color-mix(in srgb, var(--ad-bad) 12%, var(--color-surface-container-lowest));
+  }
+  #algodasar .adx-option:disabled {
+    cursor: default;
+  }
+
+  #algodasar .adx-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    background: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    border: 1px solid var(--color-outline-variant);
+  }
+  #algodasar .adx-input:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+    box-shadow: inset 0 0 0 1px var(--color-secondary);
+  }
+
+  #algodasar .adx-order {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  #algodasar .adx-order-answer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 3rem;
+    padding: 0.6rem;
+    border: 1px dashed var(--color-outline-variant);
+    border-radius: 0.75rem;
+  }
+  #algodasar .adx-order-empty {
+    font-size: 0.85rem;
+    color: var(--color-on-surface-variant);
+    font-family: var(--font-body);
+  }
+  #algodasar .adx-order-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  #algodasar .adx-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    background: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    border: 1px solid var(--color-outline-variant);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+  #algodasar .adx-chip:not(:disabled):hover {
+    border-color: var(--color-secondary);
+  }
+  #algodasar .adx-chip.is-pool {
+    background: var(--color-surface-container);
+  }
+  #algodasar .adx-chip-num {
+    display: grid;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    background: var(--color-secondary);
+    color: var(--color-on-secondary);
+    font-size: 0.7rem;
+    flex: 0 0 auto;
+  }
+
+  #algodasar .adx-feedback {
+    padding: 0.9rem 1rem;
+    border-radius: 0.75rem;
+  }
+  #algodasar .adx-feedback.is-ok {
+    background: color-mix(in srgb, var(--ad-good) 12%, transparent);
+  }
+  #algodasar .adx-feedback.is-bad {
+    background: color-mix(in srgb, var(--ad-bad) 12%, transparent);
+  }
+  #algodasar .adx-feedback-title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+  #algodasar .adx-feedback.is-ok .adx-feedback-title {
+    color: var(--ad-good);
+  }
+  #algodasar .adx-feedback.is-bad .adx-feedback-title {
+    color: var(--ad-bad);
+  }
+  #algodasar .adx-feedback-text {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    margin-top: 0.4rem;
+    color: var(--color-on-surface-variant);
+  }
+
+  #algodasar .adx-result {
+    align-items: center;
+    text-align: center;
+  }
+  #algodasar .adx-result-icon {
+    font-size: 3rem;
+  }
+  #algodasar .adx-result-icon.is-star {
+    color: var(--ad-star);
+  }
+  #algodasar .adx-result-icon.is-bad {
+    color: var(--ad-bad);
+  }
+  #algodasar .adx-result .adx-cta {
+    align-self: center;
+  }
+
+  #algodasar .adx-fade {
+    animation: adxFade 0.28s ease;
+  }
+  @keyframes adxFade {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  import { course } from '../../data/kelas-algoritma/course';
+  import {
+    loadProgress,
+    saveProgress,
+    clearProgress,
+    defaultProgress,
+    refillHearts,
+    isLessonUnlocked,
+    computeStars,
+    awardXP,
+    updateStreak,
+    MAX_HEARTS,
+  } from '../../lib/kelas-algoritma/progress';
+
+  const root = document.getElementById('algodasar');
+
+  const escapeHtml = (value) =>
+    String(value).replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char]));
+
+  const normalize = (value) => String(value ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
+
+  if (root) {
+    let progress = refillHearts(loadProgress());
+    saveProgress(progress);
+
+    let view = { name: 'path' };
+    let runtime = null;
+
+    const totalLessons = () => course.reduce((sum, unit) => sum + unit.lessons.length, 0);
+    const completedLessons = () => Object.values(progress.lessons).filter((lesson) => lesson.completed).length;
+    const currentLesson = () => course[runtime.ui].lessons[runtime.li];
+    const currentQuestion = () => currentLesson().questions[runtime.qi];
+
+    function starRow(stars, large) {
+      const icons = [0, 1, 2]
+        .map((i) => `<span class="material-symbols-outlined adx-star ${i < stars ? 'is-on' : ''}">star</span>`)
+        .join('');
+      return `<span class="adx-stars ${large ? 'is-large' : ''}">${icons}</span>`;
+    }
+
+    function headerHtml() {
+      return `<div class="adx-header">
+        <div class="adx-stats">
+          <span class="adx-pill" title="Streak harian"><span class="material-symbols-outlined">local_fire_department</span>${progress.streak}</span>
+          <span class="adx-pill" title="Total XP"><span class="material-symbols-outlined">bolt</span>${progress.totalXP} XP</span>
+          <span class="adx-pill" title="Nyawa (hearts)"><span class="material-symbols-outlined">favorite</span>${progress.hearts}/${MAX_HEARTS}</span>
+        </div>
+        <div class="adx-header-actions">
+          ${progress.hearts < MAX_HEARTS ? '<button class="adx-btn is-ghost" data-action="refill-hearts">Isi ulang hati</button>' : ''}
+          <button class="adx-btn is-ghost" data-action="reset-progress">Reset progres</button>
+        </div>
+      </div>`;
+    }
+
+    function pathHtml() {
+      const unitsHtml = course
+        .map((unit, ui) => {
+          const lessonsHtml = unit.lessons
+            .map((lesson, li) => {
+              const unlocked = isLessonUnlocked(li, unit.lessons, progress);
+              const lp = progress.lessons[lesson.id];
+              const done = Boolean(lp?.completed);
+              const icon = !unlocked ? 'lock' : done ? 'check' : 'play_arrow';
+              const meta = `${lesson.questions.length} soal${done ? ` • ${lp.bestXP} XP` : ''}`;
+              const attrs = unlocked ? `data-action="start-lesson" data-unit="${ui}" data-lesson="${li}"` : 'disabled';
+              return `<button class="adx-lesson ${unlocked ? '' : 'is-locked'} ${done ? 'is-done' : ''}" ${attrs}>
+                <span class="adx-node"><span class="material-symbols-outlined">${icon}</span></span>
+                <span class="adx-lesson-body">
+                  <span class="adx-lesson-title">${escapeHtml(lesson.title)}</span>
+                  <span class="adx-lesson-meta">${meta}</span>
+                </span>
+                ${done ? starRow(lp.stars, false) : ''}
+              </button>`;
+            })
+            .join('');
+
+          return `<section class="adx-unit">
+            <div class="adx-unit-head">
+              <span class="adx-unit-kicker">Unit ${ui + 1}</span>
+              <h2 class="adx-unit-title">${escapeHtml(unit.title)}</h2>
+              ${unit.subtitle ? `<p class="adx-unit-sub">${escapeHtml(unit.subtitle)}</p>` : ''}
+            </div>
+            <div class="adx-lessons">${lessonsHtml}</div>
+          </section>`;
+        })
+        .join('');
+
+      const pct = totalLessons() ? Math.round((completedLessons() / totalLessons()) * 100) : 0;
+
+      return `${headerHtml()}
+        <div class="adx-progresswrap">
+          <div class="adx-progress"><span style="width:${pct}%"></span></div>
+          <p class="adx-progress-label">${completedLessons()} dari ${totalLessons()} pelajaran selesai</p>
+        </div>
+        <div class="adx-path">${unitsHtml}</div>`;
+    }
+
+    function lessonBarHtml(lesson) {
+      const pct = Math.round((runtime.qi / lesson.questions.length) * 100);
+      return `<div class="adx-lessonbar">
+        <button class="adx-iconbtn" data-action="back-to-path" aria-label="Kembali ke jalur"><span class="material-symbols-outlined">arrow_back</span></button>
+        <div class="adx-progress adx-progress-inline"><span style="width:${pct}%"></span></div>
+        <span class="adx-pill" title="Nyawa"><span class="material-symbols-outlined">favorite</span>${progress.hearts}</span>
+      </div>`;
+    }
+
+    function introHtml(lesson) {
+      const body =
+        progress.hearts > 0
+          ? '<button class="adx-btn is-primary adx-cta" data-action="begin-lesson">Mulai</button>'
+          : `<div class="adx-notice">Hati habis. Isi ulang hati untuk melanjutkan.</div>
+             <button class="adx-btn is-ghost adx-cta" data-action="refill-hearts">Isi ulang hati</button>`;
+      return `<div class="adx-intro adx-fade">
+        <span class="adx-unit-kicker">Unit ${runtime.ui + 1} • Pelajaran ${runtime.li + 1}</span>
+        <h2 class="adx-title">${escapeHtml(lesson.title)}</h2>
+        <p class="adx-para">${lesson.questions.length} soal${lesson.theory.length ? ' • teori singkat' : ''} • kuis interaktif</p>
+        ${body}
+      </div>`;
+    }
+
+    function theoryHtml(lesson) {
+      const blocks = lesson.theory
+        .map((block) =>
+          block.kind === 'code'
+            ? `<pre class="adx-code"><code>${escapeHtml(block.content)}</code></pre>`
+            : `<p class="adx-para">${escapeHtml(block.content)}</p>`,
+        )
+        .join('');
+      return `<div class="adx-theory adx-fade">
+        <span class="adx-unit-kicker">Teori singkat</span>
+        <h2 class="adx-title">${escapeHtml(lesson.title)}</h2>
+        ${blocks}
+        <button class="adx-btn is-primary adx-cta" data-action="start-quiz">Mulai Kuis</button>
+      </div>`;
+    }
+
+    function ensureShuffle(question) {
+      if (runtime.orderShuffle) return;
+      const indices = question.items.map((_, i) => i);
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+      if (indices.length > 1 && indices.every((value, i) => value === i)) {
+        [indices[0], indices[1]] = [indices[1], indices[0]];
+      }
+      runtime.orderShuffle = indices;
+    }
+
+    function questionHtml(question) {
+      const fb = runtime.feedback;
+      const lock = fb ? 'disabled' : '';
+
+      if (question.type === 'mcq') {
+        const options = question.options
+          .map((option, i) => {
+            let cls = 'adx-option';
+            if (fb) {
+              if (i === question.answer) cls += ' is-correct';
+              else if (i === runtime.selected) cls += ' is-wrong';
+            } else if (i === runtime.selected) {
+              cls += ' is-selected';
+            }
+            return `<button class="${cls}" ${lock} data-action="select" data-index="${i}">${escapeHtml(option)}</button>`;
+          })
+          .join('');
+        return `<div class="adx-options">${options}</div>`;
+      }
+
+      if (question.type === 'boolean') {
+        const options = [true, false]
+          .map((value) => {
+            let cls = 'adx-option';
+            if (fb) {
+              if (value === question.answer) cls += ' is-correct';
+              else if (value === runtime.selected) cls += ' is-wrong';
+            } else if (value === runtime.selected) {
+              cls += ' is-selected';
+            }
+            return `<button class="${cls}" ${lock} data-action="select" data-value="${value}">${value ? 'Benar' : 'Salah'}</button>`;
+          })
+          .join('');
+        return `<div class="adx-options adx-options-row">${options}</div>`;
+      }
+
+      if (question.type === 'fill') {
+        const value = fb ? escapeHtml(runtime.selected ?? '') : '';
+        return `<input id="adx-fill-input" class="adx-input" type="text" autocomplete="off" spellcheck="false" placeholder="Tulis jawaban…" value="${value}" ${lock} />`;
+      }
+
+      ensureShuffle(question);
+      const chosen = runtime.orderAnswer;
+      const answerChips = chosen.length
+        ? chosen
+            .map(
+              (idx, pos) =>
+                `<button class="adx-chip" ${lock} data-action="order-remove" data-index="${idx}"><span class="adx-chip-num">${pos + 1}</span><span>${escapeHtml(question.items[idx])}</span></button>`,
+            )
+            .join('')
+        : '<span class="adx-order-empty">Klik item di bawah sesuai urutan.</span>';
+      const pool = runtime.orderShuffle
+        .filter((idx) => !chosen.includes(idx))
+        .map((idx) => `<button class="adx-chip is-pool" ${lock} data-action="order-add" data-index="${idx}">${escapeHtml(question.items[idx])}</button>`)
+        .join('');
+      return `<div class="adx-order">
+        <div class="adx-order-answer">${answerChips}</div>
+        <div class="adx-order-pool">${pool}</div>
+      </div>`;
+    }
+
+    function canCheck(question) {
+      if (runtime.feedback) return false;
+      if (question.type === 'mcq' || question.type === 'boolean') return runtime.selected != null;
+      if (question.type === 'fill') return true;
+      return runtime.orderAnswer.length === question.items.length;
+    }
+
+    function quizHtml(lesson) {
+      const question = currentQuestion();
+      const fb = runtime.feedback;
+      const feedbackHtml = fb
+        ? `<div class="adx-feedback ${fb.ok ? 'is-ok' : 'is-bad'}">
+            <p class="adx-feedback-title"><span class="material-symbols-outlined">${fb.ok ? 'check_circle' : 'cancel'}</span>${fb.ok ? 'Benar!' : 'Belum tepat'}</p>
+            ${question.explanation ? `<p class="adx-feedback-text">${escapeHtml(question.explanation)}</p>` : ''}
+          </div>`
+        : '';
+      const isLast = runtime.qi >= lesson.questions.length - 1;
+      const cta = fb
+        ? `<button class="adx-btn is-primary adx-cta" data-action="next">${isLast ? 'Selesai' : 'Lanjut'}</button>`
+        : `<button class="adx-btn is-primary adx-cta" data-action="check" ${canCheck(question) ? '' : 'disabled'}>Periksa</button>`;
+
+      return `<div class="adx-quiz adx-fade">
+        <p class="adx-question-count">Soal ${runtime.qi + 1} / ${lesson.questions.length}</p>
+        <h2 class="adx-question">${escapeHtml(question.prompt)}</h2>
+        ${questionHtml(question)}
+        ${feedbackHtml}
+        ${cta}
+      </div>`;
+    }
+
+    function resultHtml() {
+      if (runtime.failed) {
+        const action =
+          progress.hearts > 0
+            ? '<button class="adx-btn is-primary adx-cta" data-action="retry-lesson">Ulangi pelajaran</button>'
+            : '<button class="adx-btn is-ghost adx-cta" data-action="refill-hearts">Isi ulang hati</button>';
+        return `<div class="adx-result adx-fade">
+          <span class="material-symbols-outlined adx-result-icon is-bad">sentiment_dissatisfied</span>
+          <h2 class="adx-title">Hati habis</h2>
+          <p class="adx-para">Kamu menjawab ${runtime.correct} soal dengan benar sebelum hati habis. Coba lagi ya.</p>
+          ${action}
+          <button class="adx-btn is-ghost adx-cta" data-action="back-to-path">Kembali ke jalur</button>
+        </div>`;
+      }
+      const { stars, xp, accuracy } = runtime.result;
+      return `<div class="adx-result adx-fade">
+        <span class="material-symbols-outlined adx-result-icon is-star">emoji_events</span>
+        <h2 class="adx-title">Pelajaran selesai!</h2>
+        ${starRow(stars, true)}
+        <p class="adx-para">Akurasi ${Math.round(accuracy * 100)}% • +${xp} XP</p>
+        <button class="adx-btn is-primary adx-cta" data-action="back-to-path">Kembali ke jalur</button>
+      </div>`;
+    }
+
+    function render() {
+      if (view.name === 'path' || !runtime) {
+        root.innerHTML = pathHtml();
+        return;
+      }
+      const lesson = currentLesson();
+      let body = '';
+      if (runtime.screen === 'intro') body = introHtml(lesson);
+      else if (runtime.screen === 'theory') body = theoryHtml(lesson);
+      else if (runtime.screen === 'quiz') body = quizHtml(lesson);
+      else body = resultHtml();
+      root.innerHTML = lessonBarHtml(lesson) + body;
+    }
+
+    function resetAnswerState() {
+      runtime.selected = null;
+      runtime.orderAnswer = [];
+      runtime.orderShuffle = null;
+      runtime.feedback = null;
+    }
+
+    function startLesson(ui, li) {
+      runtime = {
+        ui,
+        li,
+        screen: 'intro',
+        qi: 0,
+        correct: 0,
+        selected: null,
+        orderAnswer: [],
+        orderShuffle: null,
+        feedback: null,
+        failed: false,
+        result: null,
+      };
+      view = { name: 'lesson' };
+      render();
+    }
+
+    function beginLesson() {
+      if (progress.hearts <= 0) return;
+      runtime.screen = currentLesson().theory.length ? 'theory' : 'quiz';
+      resetAnswerState();
+      render();
+    }
+
+    function startQuiz() {
+      runtime.screen = 'quiz';
+      runtime.qi = 0;
+      runtime.correct = 0;
+      resetAnswerState();
+      render();
+    }
+
+    function selectOption(el) {
+      if (runtime.feedback) return;
+      if (el.dataset.value != null) runtime.selected = el.dataset.value === 'true';
+      else runtime.selected = Number(el.dataset.index);
+      render();
+    }
+
+    function evaluate(question) {
+      if (question.type === 'mcq') return runtime.selected === question.answer;
+      if (question.type === 'boolean') return runtime.selected === question.answer;
+      if (question.type === 'fill') return question.answers.some((answer) => normalize(answer) === normalize(runtime.selected));
+      return runtime.orderAnswer.length === question.items.length && runtime.orderAnswer.every((value, i) => value === i);
+    }
+
+    function checkAnswer() {
+      if (runtime.feedback) return;
+      const question = currentQuestion();
+      if (question.type === 'fill') {
+        const input = root.querySelector('#adx-fill-input');
+        runtime.selected = input ? input.value : '';
+      }
+      const ok = evaluate(question);
+      runtime.feedback = { ok };
+      if (ok) {
+        runtime.correct += 1;
+      } else {
+        progress.hearts = Math.max(0, progress.hearts - 1);
+        saveProgress(progress);
+      }
+      render();
+    }
+
+    function finishLesson() {
+      const lesson = currentLesson();
+      const total = lesson.questions.length;
+      const accuracy = total ? runtime.correct / total : 0;
+      const stars = computeStars(accuracy);
+      const xp = awardXP(runtime.correct, true);
+
+      progress.totalXP += xp;
+      updateStreak(progress);
+      const previous = progress.lessons[lesson.id];
+      progress.lessons[lesson.id] = {
+        completed: true,
+        stars: Math.max(stars, previous?.stars ?? 0),
+        bestXP: Math.max(xp, previous?.bestXP ?? 0),
+        lastCompletedAt: new Date().toISOString(),
+      };
+      saveProgress(progress);
+
+      runtime.result = { stars, xp, accuracy };
+      runtime.failed = false;
+      runtime.screen = 'result';
+      render();
+    }
+
+    function nextStep() {
+      const lesson = currentLesson();
+      if (progress.hearts <= 0) {
+        runtime.failed = true;
+        runtime.result = null;
+        runtime.screen = 'result';
+        render();
+        return;
+      }
+      if (runtime.qi < lesson.questions.length - 1) {
+        runtime.qi += 1;
+        resetAnswerState();
+        render();
+      } else {
+        finishLesson();
+      }
+    }
+
+    function retryLesson() {
+      runtime.screen = 'intro';
+      runtime.qi = 0;
+      runtime.correct = 0;
+      runtime.failed = false;
+      runtime.result = null;
+      resetAnswerState();
+      render();
+    }
+
+    function refillHeartsAction() {
+      progress.hearts = MAX_HEARTS;
+      progress.heartsLastRefill = Date.now();
+      saveProgress(progress);
+      render();
+    }
+
+    function resetProgress() {
+      if (!window.confirm('Reset semua progres belajar? Tindakan ini tidak bisa dibatalkan.')) return;
+      clearProgress();
+      progress = defaultProgress();
+      saveProgress(progress);
+      view = { name: 'path' };
+      runtime = null;
+      render();
+    }
+
+    function onClick(event) {
+      const el = event.target.closest('[data-action]');
+      if (!el || !root.contains(el)) return;
+      const action = el.dataset.action;
+      if (action === 'start-lesson') startLesson(Number(el.dataset.unit), Number(el.dataset.lesson));
+      else if (action === 'back-to-path') {
+        view = { name: 'path' };
+        runtime = null;
+        render();
+      } else if (action === 'begin-lesson') beginLesson();
+      else if (action === 'start-quiz') startQuiz();
+      else if (action === 'select') selectOption(el);
+      else if (action === 'order-add') {
+        if (!runtime.feedback) {
+          runtime.orderAnswer.push(Number(el.dataset.index));
+          render();
+        }
+      } else if (action === 'order-remove') {
+        if (!runtime.feedback) {
+          runtime.orderAnswer = runtime.orderAnswer.filter((idx) => idx !== Number(el.dataset.index));
+          render();
+        }
+      } else if (action === 'check') checkAnswer();
+      else if (action === 'next') nextStep();
+      else if (action === 'retry-lesson') retryLesson();
+      else if (action === 'refill-hearts') refillHeartsAction();
+      else if (action === 'reset-progress') resetProgress();
+    }
+
+    function onKeydown(event) {
+      if (event.key === 'Enter' && event.target && event.target.id === 'adx-fill-input' && runtime && !runtime.feedback) {
+        event.preventDefault();
+        checkAnswer();
+      }
+    }
+
+    root.addEventListener('click', onClick);
+    root.addEventListener('keydown', onKeydown);
+    render();
+  }
+</script>

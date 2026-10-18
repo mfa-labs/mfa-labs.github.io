@@ -31,6 +31,9 @@ const kuliah = defineCollection({
     credits: z.number(),
     program: z.string().default('Program Studi Informatika (S1)'),
     description: z.string(),
+    // Halaman latihan/kuis interaktif untuk mata kuliah ini (opsional).
+    practice: z.string().optional(),
+    practiceLabel: z.string().optional(),
     // Semester terbaru di posisi pertama — itulah yang dirender penuh.
     terms: z
       .array(

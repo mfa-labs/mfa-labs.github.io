@@ -1,0 +1,62 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import PageIntro from '../../../components/PageIntro.astro';
+import CourseApp from '../../../components/kelas-algoritma/CourseApp.astro';
+
+const site = Astro.site ?? new URL('https://mfa-labs.github.io');
+const pageUrl = new URL('/kuliah/algoritma-dan-pemrograman-1/latihan/', site).href;
+
+const crumbs = [
+  { label: 'Beranda', href: '/' },
+  { label: 'Mata Kuliah', href: '/kuliah/' },
+  { label: 'Algoritma dan Pemrograman I', href: '/kuliah/algoritma-dan-pemrograman-1/' },
+  { label: 'Latihan Interaktif' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LearningResource',
+  name: 'Latihan Interaktif — Algoritma dan Pemrograman I',
+  description:
+    'Latihan bertahap dengan kuis interaktif untuk mata kuliah Algoritma dan Pemrograman I. Progres tersimpan otomatis di perangkat.',
+  inLanguage: 'id',
+  learningResourceType: 'Quiz',
+  educationalLevel: 'Higher education',
+  url: pageUrl,
+  isPartOf: {
+    '@type': 'Course',
+    name: 'Algoritma dan Pemrograman I',
+    url: new URL('/kuliah/algoritma-dan-pemrograman-1/', site).href,
+  },
+};
+---
+
+<Layout
+  title="Latihan Interaktif — Algoritma dan Pemrograman I"
+  description="Latihan bertahap dengan kuis interaktif untuk mata kuliah Algoritma dan Pemrograman I. Progresmu tersimpan otomatis di perangkat ini."
+  lang="id"
+  jsonLd={jsonLd}
+>
+  <Nav lang="id" />
+
+  <main class="flex-grow w-full">
+    <PageIntro
+      kicker="Latihan Interaktif"
+      title="Latihan Algoritma"
+      desc="Belajar bertahap lewat jalur pelajaran dan kuis interaktif. Progresmu tersimpan otomatis di perangkat ini, jadi kamu bisa lanjut kapan saja tanpa mengulang dari awal."
+      crumbs={crumbs}
+    />
+
+    <section class="max-w-[860px] mx-auto px-margin-mobile md:px-margin-desktop pb-section-gap">
+      <a href="/kuliah/algoritma-dan-pemrograman-1/" class="link-arrow mb-10 inline-flex">
+        <span class="material-symbols-outlined mr-1">arrow_back</span>
+        Kembali ke mata kuliah
+      </a>
+      <CourseApp />
+    </section>
+  </main>
+
+  <Footer lang="id" />
+</Layout>
