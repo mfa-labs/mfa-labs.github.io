@@ -59,6 +59,13 @@
 #     ulang skrip untuk berkas yang bersangkutan.
 #   - Catatan keamanan: PIN pendek bisa di-brute-force karena berkas
 #     terenkripsi ikut terbit. Pakai frasa yang agak panjang.
+#   - TIMER PER SOAL (opsional): tambahkan "detikPerSoal": 60 pada objek
+#     bagian untuk menjadikannya wizard satu soal per layar. Butir tertentu
+#     bisa menimpa durasinya dengan "detik": 90. Saat waktu habis halaman
+#     otomatis pindah ke soal berikutnya dan soal yang sudah lewat tidak bisa
+#     dibuka lagi. Bagian tanpa "detikPerSoal" tetap tampil penuh setelah
+#     wizard selesai (mis. soal uraian). Durasi ikut terenkripsi, jadi
+#     mengubahnya berarti mengubah plain/*.json lalu enkripsi ulang.
 
 # KONVENSI PSEUDOCODE (berlaku sejak pekan 5 Algoritma dan Pemrograman I):
 #   - Penugasan memakai panah: luas <- panjang x lebar

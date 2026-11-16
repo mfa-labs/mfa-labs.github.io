@@ -21,6 +21,10 @@
 //
 // Mengganti PIN atau isi soal = ubah berkas di plain/ lalu jalankan ulang
 // perintah di atas. Halaman soal membaca hasil terenkripsi ini apa adanya.
+//
+// Timer per soal: isi "detikPerSoal" pada objek bagian (detik), dan/atau
+// "detik" pada butir untuk menimpa durasi bagian. Bagian bertimer tampil
+// sebagai wizard satu soal per layar; bagian tanpa "detikPerSoal" tampil penuh.
 
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'node:fs';
 import { createCipheriv, pbkdf2Sync, randomBytes } from 'node:crypto';
@@ -56,6 +60,24 @@ if (files.length === 0) {
 
 mkdirSync(outDir, { recursive: true });
 
+function validateTimer(data, file) {
+  const problems = [];
+  (data.bagian || []).forEach((bagian, bi) => {
+    if (bagian.detikPerSoal !== undefined && !(Number.isInteger(bagian.detikPerSoal) && bagian.detikPerSoal > 0)) {
+      problems.push(`bagian[${bi}].detikPerSoal harus bilangan bulat > 0`);
+    }
+    (bagian.butir || []).forEach((butir, qi) => {
+      if (butir.detik !== undefined && !(Number.isInteger(butir.detik) && butir.detik > 0)) {
+        problems.push(`bagian[${bi}].butir[${qi}].detik harus bilangan bulat > 0`);
+      }
+    });
+  });
+  if (problems.length > 0) {
+    console.error(`Konfigurasi timer tidak valid pada ${file}:\n  - ${problems.join('\n  - ')}`);
+    process.exit(1);
+  }
+}
+
 for (const file of files) {
   const srcPath = join(plainDir, file);
   if (!existsSync(srcPath)) {
@@ -64,12 +86,14 @@ for (const file of files) {
   }
 
   const raw = readFileSync(srcPath, 'utf8');
+  let data;
   try {
-    JSON.parse(raw);
+    data = JSON.parse(raw);
   } catch (error) {
     console.error(`JSON tidak valid pada ${file} — ${error.message}`);
     process.exit(1);
   }
+  validateTimer(data, file);
 
   const salt = randomBytes(16);
   const iv = randomBytes(12);
